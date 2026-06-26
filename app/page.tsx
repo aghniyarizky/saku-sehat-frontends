@@ -36,7 +36,7 @@ export default function AuthPage() {
       )}
 
       {step === "login" && (
-        <LoginPage
+        <LoginPage 
           onSwitchToRegister={() => setStep("register")} 
         />
       )}
