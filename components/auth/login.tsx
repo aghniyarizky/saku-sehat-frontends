@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
-export default function LoginPage() {
+interface LoginProps {
+  onSwitchToRegister: () => void;
+}
+
+export default function LoginPage({ onSwitchToRegister }: LoginProps) {
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
@@ -33,8 +36,8 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          identifier: formData.identifier, // Sudah sinkron dengan BE
-          password: formData.password,     // Sudah sinkron dengan BE
+          identifier: formData.identifier,
+          password: formData.password,
         }),
       });
 
@@ -60,6 +63,10 @@ export default function LoginPage() {
       console.log("Login Sukses, Token:", resData.data);
       setFormData({ identifier: "", password: "" });
 
+      setTimeout(() => {
+        window.location.href = "/dashboard"; 
+      }, 1500);
+
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -68,14 +75,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 font-sans p-5">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 font-sans p-5 w-full">
       <div className="bg-white p-10 rounded-xl shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-gray-800 text-center mb-1">Selamat Datang</h2>
         <p className="text-sm text-gray-500 text-center mb-6">Silakan masuk ke akun Anda</p>
         
-        {/* Notifikasi Status Error / Sukses */}
         {error && <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">{error}</div>}
-        {success && <div className="p-3 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">Login berhasil!</div>}
+        {success && <div className="p-3 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">Login berhasil! Mengalihkan...</div>}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
@@ -112,6 +118,17 @@ export default function LoginPage() {
             {loading ? "Memproses..." : "Masuk"}
           </button>
         </form>
+
+        <p className="text-sm text-gray-600 text-center mt-4">
+          Belum punya akun?{" "}
+          <button 
+            type="button"
+            onClick={onSwitchToRegister}
+            className="text-blue-600 font-semibold hover:underline bg-transparent border-none cursor-pointer outline-none"
+          >
+            Daftar di sini
+          </button>
+        </p>
       </div>
     </div>
   );

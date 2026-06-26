@@ -3,6 +3,7 @@
 import { useState } from "react";
 import RegisterComponent from "@/components/auth/register";
 import VerifyOTPComponent from "@/components/auth/verify-otp";
+import LoginPage from "@/components/auth/login";
 
 export default function AuthPage() {
   const [step, setStep] = useState<"register" | "otp" | "login">("register");
@@ -35,14 +36,9 @@ export default function AuthPage() {
       )}
 
       {step === "login" && (
-        <div className="bg-white p-10 rounded-xl shadow-md w-full max-w-md text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Halaman Login</h2>
-          <p className="text-sm text-gray-600 mb-6">Silakan masukkan akun yang sudah aktif.</p>
-          
-          <button onClick={() => setStep("register")} className="text-sm text-blue-600 hover:underline">
-            Kembali ke Register
-          </button>
-        </div>
+        <LoginPage
+          onSwitchToRegister={() => setStep("register")} 
+        />
       )}
 
     </div>
