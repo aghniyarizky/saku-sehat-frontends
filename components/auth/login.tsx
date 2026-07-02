@@ -96,7 +96,7 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
     {/* ngedit isinya */}
     <div className="absolute top-10 left-0 right-0 w-full px-8">
     <div className="relative w-full"> 
-        <div className="w-10 mb-8"> 
+        <div className="w-10 mb-6"> 
           <div className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white">
             <span className="material-icons text-[2vw] sm:text-[1vw] md:text-lg text-white">arrow_back</span>
           </div>
@@ -109,7 +109,7 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
         Keuanganmu!
       </h2>
 
-      <p className="text-md mt-3 text-gray-300 font-light mb-5 justify">Masuk ke SAKU SEHAT dan lihat perkembangan finansialmu dengan mudah.</p>
+      <p className="text-md mt-3 text-gray-300 font-light mb-7 text-justify">Masuk ke SAKU SEHAT dan lihat perkembangan finansialmu dengan mudah.</p>
       
       <div className="w-full bg-linear-to-tr from-transparent via-gray-400 to-transparent rounded-full p-px mb-5">
         <div className="w-full bg-linear-to-b from-[#090e16] to-[#182133] rounded-full p-1 text-white">
