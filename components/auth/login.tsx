@@ -97,7 +97,7 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
     <div className="absolute top-15 left-0 right-0 w-full px-8">
     <div className="relative w-full"> 
         <div className="w-10 mb-8"> 
-          <div className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border border-white">
+          <div className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white">
             <span className="material-icons text-[2vw] sm:text-[1vw] md:text-lg">arrow_back</span>
           </div>
         </div>

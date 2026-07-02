@@ -68,7 +68,6 @@ export default function RegisterComponent({ onRegisterSuccess, onSwitchToLogin }
   return (
     <div className="w-full min-h-screen px-8 py-12 flex flex-col justify-center bg-[#101828] relative overflow-hidden">
       
-      {/* Background Ornamen */}
       <div className="absolute top-[-18%] right-[-15%] w-[60%] h-[42%] aspect-square rotate-[-25%] opacity-70 blur-[50px] pointer-events-none">
         <div className="absolute inset-0 bg-linear-to-br from-cyan-400 via-blue-500 to-transparent rounded-tl-full rounded-bl-full"></div>
       </div>
@@ -80,12 +79,11 @@ export default function RegisterComponent({ onRegisterSuccess, onSwitchToLogin }
 
       <div className="absolute left-1/2 -bottom-85 -translate-x-1/2 w-full aspect-square border-50 border-[#2388FF] opacity-80 rounded-full blur-xl pointer-events-none"></div>
       
-      {/* Konten Utama */}
+      {/* ubah isian */}
       <div className="absolute top-15 left-0 right-0 w-full px-8">
         <div className="w-full"> 
-          {/* Tombol Back */}
           <div className="w-10 mb-8"> 
-            <div className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border border-white cursor-pointer" onClick={onSwitchToLogin}>
+            <div className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer" onClick={onSwitchToLogin}>
               <span className="material-icons text-lg">arrow_back</span>
             </div>
           </div>
@@ -99,18 +97,15 @@ export default function RegisterComponent({ onRegisterSuccess, onSwitchToLogin }
             Masuk untuk mencatat, memantau, dan menjaga keuanganmu tetap sehat setiap hari.
           </p>
           
-          {/* Slider Switch Tab */}
           <div className="w-full bg-linear-to-tr from-transparent via-gray-400 to-transparent rounded-full p-px mb-5">
             <div className="relative w-full bg-linear-to-b from-[#090e16] to-[#182133] rounded-full p-1 text-white overflow-hidden">
               
-              {/* SLIDER BACKGROUND */}
               <div 
                 className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-gray-800 border border-gray-500 rounded-full transition-transform duration-300 ease-out ${
                   isLogin ? "translate-x-0" : "translate-x-full"
                 }`}
               />
 
-              {/* Lapisan Tombol */}
               <div className="relative flex flex-row items-center w-full z-10">
                 <div className="w-1/2">
                   <button
@@ -139,14 +134,12 @@ export default function RegisterComponent({ onRegisterSuccess, onSwitchToLogin }
             </div>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="p-3 mb-5 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
               {error}
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <label className="text-xs font-bold tracking-wider text-gray-400">Email</label>
