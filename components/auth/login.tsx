@@ -94,11 +94,11 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
     <div className="absolute left-1/2 -bottom-85 -translate-x-1/2 w-full aspect-square border-50 border-[#2388FF] opacity-80 rounded-full blur-xl pointer-events-none"></div>
     
     {/* ngedit isinya */}
-    <div className="absolute top-15 left-0 right-0 w-full px-8">
+    <div className="absolute top-10 left-0 right-0 w-full px-8">
     <div className="relative w-full"> 
         <div className="w-10 mb-8"> 
           <div className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white">
-            <span className="material-icons text-[2vw] sm:text-[1vw] md:text-lg">arrow_back</span>
+            <span className="material-icons text-[2vw] sm:text-[1vw] md:text-lg text-white">arrow_back</span>
           </div>
         </div>
 
