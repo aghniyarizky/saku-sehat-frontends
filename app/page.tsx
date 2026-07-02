@@ -18,8 +18,10 @@ export default function AuthPage() {
     setStep("login");          // Ubah UI ke halaman login
   };
 
-  return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 font-sans p-5">
+return (
+  <div className="flex justify-center items-center min-h-screen bg-[#0b0f19] font-sans">
+    
+    <div className="w-full max-w-md min-h-screen flex flex-col justify-center relative overflow-hidden">
       
       {step === "register" && (
         <RegisterComponent 
@@ -42,5 +44,6 @@ export default function AuthPage() {
       )}
 
     </div>
-  );
+  </div>
+);
 }
