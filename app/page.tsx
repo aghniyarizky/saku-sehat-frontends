@@ -10,12 +10,12 @@ export default function AuthPage() {
   const [registeredEmail, setRegisteredEmail] = useState("");
 
   const handleRegisterSuccess = (email: string) => {
-    setRegisteredEmail(email); // Simpan email ke state utama
-    setStep("otp");            // Langsung ubah UI ke halaman OTP
+    setRegisteredEmail(email); 
+    setStep("otp");           
   };
 
   const handleOTPSuccess = () => {
-    setStep("login");          // Ubah UI ke halaman login
+    setStep("login");          
   };
 
 return (
