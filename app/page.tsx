@@ -8,18 +8,39 @@ import ProfileAuthComponent from "@/components/auth/profile-auth";
 import ConditionComponent from "@/components/auth/condition";
 import LoginPage from "@/components/auth/login";
 import Dashboard from "@/components/main/dashboard";
+import Transaksi from "@/components/main/catatan-keuangan/transaksi";
+import ScanStruk from "@/components/main/catatan-keuangan/scan-struk";
+import TambahTransaksi from "@/components/main/catatan-keuangan/tambah-transaksi";
 
-type StepType = "register" | "otp" | "profile" | "condition" | "login" | "dashboard";
+type StepType = 
+  | "register" 
+  | "otp" 
+  | "profile" 
+  | "condition" 
+  | "login" 
+  | "dashboard" 
+  | "transaksi" 
+  | "scanstruk"
+  | "tambahtransaksi";
 
 function AuthContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Mengambil mode dari URL (?mode=...)
   const rawStep = searchParams.get("mode") || "register";
   
-  // Menangani jika ada typo 'dasboard' tanpa huruf 'h' agar tetap dianggap 'dashboard'
-  const step = rawStep === "dasboard" ? "dashboard" : rawStep;
+  let step: StepType = "register";
+  if (rawStep === "dasboard" || rawStep === "dashboard") {
+    step = "dashboard";
+  } else if (rawStep === "transaksi" || rawStep === "transaction") {
+    step = "transaksi";
+  } else if (rawStep === "scanstruk" || rawStep === "scan") {
+    step = "scanstruk";
+  } else if (rawStep === "tambahtransaksi" || rawStep === "tambah") { 
+    step = "tambahtransaksi";
+  } else if (["register", "otp", "profile", "condition", "login"].includes(rawStep)) {
+    step = rawStep as StepType;
+  }
   
   const [registeredEmail, setRegisteredEmail] = useState("user@gmail.com");
 
@@ -70,9 +91,33 @@ function AuthContent() {
         />
       )}
 
-      {/* Render Dashboard */}
       {step === "dashboard" && (
         <Dashboard />
+      )}
+
+      {step === "transaksi" && (
+        <Transaksi 
+          onSwitchToScan={() => setStep("scanstruk")} 
+          onSwitchToAdd={() => setStep("tambahtransaksi")} 
+        />
+      )}
+
+      {/* Render Scan Struk */}
+      {step === "scanstruk" && (
+        <ScanStruk 
+          onSwitchToTransaction={() => setStep("transaksi")} 
+          onSwitchToScan={() => setStep("scanstruk")}
+          onSwitchToAdd={() => setStep("tambahtransaksi")}
+        />
+      )}
+
+      {/* Render Tambah Transaksi */}
+      {step === "tambahtransaksi" && (
+        <TambahTransaksi 
+          onSwitchToTransaction={() => setStep("transaksi")} 
+          onSwitchToScan={() => setStep("scanstruk")}
+          onSwitchToAdd={() => setStep("tambahtransaksi")}
+        />
       )}
     </div>
   );

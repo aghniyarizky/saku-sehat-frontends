@@ -1,0 +1,49 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import 'material-icons/iconfont/material-icons.css';
+
+export default function NavCatatan() {
+  const pathname = usePathname();
+
+  const menu = [
+    { name: "Transaksi", icon: "receipt_long", href: "#" },
+    { name: "Kelola Pinjaman", icon: "account_balance_wallet", href: "#" },
+    { name: "Budgeting", icon: "pie_chart", href: "#" },
+    { name: "Target Nabung", icon: "savings", href: "#" },
+  ];
+
+  return (
+    <div className="w-full">
+      <div className="flex flex-row items-center gap-2 overflow-x-auto w-full max-w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-none]">
+        {menu.map((item, index) => {
+          const isActive =
+            pathname === item.href ||
+            (pathname.includes(item.href) && item.href !== "/") ||
+            (index === 0 && (pathname === "/" || pathname === "/dashboard"));
+
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`px-3.5 py-1.5 rounded-full flex flex-row items-center gap-1.5 text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer shrink-0 ${
+                isActive
+                  ? "bg-[#2EC4B6] text-[#0A2E2A] shadow-md shadow-[#2EC4B6]/10"
+                  : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-gray-800"
+              }`}
+            >
+              <span 
+                className="material-icons select-none leading-none text-[13px] shrink-0"
+                style={{ fontSize: '13px', width: '13px', height: '13px' }}
+              >
+                {item.icon}
+              </span>
+              <span>{item.name}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
