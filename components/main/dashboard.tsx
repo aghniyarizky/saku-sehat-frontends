@@ -3,6 +3,7 @@
 import { useState } from "react";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from './sidebar';
+import NativeFinancialChart from './grafik-keuangan';
 
 export default function Dashboard() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -178,6 +179,7 @@ export default function Dashboard() {
                         <span className="text-[#2EC4B6] select-none leading-none">2026</span>
                     </div>
                 </div>
+                <NativeFinancialChart />
             </div> 
         </div>
 

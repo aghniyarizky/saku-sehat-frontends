@@ -58,7 +58,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <>
       <div className="fixed inset-0 z-50 mx-auto max-w-md pointer-events-none overflow-hidden">
-        {/* Backdrop */}
         <div 
           onClick={onClose}
           className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
@@ -66,7 +65,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           }`}
         />
 
-        {/* Sidebar Container */}
+        {/* sidebar */}
         <aside 
           className={`absolute top-0 left-0 h-full w-4/5 max-w-70 bg-[#020306] border-r border-gray-800 p-6 text-white flex flex-col justify-between transition-transform duration-300 ease-in-out pointer-events-auto ${
             isOpen ? 'translate-x-0' : '-translate-x-full'
@@ -74,7 +73,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         >
           <div className="flex flex-col h-full justify-between">
             <div>
-              {/* Close Button */}
               <div className="flex justify-end mb-4">
                 <button 
                   onClick={onClose}
@@ -84,7 +82,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </button>
               </div>
 
-              {/* Profile Section */}
+              {/* profile */}
               <div className="flex items-center gap-3 my-2">
                 <span 
                   className="material-icons text-gray-500 select-none leading-none shrink-0"
@@ -101,7 +99,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
               <hr className="border-gray-800/80 my-4" />
 
-              {/* Navigation Menu */}
+              {/* nav */}
               <nav className="flex flex-col">
                 {menuItems.map((item) => {
                   const hasSubItems = item.subItems && item.subItems.length > 0;
@@ -110,7 +108,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
                   return (
                     <div key={item.name} className="flex flex-col">
-                      {/* Main Menu Button */}
+                      {/* menu */}
                       <button
                         onClick={() => {
                           setActiveMenu(item.name);
@@ -138,7 +136,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         )}
                       </button>
 
-                      {/* Submenu Dropdown dengan Smooth Transition */}
+                      {/* submenu */}
                       {hasSubItems && (
                         <div
                           className={`grid transition-all duration-300 ease-in-out ${
@@ -181,7 +179,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 })}
               </nav>
 
-            {/* Logout Button */}
+            {/* logout */}
             <div className="pt-4 border-t border-gray-800/80">
               <button className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer">
                 <span className="material-icons text-xl select-none leading-none">logout</span>
