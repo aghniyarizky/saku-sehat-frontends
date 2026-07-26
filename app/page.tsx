@@ -7,89 +7,73 @@ import VerifyOTPComponent from "@/components/auth/verify-otp";
 import ProfileAuthComponent from "@/components/auth/profile-auth";
 import ConditionComponent from "@/components/auth/condition";
 import LoginPage from "@/components/auth/login";
+import Dashboard from "@/components/main/dashboard";
 
-type StepType = "register" | "otp" | "profile" | "condition" | "login";
+type StepType = "register" | "otp" | "profile" | "condition" | "login" | "dashboard";
 
 function AuthContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Ambil mode dari URL (?mode=...), default ke "register"
-  const step = (searchParams.get("mode") as StepType) || "register";
+  // Mengambil mode dari URL (?mode=...)
+  const rawStep = searchParams.get("mode") || "register";
   
-  // State simpan email
+  // Menangani jika ada typo 'dasboard' tanpa huruf 'h' agar tetap dianggap 'dashboard'
+  const step = rawStep === "dasboard" ? "dashboard" : rawStep;
+  
   const [registeredEmail, setRegisteredEmail] = useState("user@gmail.com");
 
-  // Helper untuk ubah URL di address bar
   const setStep = (newStep: StepType) => {
     router.push(`/?mode=${newStep}`);
   };
 
-  // --- HANDLER NAVIGASI ---
-  const handleRegisterSuccess = (email: string) => {
-    setRegisteredEmail(email);
-    setStep("otp");
-  };
-
-  const handleOTPSuccess = () => {
-    setStep("profile");
-  };
-
-  const handleProfileNext = () => {
-    setStep("condition");
-  };
-
-  const handleConditionFinish = () => {
-    setStep("login");
-  };
-
   return (
-    <div className="w-full max-w-md min-h-screen flex flex-col justify-center relative overflow-hidden">
+    <div className="w-full max-w-md h-screen flex flex-col bg-[#101828] relative overflow-hidden">
       
-      {/* Step 1: Register */}
       {step === "register" && (
         <RegisterComponent 
-          onRegisterSuccess={handleRegisterSuccess} 
+          onRegisterSuccess={(email) => { setRegisteredEmail(email); setStep("otp"); }} 
           onSwitchToLogin={() => setStep("login")} 
         />
       )}
 
-      {/* Step 2: Verify OTP */}
       {step === "otp" && (
         <VerifyOTPComponent 
           email={registeredEmail} 
-          onSuccess={handleOTPSuccess} 
+          onSuccess={() => setStep("profile")} 
           onBackToRegister={() => setStep("register")}
         />
       )}
 
-      {/* Step 3: Profile Auth (Lengkapi Profil - Opsional) */}
       {step === "profile" && (
         <ProfileAuthComponent 
           email={registeredEmail}
-          onNext={handleProfileNext}
-          onSkip={handleProfileNext}
+          onNext={() => setStep("condition")}
+          onSkip={() => setStep("condition")}
           onSwitchToLogin={() => setStep("login")}
         />
       )}
 
-      {/* Step 4: Condition (Kondisi Awal Financial/User) */}
       {step === "condition" && (
         <ConditionComponent 
           email={registeredEmail}
-          onNext={handleConditionFinish}
-          onSkip={handleConditionFinish}
+          onNext={() => setStep("login")}
+          onSkip={() => setStep("login")}
           onSwitchToLogin={() => setStep("login")}
         />
       )}
 
-      {/* Step 5: Login */}
       {step === "login" && (
         <LoginPage 
           onSwitchToRegister={() => setStep("register")} 
+          onLoginSuccess={() => setStep("dashboard")}
         />
       )}
 
+      {/* Render Dashboard */}
+      {step === "dashboard" && (
+        <Dashboard />
+      )}
     </div>
   );
 }

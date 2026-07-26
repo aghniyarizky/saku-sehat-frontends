@@ -5,9 +5,10 @@ import 'material-icons/iconfont/material-icons.css';
 
 interface LoginProps {
   onSwitchToRegister: () => void;
+  onLoginSuccess?: () => void;
 }
 
-export default function LoginPage({ onSwitchToRegister }: LoginProps) {
+export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginProps) {
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
@@ -68,8 +69,11 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
       setFormData({ identifier: "", password: "" });
 
       setTimeout(() => {
-        window.location.href = "/dashboard"; 
-      }, 1500);
+        // Panggil prop callback agar state step/mode di AuthContent berpindah ke dashboard
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+      }, 1000);
 
     } catch (err: any) {
       setError(err.message);
