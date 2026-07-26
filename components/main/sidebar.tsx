@@ -8,24 +8,57 @@ interface SidebarProps {
   onClose: () => void;
 }
 
+// Tipe data terpisah untuk Sub-item agar bisa opsional memakai icon
+interface SubMenuItem {
+  name: string;
+  href: string;
+  icon?: string;
+}
+
+interface MenuItem {
+  name: string;
+  icon: string;
+  href?: string;
+  subItems?: SubMenuItem[];
+}
+
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [activeMenu, setActiveMenu] = useState<string>("Dashboard");
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     { name: "Dashboard", icon: "dashboard", href: "#" },
-    { name: "Catatan Keuangan", icon: "account_balance_wallet", href: "#" },
+    { 
+      name: "Catatan Keuangan", 
+      icon: "trending_up", 
+      subItems: [
+        { name: "Transaksi ", icon: "trending_up", href: "#" },
+        { name: "Kelola Pinjaman ", icon: "payments", href: "#" },
+        { name: "Budgeting ", icon: "attach_money", href: "#" },
+        { name: "Target Nabung ", icon: "adjust", href: "#" },
+      ]
+    },
     { name: "Kalkulator Bunga", icon: "calculate", href: "#" },
-    { name: "Smart Assistant", icon: "chat_bubble", href: "#" },
+    { 
+      name: "Smart Assistant", 
+      icon: "chat_bubble", 
+      subItems: [
+        { name: "AI Financial Coach", icon: "chat_bubble", href: "#" },
+        { name: "Cari Aman", icon: "shield", href: "#" },
+      ]
+    },
     { name: "Before You Borrow", icon: "menu_book", href: "#" },
     { name: "Settings", icon: "settings", href: "#" },
   ];
 
+  const toggleSubmenu = (name: string) => {
+    setOpenSubmenu(prev => prev === name ? null : name);
+  };
+
   return (
     <>
-      {/* Container Utama Terikat Layout Mobile (max-w-md) */}
       <div className="fixed inset-0 z-50 mx-auto max-w-md pointer-events-none overflow-hidden">
-        
-        {/* 1. Backdrop Overlay (Mengisi max-w-md) */}
+        {/* Backdrop */}
         <div 
           onClick={onClose}
           className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
@@ -33,78 +66,131 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           }`}
         />
 
-        {/* 2. Drawer Sidebar (Muncul dari kiri area max-w-md) */}
+        {/* Sidebar Container */}
         <aside 
           className={`absolute top-0 left-0 h-full w-4/5 max-w-70 bg-[#020306] border-r border-gray-800 p-6 text-white flex flex-col justify-between transition-transform duration-300 ease-in-out pointer-events-auto ${
             isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          {/* Bagian Atas: Header, Profil, & Navigasi */}
-          <div>
-            {/* Tombol Close */}
-            <div className="flex justify-end mb-4">
-              <button 
-                onClick={onClose}
-                className="text-gray-400 hover:text-white cursor-pointer flex items-center justify-center p-1 rounded-lg hover:bg-white/5"
-              >
-                <span className="material-icons select-none">close</span>
-              </button>
-            </div>
-
-            {/* Profile Section */}
-            <div className="flex items-center gap-3 my-2">
-              <span 
-                className="material-icons text-gray-500 select-none leading-none shrink-0"
-                style={{ fontSize: '40px', width: '40px', height: '40px' }}
-              >
-                account_circle
-              </span>
-
-              <div className="flex flex-col min-w-0">
-                <div className="text-sm font-semibold text-white leading-tight truncate">Jane Doe</div>
-                <div className="text-xs text-white/40 truncate">JaneDoe@gmail.com</div>
+          <div className="flex flex-col h-full justify-between">
+            <div>
+              {/* Close Button */}
+              <div className="flex justify-end mb-4">
+                <button 
+                  onClick={onClose}
+                  className="text-gray-400 hover:text-white cursor-pointer flex items-center justify-center p-1 rounded-lg hover:bg-white/5"
+                >
+                  <span className="material-icons select-none">close</span>
+                </button>
               </div>
-            </div>
 
-            <hr className="border-gray-800/80 my-4" />
+              {/* Profile Section */}
+              <div className="flex items-center gap-3 my-2">
+                <span 
+                  className="material-icons text-gray-500 select-none leading-none shrink-0"
+                  style={{ fontSize: '40px', width: '40px', height: '40px' }}
+                >
+                  account_circle
+                </span>
 
-            {/* Navigasi Menu */}
-            <nav className="flex flex-col gap-1">
-              {menuItems.map((item) => {
-                const isActive = activeMenu === item.name;
+                <div className="flex flex-col min-w-0">
+                  <div className="text-sm font-semibold text-white leading-tight truncate">Jane Doe</div>
+                  <div className="text-xs text-white/40 truncate">JaneDoe@gmail.com</div>
+                </div>
+              </div>
 
-                return (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setActiveMenu(item.name)}
-                    className={`relative flex items-center gap-3 p-3 rounded-xl text-sm transition-all duration-150 ${
-                      isActive
-                        ? 'bg-[#2EC4B6]/15 text-[#2EC4B6] font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-1 before:bg-[#2EC4B6] before:rounded-r-full'
-                        : 'text-gray-400 hover:bg-white/5 hover:text-white font-medium'
-                    }`}
-                  >
-                    <span className="material-icons text-xl select-none leading-none">
-                      {item.icon}
-                    </span>
-                    <span>{item.name}</span>
-                  </a>
-                );
-              })}
-            </nav>
+              <hr className="border-gray-800/80 my-4" />
 
-            {/*  Log Out */}
+              {/* Navigation Menu */}
+              <nav className="flex flex-col">
+                {menuItems.map((item) => {
+                  const hasSubItems = item.subItems && item.subItems.length > 0;
+                  const isSubmenuOpen = openSubmenu === item.name;
+                  const isActive = activeMenu === item.name;
+
+                  return (
+                    <div key={item.name} className="flex flex-col">
+                      {/* Main Menu Button */}
+                      <button
+                        onClick={() => {
+                          setActiveMenu(item.name);
+                          if (hasSubItems) toggleSubmenu(item.name);
+                        }}
+                        className={`relative flex items-center justify-between p-3 rounded-xl text-sm w-full transition-all duration-300 cursor-pointer ${
+                          isActive
+                            ? 'bg-[#2EC4B6]/10 text-[#2EC4B6] font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-1 before:bg-[#2EC4B6] before:rounded-r-full'
+                            : 'text-gray-400 hover:bg-white/5 hover:text-white font-medium'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="material-icons text-xl select-none leading-none">
+                            {item.icon}
+                          </span>
+                          <span>{item.name}</span>
+                        </div>
+
+                        {hasSubItems && (
+                          <span className={`material-icons text-lg transition-transform duration-300 select-none ${
+                            isSubmenuOpen ? 'rotate-180 text-white' : 'text-gray-500'
+                          }`}>
+                            expand_more
+                          </span>
+                        )}
+                      </button>
+
+                      {/* Submenu Dropdown dengan Smooth Transition */}
+                      {hasSubItems && (
+                        <div
+                          className={`grid transition-all duration-300 ease-in-out ${
+                            isSubmenuOpen 
+                              ? 'grid-rows-[1fr] opacity-100 mt-1 mb-1' 
+                              : 'grid-rows-[0fr] opacity-0'
+                          }`}
+                        >
+                          <div className="overflow-hidden">
+                            <div className="flex flex-col pl-7 pr-2 py-1 gap-1 border-l border-gray-800 ml-5">
+                              {item.subItems?.map((sub) => {
+                                const isSubActive = activeMenu === sub.name;
+                                return (
+                                  <a
+                                    key={sub.name}
+                                    href={sub.href}
+                                    onClick={() => setActiveMenu(sub.name)}
+                                    className={`flex items-center gap-2.5 p-2 rounded-lg text-xs transition-colors ${
+                                      isSubActive
+                                        ? 'text-[#2EC4B6] font-semibold bg-[#2EC4B6]/10'
+                                        : 'text-gray-400 hover:text-white hover:bg-white/5 font-medium'
+                                    }`}
+                                  >
+                                    {/* Render Ikon Submenu (jika ada) */}
+                                    {sub.icon && (
+                                      <span className="material-icons text-base select-none leading-none opacity-80">
+                                        {sub.icon}
+                                      </span>
+                                    )}
+                                    <span>{sub.name}</span>
+                                  </a>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </nav>
+
+            {/* Logout Button */}
             <div className="pt-4 border-t border-gray-800/80">
-                <button className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer">
+              <button className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer">
                 <span className="material-icons text-xl select-none leading-none">logout</span>
                 <span className="text-sm font-semibold">Log Out</span>
-                </button>
+              </button>
             </div>
-        </div>
-
-          
+            </div>
+          </div>
         </aside>
-
       </div>
     </>
   );
