@@ -36,7 +36,7 @@ function AuthContent() {
   const rawStep = searchParams.get("mode") || "register";
   
   let step: StepType = "register";
-  if (rawStep === "dashboard" || rawStep === "dashboard") {
+  if (rawStep === "dashboard") {
     step = "dashboard";
   } else if (rawStep === "transaksi" || rawStep === "transaction") {
     step = "transaksi";
@@ -65,8 +65,23 @@ function AuthContent() {
       
       {step === "register" && (
         <RegisterComponent 
-          onRegisterSuccess={(email) => { setRegisteredEmail(email); setStep("otp"); }} 
+          onRegisterSuccess={(data: any) => { 
+            const emailStr = typeof data === "string" ? data : data.email;
+            setRegisteredEmail(emailStr); 
+            setStep("otp"); 
+          }} 
           onSwitchToLogin={() => setStep("login")} 
+        />
+      )}
+
+      {step === "login" && (
+        <LoginPage 
+          onSwitchToRegister={() => setStep("register")} 
+          onLoginSuccess={(data: any) => {
+            const emailStr = typeof data === "string" ? data : data.email;
+            if (emailStr) setRegisteredEmail(emailStr);
+            setStep("otp");
+          }}
         />
       )}
 
@@ -90,22 +105,13 @@ function AuthContent() {
       {step === "condition" && (
         <ConditionComponent 
           email={registeredEmail}
-          onNext={() => setStep("login")}
-          onSkip={() => setStep("login")}
+          onNext={() => setStep("dashboard")} 
+          onSkip={() => setStep("dashboard")}
           onSwitchToProfileAuth={() => setStep("profile")}
         />
       )}
 
-      {step === "login" && (
-        <LoginPage 
-          onSwitchToRegister={() => setStep("register")} 
-          onLoginSuccess={() => setStep("dashboard")}
-        />
-      )}
-
-      {step === "dashboard" && (
-        <Dashboard />
-      )}
+      {step === "dashboard" && <Dashboard />}
 
       {step === "transaksi" && (
         <Transaksi 

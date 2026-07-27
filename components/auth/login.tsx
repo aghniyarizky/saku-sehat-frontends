@@ -5,15 +5,15 @@ import 'material-icons/iconfont/material-icons.css';
 
 interface LoginProps {
   onSwitchToRegister: () => void;
-  onLoginSuccess?: () => void;
 }
 
-export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginProps) {
+export default function LoginPage({ onSwitchToRegister }: LoginProps) {
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
   });
 
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -27,20 +27,55 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccess(false);
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier: formData.identifier,
+          password: formData.password,
+        }),
+      });
 
-      localStorage.setItem("token", "dummy-dev-token-12345");
+      const teksResponse = await response.text();
 
-      if (onLoginSuccess) {
-        onLoginSuccess();
+      if (!response.ok) {
+        console.error("ISI ERROR LOGIN DARI SERVER:", teksResponse);
+        try {
+          const parsedError = JSON.parse(teksResponse);
+          throw new Error(parsedError.message || "Gagal masuk.");
+        } catch {
+          throw new Error("Terjadi kesalahan pada server backend.");
+        }
       }
-    }, 500);
+
+      const resData = JSON.parse(teksResponse);
+      setSuccess(true);
+      
+      if (resData.data) {
+        localStorage.setItem("token", resData.data);
+      }
+      
+      console.log("Login Sukses, Token:", resData.data);
+      setFormData({ identifier: "", password: "" });
+
+      setTimeout(() => {
+        window.location.href = "/dashboard"; 
+      }, 1500);
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -109,6 +144,11 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
               </div>
             </div>
 
+            {error && (
+              <div className="p-3 mb-4 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
+                {error}
+              </div>
+            )}
             {success && (
               <div className="p-3 mb-4 text-sm text-emerald-400 bg-emerald-950/40 border border-emerald-900 rounded-xl backdrop-blur-sm">
                 Login berhasil! Mengalihkan...
@@ -161,7 +201,8 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
                   </button>
                 </div>
               </div>
-
+              
+              {/* Checkbox Ingat Saya & Lupa Password */}
               <div className="flex items-center justify-between font-urbanist">
                 <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer select-none">
                   <input 
@@ -177,6 +218,7 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
                 </a>
               </div>
 
+              {/* Submit Button */}
               <button 
                 type="submit" 
                 disabled={loading}
