@@ -8,9 +8,12 @@ import ProfileAuthComponent from "@/components/auth/profile-auth";
 import ConditionComponent from "@/components/auth/condition";
 import LoginPage from "@/components/auth/login";
 import Dashboard from "@/components/main/dashboard";
-import Transaksi from "@/components/main/catatan-keuangan/transaksi";
-import ScanStruk from "@/components/main/catatan-keuangan/scan-struk";
-import TambahTransaksi from "@/components/main/catatan-keuangan/tambah-transaksi";
+import Transaksi from "@/components/main/catatan-keuangan/transaksi/transaksi";
+import ScanStruk from "@/components/main/catatan-keuangan/transaksi/scan-struk";
+import TambahTransaksi from "@/components/main/catatan-keuangan/transaksi/tambah-transaksi";
+import Pinjaman from "@/components/main/catatan-keuangan/kelola-pinjaman/pinjaman";
+import TambahPinjaman from "@/components/main/catatan-keuangan/kelola-pinjaman/tambah-pinjaman";
+// import KalkulatorBunga from "@/components/main/catatan-keuangan/kelola-pinjaman/kalkulator";
 
 type StepType = 
   | "register" 
@@ -21,7 +24,10 @@ type StepType =
   | "dashboard" 
   | "transaksi" 
   | "scanstruk"
-  | "tambahtransaksi";
+  | "tambahtransaksi"
+  | "kelolapinjaman"
+  | "tambahpinjaman"
+  | "kalkulator";
 
 function AuthContent() {
   const router = useRouter();
@@ -38,6 +44,12 @@ function AuthContent() {
     step = "scanstruk";
   } else if (rawStep === "tambahtransaksi" || rawStep === "tambah") { 
     step = "tambahtransaksi";
+  } else if (rawStep === "kelolapinjaman" || rawStep === "pinjaman") { 
+    step = "kelolapinjaman";
+  } else if (rawStep === "tambahpinjaman" || rawStep === "tambahpeminjaman") {
+    step = "tambahpinjaman";
+  } else if (rawStep === "kalkulator") {
+    step = "kalkulator";
   } else if (["register", "otp", "profile", "condition", "login"].includes(rawStep)) {
     step = rawStep as StepType;
   }
@@ -102,7 +114,6 @@ function AuthContent() {
         />
       )}
 
-      {/* Render Scan Struk */}
       {step === "scanstruk" && (
         <ScanStruk 
           onSwitchToTransaction={() => setStep("transaksi")} 
@@ -111,7 +122,6 @@ function AuthContent() {
         />
       )}
 
-      {/* Render Tambah Transaksi */}
       {step === "tambahtransaksi" && (
         <TambahTransaksi 
           onSwitchToTransaction={() => setStep("transaksi")} 
@@ -119,6 +129,16 @@ function AuthContent() {
           onSwitchToAdd={() => setStep("tambahtransaksi")}
         />
       )}
+
+      {step === "kelolapinjaman" && (
+        <Pinjaman 
+          onSwitchToKalkulator={() => setStep("kalkulator")}
+          onSwitchToAddPinjaman={() => setStep("tambahpinjaman")}
+        />
+      )}
+
+      {step === "tambahpinjaman" && <TambahPinjaman onSwitchToKelolaPinjaman={() => setStep("kelolapinjaman")} />}
+      {/* {step === "kalkulator" && <KalkulatorBunga onBack={() => setStep("kelolapinjaman")} />} */}
     </div>
   );
 }

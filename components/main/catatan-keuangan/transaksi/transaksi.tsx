@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import 'material-icons/iconfont/material-icons.css';
-import Sidebar from '../sidebar';
-import NavCatatan from './nav-catatan';
+import Sidebar from '../../sidebar';
+import NavCatatan from '../nav-catatan';
 import Link from "next/link";
 
 interface TransaksiProps {
@@ -126,7 +126,6 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd }: TransaksiPr
 
       <NavCatatan />
 
-      {/* Cards Summary */}
       <div className="grid grid-cols-2 gap-3">
         {/* Saldo */}
         <div className="bg-white/5 border border-gray-700/60 rounded-2xl p-4 py-5 w-full">
@@ -171,7 +170,6 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd }: TransaksiPr
         </div>
       </div>
 
-      {/* 4. Filter Buttons (Ditaruh di div kosong milikmu) */}
       <div className="flex flex-row items-center gap-1 p-1 rounded-xl w-fit">
         <button
           onClick={() => setFilterType("semua")}

@@ -69,7 +69,6 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
       setFormData({ identifier: "", password: "" });
 
       setTimeout(() => {
-        // Panggil prop callback agar state step/mode di AuthContent berpindah ke dashboard
         if (onLoginSuccess) {
           onLoginSuccess();
         }
@@ -205,8 +204,6 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
                   </button>
                 </div>
               </div>
-              
-              {/* Checkbox Ingat Saya & Lupa Password */}
               <div className="flex items-center justify-between font-urbanist">
                 <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer select-none">
                   <input 
@@ -221,8 +218,6 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
                   Lupa Password?
                 </a>
               </div>
-
-              {/* Submit Button */}
               <button 
                 type="submit" 
                 disabled={loading}

@@ -92,7 +92,6 @@ export default function RegisterComponent({ onRegisterSuccess, onSwitchToLogin }
           </p>
           
           <div className="p-4">
-            {/* Switcher Tab */}
             <div className="w-full bg-linear-to-tr from-transparent via-gray-400 to-transparent rounded-full p-px mb-5 mt-2">
               <div className="relative w-full bg-linear-to-b from-[#090e16] to-[#182133] rounded-full p-1 text-white overflow-hidden">
                 
@@ -213,7 +212,7 @@ export default function RegisterComponent({ onRegisterSuccess, onSwitchToLogin }
                   </button>
                 </div>
               </div>
-              
+
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold tracking-wider text-white">Konfirmasi Password</label>
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">        

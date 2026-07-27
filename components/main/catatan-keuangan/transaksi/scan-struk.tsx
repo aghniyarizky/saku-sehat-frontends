@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import 'material-icons/iconfont/material-icons.css';
-import Sidebar from '../sidebar';
+import Sidebar from '../../sidebar';
 
 interface ScanStrukProps {
     onSwitchToTransaction: () => void;

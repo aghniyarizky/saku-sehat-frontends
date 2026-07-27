@@ -6,7 +6,7 @@ import 'material-icons/iconfont/material-icons.css';
 interface VerifyOTPProps {
   email: string;
   onSuccess: () => void;
-  onBackToRegister?: () => void; // Ditambahkan agar tombol back berfungsi
+  onBackToRegister?: () => void;
 }
 
 export default function VerifyOTPComponent({ email, onSuccess, onBackToRegister }: VerifyOTPProps) {
@@ -28,7 +28,6 @@ export default function VerifyOTPComponent({ email, onSuccess, onBackToRegister 
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Fungsi penyamaran (masking) email otomatis
   const maskEmail = (userEmail: string) => {
     if (!userEmail || !userEmail.includes("@")) return "email Anda";
     const [name, domain] = userEmail.split("@");

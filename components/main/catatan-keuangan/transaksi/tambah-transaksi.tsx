@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import 'material-icons/iconfont/material-icons.css';
-import Sidebar from '../sidebar';
+import Sidebar from '../../sidebar';
 import Pengeluaran from './pengeluaran';
 import Pemasukan from './pemasukan'; 
 
@@ -47,7 +47,6 @@ export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan,
         </div>
       </div>
 
-      {/* Back & Title */}
       <div className="flex flex-row gap-5 items-center">
         <button 
           type="button"
@@ -59,7 +58,6 @@ export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan,
         <div className="text-lg font-semibold leading-none">Tambah Transaksi</div>
       </div>
 
-      {/* Tab Switcher Mode Input (Scan vs Manual) */}
       <div className="flex flex-row gap-2 justify-center">
         <button
           type="button"
@@ -91,7 +89,6 @@ export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan,
       </div>
 
       <div className="flex flex-row w-full gap-2 justify-center text-center px-2">
-        {/* Tombol Pengeluaran */}
         <button
           type="button"
           onClick={() => setTransactionType('pengeluaran')}

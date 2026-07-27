@@ -1,27 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import 'material-icons/iconfont/material-icons.css';
 
 export default function NavCatatan() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentMode = searchParams.get("mode") || "transaksi";
 
   const menu = [
-    { name: "Transaksi", icon: "receipt_long", href: "#" },
-    { name: "Kelola Pinjaman", icon: "account_balance_wallet", href: "#" },
-    { name: "Budgeting", icon: "pie_chart", href: "#" },
-    { name: "Target Nabung", icon: "savings", href: "#" },
+    { name: "Transaksi", icon: "receipt_long", mode: "transaksi", href: "/?mode=transaksi" },
+    { name: "Kelola Pinjaman", icon: "account_balance_wallet", mode: "kelolapinjaman", href: "/?mode=kelolapinjaman" },
+    { name: "Budgeting", icon: "pie_chart", mode: "budgeting", href: "/?mode=budgeting" },
+    { name: "Target Nabung", icon: "savings", mode: "targetnabung", href: "/?mode=targetnabung" },
   ];
 
   return (
     <div className="w-full">
       <div className="flex flex-row items-center gap-2 overflow-x-auto w-full max-w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-none]">
-        {menu.map((item, index) => {
-          const isActive =
-            pathname === item.href ||
-            (pathname.includes(item.href) && item.href !== "/") ||
-            (index === 0 && (pathname === "/" || pathname === "/dashboard"));
+        {menu.map((item) => {
+          const isActive = pathname === "/" && currentMode === item.mode;
 
           return (
             <Link
