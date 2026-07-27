@@ -13,7 +13,7 @@ import ScanStruk from "@/components/main/catatan-keuangan/transaksi/scan-struk";
 import TambahTransaksi from "@/components/main/catatan-keuangan/transaksi/tambah-transaksi";
 import Pinjaman from "@/components/main/catatan-keuangan/kelola-pinjaman/pinjaman";
 import TambahPinjaman from "@/components/main/catatan-keuangan/kelola-pinjaman/tambah-pinjaman";
-// import KalkulatorBunga from "@/components/main/catatan-keuangan/kelola-pinjaman/kalkulator";
+import KalkulatorBunga from "@/components/main/catatan-keuangan/kelola-pinjaman/kalkulator-bunga";
 
 type StepType = 
   | "register" 
@@ -36,7 +36,7 @@ function AuthContent() {
   const rawStep = searchParams.get("mode") || "register";
   
   let step: StepType = "register";
-  if (rawStep === "dasboard" || rawStep === "dashboard") {
+  if (rawStep === "dashboard" || rawStep === "dashboard") {
     step = "dashboard";
   } else if (rawStep === "transaksi" || rawStep === "transaction") {
     step = "transaksi";
@@ -92,7 +92,7 @@ function AuthContent() {
           email={registeredEmail}
           onNext={() => setStep("login")}
           onSkip={() => setStep("login")}
-          onSwitchToLogin={() => setStep("login")}
+          onSwitchToProfileAuth={() => setStep("profile")}
         />
       )}
 
@@ -138,7 +138,7 @@ function AuthContent() {
       )}
 
       {step === "tambahpinjaman" && <TambahPinjaman onSwitchToKelolaPinjaman={() => setStep("kelolapinjaman")} />}
-      {/* {step === "kalkulator" && <KalkulatorBunga onBack={() => setStep("kelolapinjaman")} />} */}
+      {step === "kalkulator" && <KalkulatorBunga />}
     </div>
   );
 }

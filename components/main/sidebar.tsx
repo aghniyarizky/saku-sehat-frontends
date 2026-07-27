@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import 'material-icons/iconfont/material-icons.css';
 
 interface SidebarProps {
@@ -8,7 +10,6 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-// Tipe data terpisah untuk Sub-item agar bisa opsional memakai icon
 interface SubMenuItem {
   name: string;
   href: string;
@@ -23,19 +24,22 @@ interface MenuItem {
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const searchParams = useSearchParams();
+  const currentMode = searchParams.get("mode") || "dashboard";
+
   const [activeMenu, setActiveMenu] = useState<string>("Dashboard");
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
   const menuItems: MenuItem[] = [
-    { name: "Dashboard", icon: "dashboard", href: "#" },
+    { name: "Dashboard", icon: "dashboard", href: "?mode=dashboard" },
     { 
       name: "Catatan Keuangan", 
       icon: "trending_up", 
       subItems: [
-        { name: "Transaksi ", icon: "trending_up", href: "#" },
-        { name: "Kelola Pinjaman ", icon: "payments", href: "#" },
-        { name: "Budgeting ", icon: "attach_money", href: "#" },
-        { name: "Target Nabung ", icon: "adjust", href: "#" },
+        { name: "Transaksi", icon: "trending_up", href: "?mode=transaksi" },
+        { name: "Kelola Pinjaman", icon: "payments", href: "?mode=kelolapinjaman" },
+        { name: "Budgeting", icon: "attach_money", href: "#" },
+        { name: "Target Nabung", icon: "adjust", href: "#" },
       ]
     },
     { name: "Kalkulator Bunga", icon: "calculate", href: "#" },
@@ -51,6 +55,30 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     { name: "Settings", icon: "settings", href: "#" },
   ];
 
+  useEffect(() => {
+    const queryHref = `?mode=${currentMode}`;
+
+    let foundMatch = false;
+
+    menuItems.forEach((item) => {
+      if (item.subItems) {
+        const matchedSub = item.subItems.find((sub) => sub.href === queryHref);
+        if (matchedSub) {
+          setActiveMenu(matchedSub.name);
+          setOpenSubmenu(item.name);
+          foundMatch = true;
+        }
+      } else if (item.href === queryHref) {
+        setActiveMenu(item.name);
+        foundMatch = true;
+      }
+    });
+
+    if (!foundMatch && currentMode === "dashboard") {
+      setActiveMenu("Dashboard");
+    }
+  }, [currentMode]);
+
   const toggleSubmenu = (name: string) => {
     setOpenSubmenu(prev => prev === name ? null : name);
   };
@@ -65,7 +93,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           }`}
         />
 
-        {/* sidebar */}
         <aside 
           className={`absolute top-0 left-0 h-full w-4/5 max-w-70 bg-[#020306] border-r border-gray-800 p-6 text-white flex flex-col justify-between transition-transform duration-300 ease-in-out pointer-events-auto ${
             isOpen ? 'translate-x-0' : '-translate-x-full'
@@ -99,44 +126,54 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
               <hr className="border-gray-800/80 my-4" />
 
-              {/* nav */}
-              <nav className="flex flex-col">
+              <nav className="flex flex-col gap-1">
                 {menuItems.map((item) => {
                   const hasSubItems = item.subItems && item.subItems.length > 0;
                   const isSubmenuOpen = openSubmenu === item.name;
-                  const isActive = activeMenu === item.name;
+                  const isAnySubActive = item.subItems?.some(sub => sub.name === activeMenu);
+                  const isActive = activeMenu === item.name || isAnySubActive;
+
+                  const activeStyles = isActive
+                    ? 'bg-[#2EC4B6]/10 text-[#2EC4B6] font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-1 before:bg-[#2EC4B6] before:rounded-r-full'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-white font-medium';
 
                   return (
                     <div key={item.name} className="flex flex-col">
-                      {/* menu */}
-                      <button
-                        onClick={() => {
-                          setActiveMenu(item.name);
-                          if (hasSubItems) toggleSubmenu(item.name);
-                        }}
-                        className={`relative flex items-center justify-between p-3 rounded-xl text-sm w-full transition-all duration-300 cursor-pointer ${
-                          isActive
-                            ? 'bg-[#2EC4B6]/10 text-[#2EC4B6] font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-1 before:bg-[#2EC4B6] before:rounded-r-full'
-                            : 'text-gray-400 hover:bg-white/5 hover:text-white font-medium'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="material-icons text-xl select-none leading-none">
-                            {item.icon}
-                          </span>
-                          <span>{item.name}</span>
-                        </div>
-
-                        {hasSubItems && (
+                      {hasSubItems ? (
+                        <button
+                          onClick={() => toggleSubmenu(item.name)}
+                          className={`relative flex items-center justify-between p-3 rounded-xl text-sm w-full transition-all duration-300 cursor-pointer ${activeStyles}`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="material-icons text-xl select-none leading-none">
+                              {item.icon}
+                            </span>
+                            <span>{item.name}</span>
+                          </div>
                           <span className={`material-icons text-lg transition-transform duration-300 select-none ${
                             isSubmenuOpen ? 'rotate-180 text-white' : 'text-gray-500'
                           }`}>
                             expand_more
                           </span>
-                        )}
-                      </button>
+                        </button>
+                      ) : (
+                        <Link
+                          href={item.href || "#"}
+                          onClick={() => {
+                            setActiveMenu(item.name);
+                            onClose();
+                          }}
+                          className={`relative flex items-center justify-between p-3 rounded-xl text-sm w-full transition-all duration-300 cursor-pointer ${activeStyles}`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="material-icons text-xl select-none leading-none">
+                              {item.icon}
+                            </span>
+                            <span>{item.name}</span>
+                          </div>
+                        </Link>
+                      )}
 
-                      {/* submenu */}
                       {hasSubItems && (
                         <div
                           className={`grid transition-all duration-300 ease-in-out ${
@@ -150,24 +187,26 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                               {item.subItems?.map((sub) => {
                                 const isSubActive = activeMenu === sub.name;
                                 return (
-                                  <a
+                                  <Link
                                     key={sub.name}
                                     href={sub.href}
-                                    onClick={() => setActiveMenu(sub.name)}
+                                    onClick={() => {
+                                      setActiveMenu(sub.name);
+                                      onClose();
+                                    }}
                                     className={`flex items-center gap-2.5 p-2 rounded-lg text-xs transition-colors ${
                                       isSubActive
                                         ? 'text-[#2EC4B6] font-semibold bg-[#2EC4B6]/10'
                                         : 'text-gray-400 hover:text-white hover:bg-white/5 font-medium'
                                     }`}
                                   >
-                                    {/* Render Ikon Submenu (jika ada) */}
                                     {sub.icon && (
                                       <span className="material-icons text-base select-none leading-none opacity-80">
                                         {sub.icon}
                                       </span>
                                     )}
                                     <span>{sub.name}</span>
-                                  </a>
+                                  </Link>
                                 );
                               })}
                             </div>
@@ -179,13 +218,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 })}
               </nav>
 
-            {/* logout */}
-            <div className="pt-4 border-t border-gray-800/80">
-              <button className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer">
-                <span className="material-icons text-xl select-none leading-none">logout</span>
-                <span className="text-sm font-semibold">Log Out</span>
-              </button>
-            </div>
+              {/* logout */}
+              <div className="pt-4 border-t border-gray-800/80 mt-4">
+                <button className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer">
+                  <span className="material-icons text-xl select-none leading-none">logout</span>
+                  <span className="text-sm font-semibold">Log Out</span>
+                </button>
+              </div>
             </div>
           </div>
         </aside>

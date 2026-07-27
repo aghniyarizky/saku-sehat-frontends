@@ -12,8 +12,8 @@ export default function NavCatatan() {
   const menu = [
     { name: "Transaksi", icon: "receipt_long", mode: "transaksi", href: "/?mode=transaksi" },
     { name: "Kelola Pinjaman", icon: "account_balance_wallet", mode: "kelolapinjaman", href: "/?mode=kelolapinjaman" },
-    { name: "Budgeting", icon: "pie_chart", mode: "budgeting", href: "/?mode=budgeting" },
-    { name: "Target Nabung", icon: "savings", mode: "targetnabung", href: "/?mode=targetnabung" },
+    { name: "Budgeting", icon: "pie_chart", mode: "budgeting", href: "#" },
+    { name: "Target Nabung", icon: "savings", mode: "targetnabung", href: "#" },
   ];
 
   return (

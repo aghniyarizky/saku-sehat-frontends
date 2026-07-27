@@ -1,18 +1,21 @@
 # SAKU SEHAT Frontend
 
 ## Deskripsi
-SAKU SEHAT Frontend adalah antarmuka aplikasi web untuk alur autentikasi pengguna pada platform SAKU SEHAT. Project ini menyediakan pengalaman register, verifikasi OTP, dan login dengan desain modern berbasis Next.js dan React. Fokus utama aplikasi saat ini adalah mempermudah pengguna melakukan proses masuk ke sistem sebelum melanjutkan ke alur berikutnya dalam aplikasi.
+SAKU SEHAT Frontend adalah antarmuka web untuk aplikasi SAKU SEHAT yang fokus pada pengalaman pengguna dalam mengelola keuangan pribadi. Project ini menyediakan alur autentikasi, dashboard keuangan, pencatatan transaksi, serta fitur pengelolaan pinjaman dengan desain modern berbasis Next.js dan React. Aplikasi ini dirancang untuk membantu pengguna masuk ke sistem, melihat kondisi keuangan mereka, dan mengelola aktivitas finansial secara lebih terstruktur.
+
+Dokumentasi ini memberikan gambaran umum mengenai fitur, struktur proyek, setup lokal, serta standar kontribusi yang digunakan dalam repository ini.
 
 ## Key Features
-- Halaman register dengan validasi input seperti nama, username, email, password, dan konfirmasi password.
-- Alur verifikasi akun menggunakan kode OTP yang dikirim ke email pengguna.
-- Halaman login dengan autentikasi berbasis identifier dan password.
-- Integrasi dengan backend melalui endpoint autentikasi menggunakan fetch API.
-- UI responsif dengan desain dark mode dan komponen modern.
-- Support konfigurasi API base URL melalui environment variable.
+- Alur registrasi pengguna dengan validasi input seperti nama lengkap, username, email, password, dan konfirmasi password.
+- Proses verifikasi akun melalui OTP untuk memastikan identitas pengguna.
+- Halaman login dengan alur sederhana dan dukungan penyimpanan token sementara untuk pengalaman demo.
+- Dashboard dengan ringkasan saldo, pemasukan, pengeluaran, pinjaman aktif, dan grafik keuangan.
+- Modul transaksi yang mencakup tampilan daftar transaksi, scan struk, dan tambah transaksi.
+- Modul kelola pinjaman yang mencakup daftar pinjaman, tambah pinjaman, dan kalkulator bunga.
+- UI responsif dengan desain dark mode dan komponen yang terorganisir untuk pengalaman pengguna yang konsisten.
 
 ## Preview
-Berikut adalah contoh endpoint yang digunakan oleh frontend untuk proses autentikasi.
+Berikut adalah contoh endpoint yang digunakan oleh frontend untuk berinteraksi dengan backend pada alur autentikasi.
 
 ### 1. Register
 Endpoint:
@@ -45,7 +48,7 @@ Contoh response:
 Validasi:
 - Password dan confirmPassword harus sama.
 - Email, username, dan password wajib diisi.
-- Frontend akan menampilkan pesan error jika registrasi gagal.
+- Frontend menampilkan pesan error jika registrasi gagal.
 
 ### 2. Verify OTP
 Endpoint:
@@ -70,32 +73,11 @@ Contoh response:
 ```
 
 Validasi:
-- Kode OTP wajib berisi 6 digit angka.
+- Kode OTP wajib berupa 6 digit angka.
 - Email dan OTP wajib diisi.
-- Jika OTP kadaluarsa, user bisa mengirim ulang OTP.
+- Jika OTP kadaluarsa, pengguna dapat meminta OTP baru.
 
-### 3. Resend OTP
-Endpoint:
-```http
-POST /api/auth/resend-otp
-```
-
-Contoh request:
-```json
-{
-  "email": "budi@example.com"
-}
-```
-
-Contoh response:
-```json
-{
-  "success": true,
-  "message": "Kode OTP baru telah dikirim ke email"
-}
-```
-
-### 4. Login
+### 3. Login
 Endpoint:
 ```http
 POST /api/auth/login
@@ -120,29 +102,31 @@ Contoh response:
 
 Validasi:
 - Identifier dan password wajib diisi.
-- Jika login gagal, frontend menampilkan pesan error dari backend.
+- Jika login gagal, frontend menampilkan pesan kesalahan dari backend.
 - Token disimpan ke localStorage setelah login berhasil.
 
 ## Project Structure
-Berikut struktur folder utama project:
+Struktur folder utama proyek ini adalah sebagai berikut:
 
 ```text
-app/                 # Routing dan halaman utama aplikasi Next.js
-components/         # Komponen UI reusable, termasuk auth flow
-  auth/              # Login, Register, Verify OTP
-public/             # Asset statis seperti gambar dan favicon
-services/           # Tempat menampung logika API / service layer (kosong/siap dikembangkan)
-next.config.ts      # Konfigurasi Next.js
-package.json        # Dependency dan script project
-.env                # Konfigurasi environment variable lokal
+app/                  # Halaman utama dan routing Next.js
+components/          # Komponen UI yang digunakan di seluruh aplikasi
+  auth/               # Komponen untuk register, login, OTP, profil, dan kondisi
+  main/               # Dashboard, grafik, sidebar, transaksi, dan pinjaman
+public/              # Asset statis seperti gambar dan ikon
+services/            # Tempat untuk logika API atau service layer
+next.config.ts       # Konfigurasi Next.js
+package.json         # Daftar dependency dan script project
+tsconfig.json        # Konfigurasi TypeScript
 ```
 
 Penjelasan folder penting:
-- app/page.tsx: mengatur alur halaman autentikasi utama.
-- components/auth/login.tsx: tampilan dan logika login.
-- components/auth/register.tsx: tampilan dan logika registrasi.
-- components/auth/verify-otp.tsx: tampilan dan logika verifikasi OTP.
-- .env: menyimpan URL backend yang dipakai oleh frontend.
+- app/page.tsx: mengatur navigasi antar tampilan berdasarkan mode seperti register, login, dashboard, transaksi, dan pinjaman.
+- components/auth/register.tsx: tampilan dan logika registrasi pengguna.
+- components/auth/login.tsx: tampilan dan logika login pengguna.
+- components/main/dashboard.tsx: halaman dashboard utama dengan ringkasan keuangan.
+- components/main/catatan-keuangan/: berisi modul transaksi dan pengelolaan pinjaman.
+- .env: berisi konfigurasi environment variable lokal seperti URL backend.
 
 ## Tech Stack
 Teknologi yang digunakan dalam project ini:
@@ -175,8 +159,8 @@ cd saku-sehat-frontend
 npm install
 ```
 
-### 3. Konfigurasi Environment Variable
-Buat file .env jika belum ada, lalu isi:
+### 3. Konfigurasi environment variable
+Buat file .env jika belum ada, lalu isi variabel berikut:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
@@ -203,6 +187,7 @@ Dokumentasi resmi teknologi yang digunakan:
 - TypeScript: https://www.typescriptlang.org/docs/
 - Tailwind CSS: https://tailwindcss.com/docs
 - Axios: https://axios-http.com/docs/intro
+- ESLint: https://eslint.org/docs/latest/
 
 ## Commit Format Standards
 Repository ini disarankan menggunakan format commit message yang konsisten seperti berikut:
@@ -217,6 +202,7 @@ feat(auth): add login page UI
 fix(otp): handle expired otp state
 docs(readme): update project documentation
 chore(deps): upgrade next.js to latest patch
+refactor(transactions): simplify transaction state flow
 ```
 
 Standar yang umum dipakai:

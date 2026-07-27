@@ -21,6 +21,9 @@ const urbanist = Urbanist({
 export const metadata: Metadata = {
   title: "Saku Sehat",
   description: "Saku Sehat App",
+  icons: {
+    icon: "/sakusehaticon.jpeg",
+  },
 };
 
 export default function RootLayout({
@@ -31,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${urbanist.variable} h-full antialiased`}
+      className={`${urbanist.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-urbanist">{children}</body>
     </html>
