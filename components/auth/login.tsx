@@ -5,9 +5,10 @@ import 'material-icons/iconfont/material-icons.css';
 
 interface LoginProps {
   onSwitchToRegister: () => void;
+  onLoginSuccess?: (data: any) => void;
 }
 
-export default function LoginPage({ onSwitchToRegister }: LoginProps) {
+export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginProps) {
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
@@ -21,6 +22,7 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
   const isLogin = true;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (error) setError("");
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -63,13 +65,15 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
       if (resData.data) {
         localStorage.setItem("token", resData.data);
       }
-      
-      console.log("Login Sukses, Token:", resData.data);
+
+      const userEmail = formData.identifier;
       setFormData({ identifier: "", password: "" });
 
       setTimeout(() => {
-        window.location.href = "/dashboard"; 
-      }, 1500);
+        if (onLoginSuccess) {
+          onLoginSuccess(userEmail);
+        }
+      }, 1000);
 
     } catch (err: any) {
       setError(err.message);
@@ -81,8 +85,7 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
   return (
     <div className="w-full min-h-screen px-8 py-12 flex flex-col justify-center bg-[#101828] relative overflow-hidden">
       <div className="absolute top-6 left-0 right-0 w-full px-8">
-        <div className="w-full"> 
-          
+        <div className="w-full "> 
           <div className="w-10 mb-5"> 
             <div 
               onClick={onSwitchToRegister}
@@ -151,7 +154,7 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
             )}
             {success && (
               <div className="p-3 mb-4 text-sm text-emerald-400 bg-emerald-950/40 border border-emerald-900 rounded-xl backdrop-blur-sm">
-                Login berhasil! Mengalihkan...
+                Login berhasil! Verifikasi OTP...
               </div>
             )}
 
@@ -159,7 +162,7 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
               
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold tracking-wider text-white">Username / Email</label>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-[#2EC4B6] focus-within:border-transparent transition-all">
                   <span className="material-icons text-gray-300 text-sm select-none">person</span>
                   <input 
                     type="text" 
@@ -175,7 +178,7 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
 
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold tracking-wider text-white">Password</label>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-[#2EC4B6] focus-within:border-transparent transition-all">
                   <span className="material-icons text-gray-300 text-sm select-none">lock</span>
                   <input 
                     type={showPassword ? "text" : "password"} 
@@ -202,7 +205,6 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
                 </div>
               </div>
               
-              {/* Checkbox Ingat Saya & Lupa Password */}
               <div className="flex items-center justify-between font-urbanist">
                 <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer select-none">
                   <input 
@@ -218,7 +220,6 @@ export default function LoginPage({ onSwitchToRegister }: LoginProps) {
                 </a>
               </div>
 
-              {/* Submit Button */}
               <button 
                 type="submit" 
                 disabled={loading}
