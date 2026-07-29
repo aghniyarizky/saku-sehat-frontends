@@ -80,11 +80,11 @@ function AuthContent() {
           onLoginSuccess={(data: any) => {
             const emailStr = typeof data === "string" ? data : data.email;
             if (emailStr) setRegisteredEmail(emailStr);
-            setStep("otp");
+            setStep("profile");
           }}
         />
       )}
-
+ 
       {step === "otp" && (
         <VerifyOTPComponent 
           email={registeredEmail} 
