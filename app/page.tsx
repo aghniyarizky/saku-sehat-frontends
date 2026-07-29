@@ -80,7 +80,7 @@ function AuthContent() {
           onLoginSuccess={(data: any) => {
             const emailStr = typeof data === "string" ? data : data.email;
             if (emailStr) setRegisteredEmail(emailStr);
-            setStep("profile");
+            setStep("dashboard");
           }}
         />
       )}
