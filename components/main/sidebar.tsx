@@ -42,16 +42,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         { name: "Target Nabung", icon: "adjust", href: "#" },
       ]
     },
-    { name: "Kalkulator Bunga", icon: "calculate", href: "#" },
+    { name: "Kalkulator Bunga", icon: "calculate", href: "?mode=kalkulator" },
     { 
       name: "Smart Assistant", 
       icon: "chat_bubble", 
       subItems: [
         { name: "AI Financial Coach", icon: "chat_bubble", href: "#" },
-        { name: "Cari Aman", icon: "shield", href: "#" },
+        { name: "Cari Aman", icon: "shield", href: "?mode=cariaman" },
       ]
     },
-    { name: "Before You Borrow", icon: "menu_book", href: "#" },
+    { name: "Before You Borrow", icon: "menu_book", href: "?mode=beforeyouborrow" },
     { name: "Settings", icon: "settings", href: "#" },
   ];
 

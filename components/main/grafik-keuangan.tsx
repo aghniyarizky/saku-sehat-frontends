@@ -2,7 +2,17 @@
 
 import { useState } from 'react';
 
-export default function NativeFinancialChart() {
+interface ChartDataPoint {
+  month: string;
+  pemasukan: number;
+  pengeluaran: number;
+}
+
+interface NativeFinancialChartProps {
+  data?: ChartDataPoint[];
+}
+
+export default function NativeFinancialChart({ data: dataProp }: NativeFinancialChartProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const getLast7Months = () => {
@@ -17,7 +27,8 @@ export default function NativeFinancialChart() {
 
   const labels = getLast7Months();
 
-  const data = [
+  // fallback dummy jika belum ada data asli dari BE
+  const dummyData: ChartDataPoint[] = [
     { month: labels[0], pemasukan: 3500000, pengeluaran: 2100000 },
     { month: labels[1], pemasukan: 4200000, pengeluaran: 2800000 },
     { month: labels[2], pemasukan: 3800000, pengeluaran: 3100000 },
@@ -26,6 +37,8 @@ export default function NativeFinancialChart() {
     { month: labels[5], pemasukan: 5500000, pengeluaran: 3000000 },
     { month: labels[6], pemasukan: 6100000, pengeluaran: 2700000 },
   ];
+
+  const data = dataProp && dataProp.length > 0 ? dataProp : dummyData;
 
   const width = 500;
   const height = 220;
