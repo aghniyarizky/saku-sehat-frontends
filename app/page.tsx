@@ -14,6 +14,14 @@ import TambahTransaksi from "@/components/main/catatan-keuangan/transaksi/tambah
 import Pinjaman from "@/components/main/catatan-keuangan/kelola-pinjaman/pinjaman";
 import TambahPinjaman from "@/components/main/catatan-keuangan/kelola-pinjaman/tambah-pinjaman";
 import KalkulatorBunga from "@/components/main/catatan-keuangan/kelola-pinjaman/kalkulator-bunga";
+import EditTransaksi from "@/components/main/catatan-keuangan/transaksi/[id]/page";
+import EditPinjaman from "@/components/main/catatan-keuangan/kelola-pinjaman/[id]/page";
+import Budgeting from "@/components/main/catatan-keuangan/budgeting/budgeting";
+import TambahBudgeting from "@/components/main/catatan-keuangan/budgeting/tambah-budgeting";
+import EditBudgeting from "@/components/main/catatan-keuangan/budgeting/[id]/page";
+import TargetNabung from "@/components/main/catatan-keuangan/target-nabung/target-nabung";
+import TambahTargetNabung from "@/components/main/catatan-keuangan/target-nabung/tambah-target";
+import EditTargetNabung from "@/components/main/catatan-keuangan/target-nabung/[id]/page";
 
 type StepType = 
   | "register" 
@@ -25,35 +33,59 @@ type StepType =
   | "transaksi" 
   | "scanstruk"
   | "tambahtransaksi"
+  | "edittransaksi"
   | "kelolapinjaman"
   | "tambahpinjaman"
-  | "kalkulator";
+  | "editpinjaman"
+  | "kalkulator"
+  | "budgeting"
+  | "tambahbudgeting"
+  | "editbudgeting"
+  | "targetnabung"
+  | "tambahtargetnabung"
+  | "edittargetnabung";
 
 function AuthContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const rawStep = searchParams.get("mode") || "register";
+  const rawStep = (searchParams.get("mode") || "").trim().toLowerCase();
   
-  let step: StepType = "register";
-  if (rawStep === "dashboard") {
-    step = "dashboard";
-  } else if (rawStep === "transaksi" || rawStep === "transaction") {
-    step = "transaksi";
-  } else if (rawStep === "scanstruk" || rawStep === "scan") {
-    step = "scanstruk";
-  } else if (rawStep === "tambahtransaksi" || rawStep === "tambah") { 
-    step = "tambahtransaksi";
-  } else if (rawStep === "kelolapinjaman" || rawStep === "pinjaman") { 
-    step = "kelolapinjaman";
-  } else if (rawStep === "tambahpinjaman" || rawStep === "tambahpeminjaman") {
-    step = "tambahpinjaman";
-  } else if (rawStep === "kalkulator") {
-    step = "kalkulator";
-  } else if (["register", "otp", "profile", "condition", "login"].includes(rawStep)) {
-    step = rawStep as StepType;
-  }
-  
+  const id = searchParams.get("id"); 
+  const transactionId = id; 
+  const pinjamanId = id; 
+  const budgetingId = id;
+  const targetNabungId = id;
+
+  const getStep = (): StepType => {
+    if (!rawStep) return "register";
+
+    if (rawStep === "dashboard") return "dashboard";
+    if (["transaksi", "transaction"].includes(rawStep)) return "transaksi";
+    if (["scanstruk", "scan"].includes(rawStep)) return "scanstruk";
+    if (["tambahtransaksi", "tambah"].includes(rawStep)) return "tambahtransaksi";
+    if (["edittransaksi", "edit-transaksi", "detailtransaksi"].includes(rawStep)) return "edittransaksi";
+    if (["kelolapinjaman", "pinjaman"].includes(rawStep)) return "kelolapinjaman";
+    if (["tambahpinjaman", "tambahpeminjaman"].includes(rawStep)) return "tambahpinjaman";
+    if (["editpinjaman", "edit-pinjaman", "detailpinjaman"].includes(rawStep)) return "editpinjaman";
+    if (rawStep === "kalkulator") return "kalkulator";
+    
+    if (["budgeting", "budget"].includes(rawStep)) return "budgeting";
+    if (["tambahbudgeting", "tambahbudget"].includes(rawStep)) return "tambahbudgeting";
+    if (["editbudgeting", "editbudget"].includes(rawStep)) return "editbudgeting";
+
+    if (["targetnabung", "target"].includes(rawStep)) return "targetnabung";
+    if (["tambahtargetnabung", "tambahtarget"].includes(rawStep)) return "tambahtargetnabung";
+    if (["edittargetnabung", "edittarget"].includes(rawStep)) return "edittargetnabung";
+
+    if (["register", "otp", "profile", "condition", "login"].includes(rawStep)) {
+      return rawStep as StepType;
+    }
+
+    return "register";
+  };
+
+  const step = getStep();
   const [registeredEmail, setRegisteredEmail] = useState("user@gmail.com");
 
   const setStep = (newStep: StepType) => {
@@ -84,7 +116,7 @@ function AuthContent() {
           }}
         />
       )}
- 
+
       {step === "otp" && (
         <VerifyOTPComponent 
           email={registeredEmail} 
@@ -117,6 +149,14 @@ function AuthContent() {
         <Transaksi 
           onSwitchToScan={() => setStep("scanstruk")} 
           onSwitchToAdd={() => setStep("tambahtransaksi")} 
+          onSwitchToEdit={(id: number | string) => router.push(`/?mode=edittransaksi&id=${id}`)}
+        />
+      )}
+
+      {step === "edittransaksi" && (
+        <EditTransaksi 
+          transactionId={transactionId}
+          onSwitchToTransaction={() => setStep("transaksi")} 
         />
       )}
 
@@ -140,11 +180,60 @@ function AuthContent() {
         <Pinjaman 
           onSwitchToKalkulator={() => setStep("kalkulator")}
           onSwitchToAddPinjaman={() => setStep("tambahpinjaman")}
+          onSwitchToEdit={(id: number | string) => router.push(`/?mode=editpinjaman&id=${id}`)}
         />
       )}
 
       {step === "tambahpinjaman" && <TambahPinjaman onSwitchToKelolaPinjaman={() => setStep("kelolapinjaman")} />}
+
+      {step === "editpinjaman" && (
+        <EditPinjaman 
+          pinjamanId={pinjamanId}
+          onSwitchToTransaction={() => setStep("kelolapinjaman")}
+        />
+      )}
+
       {step === "kalkulator" && <KalkulatorBunga />}
+
+      {step === "budgeting" && (
+        <Budgeting 
+          onSwitchToAddBudget={() => setStep("tambahbudgeting")}
+          onSwitchToEditBudget={(id: number | string) => router.push(`/?mode=editbudgeting&id=${id}`)}
+        />
+      )}
+
+      {step === "tambahbudgeting" && (
+        <TambahBudgeting 
+          onSwitchToBudgeting={() => setStep("budgeting")} 
+        />
+      )}
+
+      {step === "editbudgeting" && (
+        <EditBudgeting 
+          budgetingId={budgetingId}
+          onSwitchToBudgeting={() => setStep("budgeting")}
+        />
+      )}
+
+      {step === "targetnabung" && (
+        <TargetNabung 
+          onSwitchToAddTarget={() => setStep("tambahtargetnabung")}
+          onSwitchToEditTarget={(id: number | string) => router.push(`/?mode=edittargetnabung&id=${id}`)}
+        />
+      )}
+
+      {step === "tambahtargetnabung" && (
+        <TambahTargetNabung 
+          onSwitchToTargetNabung={() => setStep("targetnabung")}
+        />
+      )}
+
+      {step === "edittargetnabung" && (
+        <EditTargetNabung 
+          targetId={targetNabungId}
+          onSwitchToTargetNabung={() => setStep("targetnabung")}
+        />
+      )}
     </div>
   );
 }

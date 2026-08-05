@@ -9,6 +9,7 @@ import NavCatatan from '../nav-catatan';
 interface PinjamanProps {
   onSwitchToKalkulator?: () => void;
   onSwitchToAddPinjaman?: () => void;
+  onSwitchToEdit?: (id: number | string) => void;
 }
 
 const pinjaman = [
@@ -36,7 +37,7 @@ const pinjaman = [
   },
 ];
 
-export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman }: PinjamanProps) {
+export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman, onSwitchToEdit }: PinjamanProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -46,7 +47,6 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman }
         onClose={() => setIsSidebarOpen(false)} 
       />
 
-      {/* Header */}
       <div className="w-full flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-2.5">
           <button 
@@ -77,7 +77,6 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman }
 
       <NavCatatan />
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white/5 border border-gray-700/60 rounded-2xl p-4 py-5 w-full">
           <div className="flex flex-row items-start justify-between">
@@ -116,12 +115,10 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman }
         </div>
       </div>
 
-      {/* List Section */}
       <div className="p-1 flex flex-col gap-4">
         <div className="flex flex-col">
-          <div className="text-lg font-semibold mb-2">Pinjaman Saya</div>
+          <div className="text-lg font-semibold mb-2">Pinjaman Saya ({pinjaman.length})</div>
 
-          {/* Action Buttons */}
           <div className="flex flex-row items-center gap-2 w-fit">
             {onSwitchToKalkulator ? (
               <button
@@ -193,12 +190,15 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman }
 
                   <Link 
                     href={`/?mode=detailpinjaman&id=${item.id}`}
-                    className="flex items-center text-sm font-semibold text-[#2EC4B6] hover:underline cursor-pointer ml-auto gap-1"
+                    className="flex items-center text-sm font-semibold text-white/50 hover:text-white cursor-pointer ml-auto gap-1"
                   >
-                    <span>Kelola</span>
-                    <span className="material-icons select-none leading-none text-[13px]">
-                      arrow_forward
-                    </span>
+                    <button 
+                            type="button"
+                            onClick={() => onSwitchToEdit?.(item.id)}
+                            className="text-white/40 hover:text-white transition-colors cursor-pointer p-1"
+                          >
+                            <span className="material-icons text-lg">edit</span>
+                          </button>
                   </Link>
                 </div>
               </div>
