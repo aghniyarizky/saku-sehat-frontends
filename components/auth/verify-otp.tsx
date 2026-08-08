@@ -51,6 +51,16 @@ export default function VerifyOTPComponent({ email, onSuccess, onBackToRegister 
       const resData = await response.json();
       if (!response.ok) throw new Error(resData.message || "Verifikasi OTP gagal.");
 
+      // 🟢 PERBAIKAN: token dari verify-otp SEBELUMNYA gak pernah disimpan
+      // sama sekali. Backend mengembalikan token JWT di field "data"
+      // (string langsung, bukan object) — ini yang dipakai untuk semua
+      // request selanjutnya yang butuh auth (termasuk profile-onboarding).
+      // Tanpa baris ini, localStorage tetap kosong/pakai token basi dari
+      // sesi lama, sehingga request berikutnya ditolak "invalid user".
+      if (resData.data) {
+        localStorage.setItem("token", resData.data);
+      }
+
       setSuccess("Akun berhasil diaktifkan! Mengalihkan...");
       setTimeout(() => {
         onSuccess();
@@ -86,7 +96,6 @@ export default function VerifyOTPComponent({ email, onSuccess, onBackToRegister 
       setLoading(false);
     }
   };
-
   return (
     <div className="w-full min-h-screen px-8 py-12 flex flex-col justify-center bg-[#101828] relative overflow-hidden">
       

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import 'material-icons/iconfont/material-icons.css';
 
@@ -25,10 +25,12 @@ interface MenuItem {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const currentMode = searchParams.get("mode") || "dashboard";
 
   const [activeMenu, setActiveMenu] = useState<string>("Dashboard");
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const menuItems: MenuItem[] = [
     { name: "Dashboard", icon: "dashboard", href: "?mode=dashboard" },
@@ -42,16 +44,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         { name: "Target Nabung", icon: "adjust", href: "#" },
       ]
     },
-    { name: "Kalkulator Bunga", icon: "calculate", href: "#" },
+    { name: "Kalkulator Bunga", icon: "calculate", href: "?mode=kalkulator" },
     { 
       name: "Smart Assistant", 
       icon: "chat_bubble", 
       subItems: [
         { name: "AI Financial Coach", icon: "chat_bubble", href: "#" },
-        { name: "Cari Aman", icon: "shield", href: "#" },
+        { name: "Cari Aman", icon: "shield", href: "?mode=cariaman" },
       ]
     },
-    { name: "Before You Borrow", icon: "menu_book", href: "#" },
+    { name: "Before You Borrow", icon: "menu_book", href: "?mode=beforeyouborrow" },
     { name: "Settings", icon: "settings", href: "#" },
   ];
 
@@ -81,6 +83,34 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const toggleSubmenu = (name: string) => {
     setOpenSubmenu(prev => prev === name ? null : name);
+  };
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+
+    const token = localStorage.getItem("token");
+
+    try {
+      if (token) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+    } catch (error) {
+      // Tetap lanjut hapus token walau request logout ke server gagal
+      console.error("Logout request failed:", error);
+    } finally {
+      localStorage.removeItem("token");
+      setIsLoggingOut(false);
+      onClose();
+      router.push("/?mode=login");
+      router.refresh();
+    }
   };
 
   return (
@@ -220,9 +250,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
               {/* logout */}
               <div className="pt-4 border-t border-gray-800/80 mt-4">
-                <button className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer">
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   <span className="material-icons text-xl select-none leading-none">logout</span>
-                  <span className="text-sm font-semibold">Log Out</span>
+                  <span className="text-sm font-semibold">
+                    {isLoggingOut ? "Logging out..." : "Log Out"}
+                  </span>
                 </button>
               </div>
             </div>

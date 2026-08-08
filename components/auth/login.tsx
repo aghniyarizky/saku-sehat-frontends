@@ -51,12 +51,15 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
 
       if (!response.ok) {
         console.error("ISI ERROR LOGIN DARI SERVER:", teksResponse);
+
+        let message = "Terjadi kesalahan pada server backend.";
         try {
           const parsedError = JSON.parse(teksResponse);
-          throw new Error(parsedError.message || "Gagal masuk.");
+          message = parsedError.message || message;
         } catch {
-          throw new Error("Terjadi kesalahan pada server backend.");
         }
+
+        throw new Error(message);
       }
 
       const resData = JSON.parse(teksResponse);

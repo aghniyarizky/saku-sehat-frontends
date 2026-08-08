@@ -17,31 +17,55 @@ export default function ConditionComponent({
   onSwitchToProfileAuth 
 }: ConditionProps) {
   const [loading, setLoading] = useState(false);
-  const [income, setIncome] = useState("");
+  const [error, setError] = useState("");
+  const [saldoSekarang, setSaldoSekarang] = useState("");
   const [sumberPemasukan, setSumberPemasukan] = useState("");
 
   const sumberPemasukanList = [
-    { id: "1", name: "Orang Tua/Wali" },
-    { id: "2", name: "Beasiswa" },
-    { id: "3", name: "Gaji Part Time" },
-    { id: "4", name: "Magang" },
-    { id: "5", name: "Freelance" },
-    { id: "6", name: "Usaha/Bisnis" },
-    { id: "7", name: "Investasi" },
-    { id: "8", name: "Pasangan/Keluarga" },
-    { id: "9", name: "Lainnya" },
+    "Uang Saku",
+    "Part-time",
+    "Freelance",
+    "Beasiswa",
+    "Bisnis Kecil",
+    "Lainnya",
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setLoading(true);
 
     try {
-      setTimeout(() => {
-        setLoading(false);
-        onNext();
-      }, 1000);
-    } catch (err) {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/onboarding`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          saldoSekarang: Number(saldoSekarang),
+          sumberPemasukan,
+        }),
+      });
+
+      const teksResponse = await response.text();
+
+      if (!response.ok) {
+        console.error("ISI ERROR SIMPAN KONDISI KEUANGAN DARI SERVER:", teksResponse);
+        try {
+          const parsedError = JSON.parse(teksResponse);
+          throw new Error(parsedError.message || "Gagal menyimpan data.");
+        } catch {
+          throw new Error("Terjadi kesalahan pada server backend.");
+        }
+      }
+
+      setLoading(false);
+      onNext();
+    } catch (err: any) {
+      setError(err.message);
       setLoading(false);
     }
   };
@@ -87,19 +111,26 @@ export default function ConditionComponent({
           </p>
         </div>
 
+        {error && (
+          <div className="p-3 mt-4 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
+            {error}
+          </div>
+        )}
+
         <form id="condition-form" onSubmit={handleSubmit} className="w-full flex flex-col gap-4 my-6">
           
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold tracking-wider text-white">
-              Uang Saku Perbulan
+              Saldo Sekarang
             </label>
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-[#2EC4B6] focus-within:border-transparent transition-all">
+              <span className="text-xs text-gray-400 select-none">Rp</span>
               <input 
                 type="number" 
-                name="income" 
-                value={income}
-                onChange={(e) => setIncome(e.target.value)}
-                placeholder="Contoh: 5000000" 
+                name="saldoSekarang" 
+                value={saldoSekarang}
+                onChange={(e) => setSaldoSekarang(e.target.value)}
+                placeholder="Contoh: 500.000" 
                 className="w-full bg-transparent text-xs text-white placeholder-gray-400 focus:outline-none"
                 required 
               />
@@ -124,8 +155,8 @@ export default function ConditionComponent({
                   Pilih Sumber Pemasukan
                 </option>
                 {sumberPemasukanList.map((item) => (
-                  <option key={item.id} value={item.name} className="bg-[#101828] text-white">
-                    {item.name}
+                  <option key={item} value={item} className="bg-[#101828] text-white">
+                    {item}
                   </option>
                 ))}
               </select>

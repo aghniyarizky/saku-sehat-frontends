@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from '../../sidebar';
@@ -12,7 +13,19 @@ interface PinjamanProps {
   onSwitchToEdit?: (id: number | string) => void;
 }
 
-const pinjaman = [
+interface PinjamanItem {
+  id: string;
+  name: string;
+  jenis: string;
+  bunga: string;
+  awal: number;
+  cicilan: number;
+  sisa: number;
+  tempo: string;
+  progress: string; 
+}
+
+const initialPinjamanData: PinjamanItem[] = [
   { 
     id: "paylater", 
     name: "Shopee PayLater", 
@@ -39,6 +52,49 @@ const pinjaman = [
 
 export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman, onSwitchToEdit }: PinjamanProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
+
+  const [ringkasan, setRingkasan] = useState({
+    belumDibayar: 0,
+    sudahDibayar: 0,
+    kewajibanPerbulan: 0
+  });
+  
+  const [daftarPinjaman, setDaftarPinjaman] = useState<PinjamanItem[]>(initialPinjamanData);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchPinjamanData = async () => {
+      setLoading(true);
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/pinjaman`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data pinjaman.");
+        }
+
+        const result = await response.json();
+
+        setDaftarPinjaman(result.pinjaman || []);
+        setRingkasan(result.ringkasan || { belumDibayar: 0, sudahDibayar: 0, kewajibanPerbulan: 0 });
+        setLoading(false);
+      } catch (err: any) { 
+        setError(err.message || "Terjadi kesalahan saat mengambil data pinjaman.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPinjamanData();
+  }, []);
 
   return (
     <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
@@ -85,7 +141,7 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman, 
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">Rp1.800.000</div>
+            <div className="text-xl font-extrabold">Rp{ringkasan.belumDibayar.toLocaleString('id-ID')}</div>
             <div className="text-sm text-white/40 font-semibold pt-2">Belum dibayar</div>
           </div>
         </div>
@@ -97,7 +153,7 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman, 
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">Rp1.500.000</div>
+            <div className="text-xl font-extrabold">Rp{ringkasan.sudahDibayar.toLocaleString('id-ID')}</div>
             <div className="text-sm text-white/40 font-semibold pt-2">Sudah dibayar</div>
           </div>
         </div>
@@ -109,7 +165,7 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman, 
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">Rp500.000</div>
+            <div className="text-xl font-extrabold">Rp{ringkasan.kewajibanPerbulan.toLocaleString('id-ID')}</div>
             <div className="text-sm text-white/40 font-semibold pt-2">Kewajiban Perbulan</div>
           </div>
         </div>
@@ -117,7 +173,7 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman, 
 
       <div className="p-1 flex flex-col gap-4">
         <div className="flex flex-col">
-          <div className="text-lg font-semibold mb-2">Pinjaman Saya ({pinjaman.length})</div>
+          <div className="text-lg font-semibold mb-2">Pinjaman Saya ({daftarPinjaman.length})</div>
 
           <div className="flex flex-row items-center gap-2 w-fit">
             {onSwitchToKalkulator ? (
@@ -169,7 +225,7 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman, 
         </div>
 
         <div className="flex flex-col gap-3 mt-1">
-          {pinjaman.map((item) => (
+          {daftarPinjaman.map((item) => (
             <div 
               key={item.id} 
               className="bg-white/5 border border-gray-700/60 rounded-2xl p-4 flex flex-col gap-3"
@@ -188,18 +244,15 @@ export default function Pinjaman({ onSwitchToKalkulator, onSwitchToAddPinjaman, 
                     </div>
                   </div>
 
-                  <Link 
-                    href={`/?mode=detailpinjaman&id=${item.id}`}
-                    className="flex items-center text-sm font-semibold text-white/50 hover:text-white cursor-pointer ml-auto gap-1"
-                  >
+                  <div className="flex items-center text-sm font-semibold text-white/50 hover:text-white cursor-pointer ml-auto gap-1">
                     <button 
-                            type="button"
-                            onClick={() => onSwitchToEdit?.(item.id)}
-                            className="text-white/40 hover:text-white transition-colors cursor-pointer p-1"
-                          >
-                            <span className="material-icons text-lg">edit</span>
-                          </button>
-                  </Link>
+                      type="button"
+                      onClick={() => onSwitchToEdit?.(item.id)}
+                      className="text-white/40 hover:text-white transition-colors cursor-pointer p-1"
+                    >
+                      <span className="material-icons text-lg">edit</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 

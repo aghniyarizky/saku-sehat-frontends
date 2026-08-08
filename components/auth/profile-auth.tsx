@@ -3,9 +3,11 @@
 import { useState } from "react";
 import 'material-icons/iconfont/material-icons.css';
 
+const DEFAULT_AVATAR = "https://api.dicebear.com/7.x/bottts/svg?seed=sakusehat"; 
+
 interface ProfileAuthProps {
   email: string;
-  onNext: () => void;
+  onNext: (fotoProfilUrl: string) => void;
   onSkip: () => void;
   onSwitchToLogin: () => void;
 }
@@ -35,13 +37,19 @@ export default function ProfileAuthComponent({
     setLoading(true);
 
     try {
+      const finalFoto = imagePreview || DEFAULT_AVATAR;
+
       setTimeout(() => {
         setLoading(false);
-        onNext(); 
-      }, 1000);
+        onNext(finalFoto); 
+      }, 500);
     } catch (err) {
       setLoading(false);
     }
+  };
+
+  const handleSkip = () => {
+    onNext(DEFAULT_AVATAR);
   };
 
   return (
@@ -49,21 +57,21 @@ export default function ProfileAuthComponent({
       <div className="absolute top-6 left-0 right-0 w-full px-8">
         <div className="w-full">
             <div className="w-10 h-10 mb-4"> 
-            <div 
-                onClick={onSwitchToLogin}
-                className="flex items-center justify-center w-full h-full bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer hover:bg-gray-700 transition-colors"
-            >
-                <span className="material-icons text-lg text-white">arrow_back</span>
-            </div>
+              <div 
+                  onClick={onSwitchToLogin}
+                  className="flex items-center justify-center w-full h-full bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer hover:bg-gray-700 transition-colors"
+              >
+                  <span className="material-icons text-lg text-white">arrow_back</span>
+              </div>
             </div>
 
             <div className="mt-6">
                 <div className="w-full flex justify-between items-center gap-1 mb-2">
                     <div className="w-1/2">
-                    <div className="p-1 bg-[#2EC4B6] rounded-full"></div>
+                      <div className="p-1 bg-[#2EC4B6] rounded-full"></div>
                     </div>
                     <div className="w-1/2">
-                    <div className="p-1 bg-white rounded-full"></div>
+                      <div className="p-1 bg-white rounded-full"></div>
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -73,17 +81,17 @@ export default function ProfileAuthComponent({
             </div>
 
             <div className="w-full text-start mt-8">
-            <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-3xl font-extrabold tracking-tight leading-snug">
-                Tambah{" "}
-                <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent">
-                Foto Profil
-                </span>
-            </h2>
+              <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-3xl font-extrabold tracking-tight leading-snug">
+                  Tambah{" "}
+                  <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent">
+                  Foto Profil
+                  </span>
+              </h2>
 
-            <p className="text-md mt-2 text-gray-300 font-semibold leading-relaxed">
-                Tambahin foto profil biar akunmu lebih personal.<br />
-                Bisa dilewati dan diubah kapan aja.
-            </p>
+              <p className="text-md mt-2 text-gray-300 font-semibold leading-relaxed">
+                  Tambahin foto profil biar akunmu lebih personal.<br />
+                  Bisa dilewati dan diubah kapan aja.
+              </p>
             </div>
         </div>
       </div>
@@ -135,7 +143,7 @@ export default function ProfileAuthComponent({
 
         <button
           type="button"
-          onClick={onSkip}
+          onClick={handleSkip}
           className="w-full py-3 text-sm text-[#2EC4B6] bg-transparent border border-[#2EC4B6] hover:border-gray-400 font-semibold rounded-full transition-all cursor-pointer"
         >
           Lewati
