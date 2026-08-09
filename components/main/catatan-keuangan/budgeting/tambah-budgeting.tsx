@@ -11,24 +11,82 @@ interface TambahBudgetingProps {
 export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgetingProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [kategoriBudget, setKategoriBudget] = useState("");
+  const [kategoriSelect, setKategoriSelect] = useState("");
+  const [kategoriCustom, setKategoriCustom] = useState("");
   const [batasBulan, setBatasBulan] = useState("");
   const [tanggalMulai, setTanggalMulai] = useState("");
   const [tanggalSelesai, setTanggalSelesai] = useState("");
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const jenisOptions = [
-    { id: "uangsaku", name: "Uang Saku" },
-    { id: "pendidikan", name: "Pendidikan" },
+    { id: "Makanan", name: "Makanan & Minuman" },
+    { id: "Transportasi", name: "Transportasi / Bensin" },
+    { id: "Uang Saku", name: "Uang Saku" },
+    { id: "Pendidikan", name: "Pendidikan / Kuliah" },
+    { id: "Belanja", name: "Belanja / kebutuhan" },
+    { id: "Hiburan", name: "Hiburan / Game" },
+    { id: "Tagihan", name: "Tagihan / Listrik / Air" },
+    { id: "Lainnya", name: "Lainnya (Ketik Manual)" },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      kategoriBudget,
-      batasBulan,
-      tanggalMulai,
-      tanggalSelesai,
-    });
+    setError("");
+
+    const kategoriFinal = kategoriSelect === "Lainnya" ? kategoriCustom : kategoriSelect;
+
+    if (!kategoriFinal.trim()) {
+      setError("Silakan pilih atau isi Kategori Budget.");
+      return;
+    }
+    if (!batasBulan || Number(batasBulan) <= 0) {
+      setError("Batas per Bulan harus lebih besar dari 0.");
+      return;
+    }
+    if (!tanggalMulai || !tanggalSelesai) {
+      setError("Tanggal Mulai dan Tanggal Selesai wajib diisi.");
+      return;
+    }
+    if (new Date(tanggalSelesai) <= new Date(tanggalMulai)) {
+      setError("Tanggal Selesai harus setelah Tanggal Mulai.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+      const payload = {
+        Kategori_Budget: kategoriFinal,
+        Batas_PerBulan: Number(batasBulan),
+        Tanggal_Mulai: tanggalMulai,
+        Tanggal_Selesai: tanggalSelesai,
+      };
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/budgeting/tambah-budget`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Gagal membuat budget baru.");
+      }
+
+      onSwitchToBudgeting();
+    } catch (err: any) {
+      setError(err.message || "Terjadi kesalahan saat menyimpan budget.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,18 +129,25 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
         <div className="text-lg font-semibold leading-none">Tambah Budget</div>
       </div>
 
+      {error && (
+        <div className="p-3 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="w-full space-y-4">
         <div className="border border-white/10 rounded-3xl bg-white/5 p-5">
           <div className="flex flex-col gap-4">
             
+            {/* Kategori Budget */}
             <div>
               <label className="text-xs text-gray-300 mb-1 block font-semibold">Kategori Budget</label>
               <div className="relative">
                 <select 
-                  value={kategoriBudget}
-                  onChange={(e) => setKategoriBudget(e.target.value)}
+                  value={kategoriSelect}
+                  onChange={(e) => setKategoriSelect(e.target.value)}
                   className={`appearance-none border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
-                    kategoriBudget === "" ? "text-white/50" : "text-white"
+                    kategoriSelect === "" ? "text-white/50" : "text-white"
                   }`}
                 >
                   <option value="" disabled hidden>Pilih Kategori Budget</option>
@@ -96,19 +161,31 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
                   expand_more
                 </span>
               </div>
+
+              {kategoriSelect === "Lainnya" && (
+                <input 
+                  type="text"
+                  value={kategoriCustom}
+                  onChange={(e) => setKategoriCustom(e.target.value)}
+                  className="mt-2 border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                  placeholder="Ketikkan nama kategori..."
+                />
+              )}
             </div>
 
+            {/* Batas per Bulan */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Batas per Bulan</label>
+              <label className="text-xs text-gray-300 mb-1 block font-semibold">Batas per Bulan (Rp)</label>
               <input 
                 type="number"
                 value={batasBulan}
                 onChange={(e) => setBatasBulan(e.target.value)}
                 className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
-                placeholder="Rp  Contoh: 3000000"
+                placeholder="Contoh: 500000"
               />
             </div>
 
+            {/* Tanggal Mulai */}
             <div>
               <label className="text-xs text-gray-300 mb-1 block font-semibold">Tanggal Mulai</label>
               <input 
@@ -119,6 +196,7 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
               />
             </div>
 
+            {/* Tanggal Selesai */}
             <div>
               <label className="text-xs text-gray-300 mb-1 block font-semibold">Tanggal Selesai</label>
               <input 
@@ -128,14 +206,16 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
                 className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
               />
             </div>
+
           </div>
         </div>
 
         <button 
           type="submit"
-          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
+          disabled={loading}
+          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] disabled:bg-[#2EC4B6]/50 p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
         >
-          Simpan
+          {loading ? "Menyimpan..." : "Simpan"}
         </button>
       </form>
     </div>

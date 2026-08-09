@@ -65,8 +65,17 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
       const resData = JSON.parse(teksResponse);
       setSuccess(true);
       
+      //Simpan Token & User Identifier
       if (resData.data) {
         localStorage.setItem("token", resData.data);
+      }
+
+      //Simpan Username/Identifier agar dibaca Dashboard
+      const loggedInUser = resData.user?.username || resData.username || formData.identifier;
+      localStorage.setItem("username", loggedInUser);
+
+      if (resData.user) {
+        localStorage.setItem("user", JSON.stringify(resData.user));
       }
 
       const userEmail = formData.identifier;
@@ -78,8 +87,9 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
         }
       }, 1000);
 
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorObj = err as Error;
+      setError(errorObj.message);
     } finally {
       setLoading(false);
     }
@@ -157,7 +167,7 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
             )}
             {success && (
               <div className="p-3 mb-4 text-sm text-emerald-400 bg-emerald-950/40 border border-emerald-900 rounded-xl backdrop-blur-sm">
-                Login berhasil! Verifikasi OTP...
+                Login berhasil! Mengalihkan ke dashboard...
               </div>
             )}
 

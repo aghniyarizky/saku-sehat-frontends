@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: "Saku Sehat",
   description: "Saku Sehat App",
   icons: {
-    icon: "/sakusehaticon.jpeg",
+    icon: "/sakusehaticon-removebg.png",
   },
 };
 

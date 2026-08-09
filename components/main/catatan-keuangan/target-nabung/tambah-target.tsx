@@ -14,10 +14,13 @@ export default function TambahTargetNabung({
 }: TambahTargetNabungProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [selectedIcon, setSelectedIcon] = useState("target");
+  const [selectedIcon, setSelectedIcon] = useState("🎯");
   const [namaTarget, setNamaTarget] = useState("");
   const [nominal, setNominal] = useState("");
   const [deadlineTarget, setDeadlineTarget] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const iconsList = [
     { id: "target", label: "🎯" },
@@ -34,15 +37,60 @@ export default function TambahTargetNabung({
     { id: "graduation", label: "🎓" },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      selectedIcon,
-      namaTarget,
-      nominal,
-      deadlineTarget,
-    });
-    onSwitchToTargetNabung();
+    setError("");
+
+    if (!namaTarget.trim()) {
+      setError("Silakan isi Nama Target.");
+      return;
+    }
+    if (!nominal || Number(nominal) <= 0) {
+      setError("Target Nominal harus lebih dari 0.");
+      return;
+    }
+    if (!deadlineTarget) {
+      setError("Silakan pilih Deadline Target.");
+      return;
+    }
+    if (new Date(deadlineTarget) <= new Date()) {
+      setError("Deadline Target harus di masa mendatang.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+      const payload = {
+        icon: selectedIcon,
+        namaTarget,
+        targetNominal: Number(nominal),
+        deadlineTarget,
+      };
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/target-tabung/tambah-target`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Gagal membuat target tabung baru.");
+      }
+
+      onSwitchToTargetNabung();
+    } catch (err: any) {
+      setError(err.message || "Terjadi kesalahan saat menyimpan target tabung.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -91,19 +139,26 @@ export default function TambahTargetNabung({
         <div className="text-lg font-semibold leading-none">Tambah Target Nabung</div>
       </div>
 
+      {error && (
+        <div className="p-3 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="w-full space-y-6">
         <div className="border border-white/10 rounded-3xl bg-white/5 p-5 flex flex-col gap-5">
           
+          {/* Icon Selector */}
           <div className="flex flex-col gap-2.5">
             <label className="text-xs text-gray-300 font-semibold">Icon</label>
             <div className="grid grid-cols-6 gap-3">
               {iconsList.map((item) => {
-                const isSelected = selectedIcon === item.id;
+                const isSelected = selectedIcon === item.label;
                 return (
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => setSelectedIcon(item.id)}
+                    onClick={() => setSelectedIcon(item.label)}
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all cursor-pointer ${
                       isSelected 
                         ? "bg-white/10 border-2 border-[#2EC4B6]" 
@@ -131,19 +186,21 @@ export default function TambahTargetNabung({
             />
           </div>
 
+          {/* Nominal */}
           <div>
             <label className="text-xs text-gray-300 mb-1.5 block font-semibold">
-              Nominal
+              Target Nominal (Rp)
             </label>
             <input 
               type="number"
               value={nominal}
               onChange={(e) => setNominal(e.target.value)}
               className="border border-white/15 rounded-full w-full text-xs px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/40 text-white"
-              placeholder="Rp  Contoh: 5.000.000"
+              placeholder="Contoh: 5000000"
             />
           </div>
 
+          {/* Deadline Target */}
           <div>
             <label className="text-xs text-gray-300 mb-1.5 block font-semibold">
               Deadline Target
@@ -160,9 +217,10 @@ export default function TambahTargetNabung({
 
         <button 
           type="submit"
-          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
+          disabled={loading}
+          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] disabled:bg-[#2EC4B6]/50 p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
         >
-          Simpan
+          {loading ? "Menyimpan..." : "Simpan"}
         </button>
       </form>
     </div>

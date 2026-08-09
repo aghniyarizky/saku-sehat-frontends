@@ -12,10 +12,20 @@ interface TambahTransaksiProps {
   onSwitchToAdd?: () => void;
 }
 
-export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan, onSwitchToAdd }: TambahTransaksiProps) {
+export default function TambahTransaksi({ 
+  onSwitchToTransaction, 
+  onSwitchToScan, 
+  onSwitchToAdd 
+}: TambahTransaksiProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
   const [transactionType, setTransactionType] = useState<'pengeluaran' | 'pemasukan'>('pengeluaran');
+
+  // Callback saat pembuatan transaksi berhasil disimpan
+  const handleSuccessSave = () => {
+    if (onSwitchToTransaction) {
+      onSwitchToTransaction();
+    }
+  };
 
   return (
     <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
@@ -24,7 +34,7 @@ export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan,
         onClose={() => setIsSidebarOpen(false)} 
       />
     
-      {/* Header */}
+      {/* Header Utama */}
       <div className="w-full flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-2.5">
           <button 
@@ -47,6 +57,7 @@ export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan,
         </div>
       </div>
 
+      {/* Title & Back Button */}
       <div className="flex flex-row gap-5 items-center">
         <button 
           type="button"
@@ -58,6 +69,7 @@ export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan,
         <div className="text-lg font-semibold leading-none">Tambah Transaksi</div>
       </div>
 
+      {/* Switch Input Mode: Scan Struk vs Manual */}
       <div className="flex flex-row gap-2 justify-center">
         <button
           type="button"
@@ -88,6 +100,7 @@ export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan,
         </button>
       </div>
 
+      {/* Tab Selector: Pengeluaran vs Pemasukan */}
       <div className="flex flex-row w-full gap-2 justify-center text-center px-2">
         <button
           type="button"
@@ -130,8 +143,12 @@ export default function TambahTransaksi({ onSwitchToTransaction, onSwitchToScan,
         </button>
       </div>
 
-        {transactionType === 'pengeluaran' ? ( <Pengeluaran />) : (  <Pemasukan />  )}
+      {/* Render Form Berdasarkan Tab Active & Forwarding onSuccess Callback */}
+      {transactionType === 'pengeluaran' ? (
+        <Pengeluaran onSuccess={handleSuccessSave} />
+      ) : (
+        <Pemasukan onSuccess={handleSuccessSave} />
+      )}
     </div>
-
   );
 }

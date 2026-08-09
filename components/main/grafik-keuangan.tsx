@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ChartDataPoint {
   month: string;
@@ -14,30 +14,83 @@ interface NativeFinancialChartProps {
 
 export default function NativeFinancialChart({ data: dataProp }: NativeFinancialChartProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const getLast7Months = () => {
-    const months = [];
+  const getLast7MonthsConfig = () => {
+    const list = [];
     const date = new Date();
     for (let i = 6; i >= 0; i--) {
       const d = new Date(date.getFullYear(), date.getMonth() - i, 1);
-      months.push(d.toLocaleString('id-ID', { month: 'short' }));
+      list.push({
+        label: d.toLocaleString('id-ID', { month: 'short' }),
+        year: d.getFullYear(),
+        monthIndex: d.getMonth(),
+      });
     }
-    return months;
+    return list;
   };
 
-  const labels = getLast7Months();
+  useEffect(() => {
+    if (dataProp && dataProp.length > 0) {
+      setChartData(dataProp);
+      setLoading(false);
+      return;
+    }
 
-  const dummyData: ChartDataPoint[] = [
-    { month: labels[0], pemasukan: 3500000, pengeluaran: 2100000 },
-    { month: labels[1], pemasukan: 4200000, pengeluaran: 2800000 },
-    { month: labels[2], pemasukan: 3800000, pengeluaran: 3100000 },
-    { month: labels[3], pemasukan: 5000000, pengeluaran: 2500000 },
-    { month: labels[4], pemasukan: 4700000, pengeluaran: 3900000 },
-    { month: labels[5], pemasukan: 5500000, pengeluaran: 3000000 },
-    { month: labels[6], pemasukan: 6100000, pengeluaran: 2700000 },
-  ];
+    const fetchRealTimeChartData = async () => {
+      setLoading(true);
+      try {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
 
-  const data = dataProp && dataProp.length > 0 ? dataProp : dummyData;
+        if (!response.ok) {
+          throw new Error('Gagal memuat data grafik');
+        }
+
+        const resData = await response.json();
+        const rawTransactions = resData.data || [];
+
+        const monthsConfig = getLast7MonthsConfig();
+
+        const compiledData: ChartDataPoint[] = monthsConfig.map((m) => {
+          let totalPemasukan = 0;
+          let totalPengeluaran = 0;
+
+          rawTransactions.forEach((tx: any) => {
+            const txDate = new Date(tx.tanggal);
+            if (txDate.getFullYear() === m.year && txDate.getMonth() === m.monthIndex) {
+              if (tx.tipe === 'pemasukan') {
+                totalPemasukan += Number(tx.nominal || 0);
+              } else if (tx.tipe === 'pengeluaran') {
+                totalPengeluaran += Number(tx.nominal || 0);
+              }
+            }
+          });
+
+          return {
+            month: m.label,
+            pemasukan: totalPemasukan,
+            pengeluaran: totalPengeluaran,
+          };
+        });
+
+        setChartData(compiledData);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRealTimeChartData();
+  }, [dataProp]);
 
   const width = 500;
   const height = 220;
@@ -45,21 +98,28 @@ export default function NativeFinancialChart({ data: dataProp }: NativeFinancial
   const paddingTop = 30;
   const paddingBottom = 40;
 
-  const allValues = data.flatMap(d => [d.pemasukan, d.pengeluaran]);
-  const maxValue = Math.max(...allValues, 1000000);
+  if (loading) {
+    return (
+      <div className="p-6 rounded-2xl text-white w-full h-[220px] flex items-center justify-center text-xs text-gray-500">
+        Memuat grafik data keuangan...
+      </div>
+    );
+  }
 
-  const getX = (index: number) => paddingX + (index / (data.length - 1)) * (width - paddingX * 2);
+  const allValues = chartData.flatMap((d) => [d.pemasukan, d.pengeluaran]);
+  const maxValue = Math.max(...allValues, 100000);
+
+  const getX = (index: number) => paddingX + (index / (chartData.length - 1 || 1)) * (width - paddingX * 2);
   const getY = (value: number) => {
     const usableHeight = height - paddingTop - paddingBottom;
     return height - paddingBottom - (value / maxValue) * usableHeight;
   };
 
-  const incomePath = `M ${data.map((d, i) => `${getX(i)},${getY(d.pemasukan)}`).join(' L ')}`;
-  const expensePath = `M ${data.map((d, i) => `${getX(i)},${getY(d.pengeluaran)}`).join(' L ')}`;
+  const incomePath = `M ${chartData.map((d, i) => `${getX(i)},${getY(d.pemasukan)}`).join(' L ')}`;
+  const expensePath = `M ${chartData.map((d, i) => `${getX(i)},${getY(d.pengeluaran)}`).join(' L ')}`;
 
   return (
-    <div className=" p-6 rounded-2xl text-white w-full">
-      {/* SVG */}
+    <div className="p-2 sm:p-4 rounded-2xl text-white w-full">
       <div className="relative">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full overflow-visible">
           {[0, 0.5, 1].map((ratio, idx) => {
@@ -81,7 +141,7 @@ export default function NativeFinancialChart({ data: dataProp }: NativeFinancial
           <path d={incomePath} fill="none" stroke="#2EC4B6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
           <path d={expensePath} fill="none" stroke="#EF4444" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
 
-          {data.map((item, idx) => {
+          {chartData.map((item, idx) => {
             const cx = getX(idx);
             const cyIncome = getY(item.pemasukan);
             const cyExpense = getY(item.pengeluaran);
@@ -112,42 +172,42 @@ export default function NativeFinancialChart({ data: dataProp }: NativeFinancial
                   />
                 )}
 
-                <circle cx={cx} cy={cyIncome} r={isHovered ? "6" : "4"} fill="#2EC4B6" stroke="#2EC4B6" strokeWidth="2.5" className="transition-all duration-200 pointer-events-none" />
-                <circle cx={cx} cy={cyExpense} r={isHovered ? "6" : "4"} fill="#EF4444" stroke="#EF4444" strokeWidth="2.5" className="transition-all duration-200 pointer-events-none" />
+                <circle cx={cx} cy={cyIncome} r={isHovered ? '6' : '4'} fill="#2EC4B6" stroke="#2EC4B6" strokeWidth="2.5" className="transition-all duration-200 pointer-events-none" />
+                <circle cx={cx} cy={cyExpense} r={isHovered ? '6' : '4'} fill="#EF4444" stroke="#EF4444" strokeWidth="2.5" className="transition-all duration-200 pointer-events-none" />
               </g>
             );
           })}
         </svg>
 
-        {hoveredIndex !== null && (
+        {hoveredIndex !== null && chartData[hoveredIndex] && (
           <div
             className="absolute -top-12 bg-[#121824] border border-gray-700 text-xs p-2.5 rounded-xl shadow-2xl pointer-events-none transform -translate-x-1/2 transition-all duration-150 z-10 min-w-36"
-            style={{ left: `${(hoveredIndex / (data.length - 1)) * 100}%` }}
+            style={{ left: `${(hoveredIndex / (chartData.length - 1 || 1)) * 100}%` }}
           >
             <div className="font-semibold text-gray-300 border-b border-gray-700/60 pb-1 mb-1.5">
-              Bulan {data[hoveredIndex].month}
+              Bulan {chartData[hoveredIndex].month}
             </div>
             <div className="flex items-center justify-between gap-3 text-[#2EC4B6]">
               <span>Masuk:</span>
-              <span className="font-bold">Rp {data[hoveredIndex].pemasukan.toLocaleString('id-ID')}</span>
+              <span className="font-bold">Rp {chartData[hoveredIndex].pemasukan.toLocaleString('id-ID')}</span>
             </div>
             <div className="flex items-center justify-between gap-3 text-[#EF4444]">
               <span>Keluar:</span>
-              <span className="font-bold">Rp {data[hoveredIndex].pengeluaran.toLocaleString('id-ID')}</span>
+              <span className="font-bold">Rp {chartData[hoveredIndex].pengeluaran.toLocaleString('id-ID')}</span>
             </div>
           </div>
         )}
       </div>
 
       <div className="flex justify-between mt-2 text-xs text-gray-400 px-1 font-medium">
-        {data.map((item, idx) => (
+        {chartData.map((item, idx) => (
           <span key={idx} className={hoveredIndex === idx ? 'text-white font-bold' : ''}>
             {item.month}
           </span>
         ))}
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
         <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-[#2EC4B6]"></span>

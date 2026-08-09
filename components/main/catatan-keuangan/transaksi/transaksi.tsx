@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
-import 'material-icons/iconfont/material-icons.css';
-import Sidebar from '../../sidebar';
-import NavCatatan from '../nav-catatan';
+import "material-icons/iconfont/material-icons.css";
+import Sidebar from "../../sidebar";
+import NavCatatan from "../nav-catatan";
 
 interface TransaksiProps {
   onSwitchToScan?: () => void;
@@ -28,18 +28,26 @@ interface Summary {
   totalPengeluaran: number;
 }
 
+// 🟢 Mapping Kategori ke Icon Material Design (Insenstive Lowercase)
 const CATEGORY_ICON: Record<string, string> = {
   makanan: "ramen_dining",
-  transport: "directions_car",
+  transportasi: "directions_car",
   belanja: "shopping_bag",
   tagihan: "payments",
   hiburan: "local_movies",
   freelance: "work",
-  uangsaku: "paid",
-  dana: "account_balance_wallet",
+  gaji: "account_balance_wallet",
+  "part-time": "badge",
+  investasi: "trending_up",
+  kesehatan: "medical_services",
+  tabungan: "savings", // 👈 Ikon khusus untuk alokasi setor tabungan
+  lainnya: "receipt_long",
 };
 
-const getIconForCategory = (kategori: string) => CATEGORY_ICON[kategori] || "receipt_long";
+const getIconForCategory = (kategori: string) => {
+  const key = (kategori || "").toLowerCase();
+  return CATEGORY_ICON[key] || "receipt_long";
+};
 
 const formatTanggal = (isoDate: string) => {
   try {
@@ -53,57 +61,77 @@ const formatTanggal = (isoDate: string) => {
   }
 };
 
-const formatRupiah = (val: number) => `Rp${Math.abs(val).toLocaleString("id-ID")}`;
+const formatRupiah = (val: number) =>
+  `Rp${Math.abs(val).toLocaleString("id-ID")}`;
 
-export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdit }: TransaksiProps) {
+export default function Transaksi({
+  onSwitchToScan,
+  onSwitchToAdd,
+  onSwitchToEdit,
+}: TransaksiProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [filterType, setFilterType] = useState<"semua" | "pemasukan" | "pengeluaran">("semua");
+  const [filterType, setFilterType] = useState<
+    "semua" | "pemasukan" | "pengeluaran"
+  >("semua");
 
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
-  const [summary, setSummary] = useState<Summary>({ saldo: 0, totalPemasukan: 0, totalPengeluaran: 0 });
+  const [summary, setSummary] = useState<Summary>({
+    saldo: 0,
+    totalPemasukan: 0,
+    totalPengeluaran: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // State Modal Delete
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const datesPerPage = 2;
 
-  useEffect(() => {
-    const fetchTransaksi = async () => {
-      setLoading(true);
-      setError("");
+  const fetchTransaksi = async () => {
+    setLoading(true);
+    setError("");
 
-      try {
-        const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan`, {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan`,
+        {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-        });
+        },
+      );
 
-        const teksResponse = await response.text();
+      const teksResponse = await response.text();
 
-        if (!response.ok) {
-          console.error("ISI ERROR AMBIL TRANSAKSI DARI SERVER:", teksResponse);
-          try {
-            const parsedError = JSON.parse(teksResponse);
-            throw new Error(parsedError.message || "Gagal mengambil data transaksi.");
-          } catch {
-            throw new Error("Terjadi kesalahan pada server backend.");
-          }
+      if (!response.ok) {
+        console.error("ERROR AMBIL TRANSAKSI:", teksResponse);
+        try {
+          const parsedError = JSON.parse(teksResponse);
+          throw new Error(
+            parsedError.message || "Gagal mengambil data transaksi.",
+          );
+        } catch {
+          throw new Error("Terjadi kesalahan pada server backend.");
         }
+      }
 
-        const resData = JSON.parse(teksResponse);
+      const resData = JSON.parse(teksResponse);
 
-        setSummary({
-          saldo: resData.summary?.saldo ?? 0,
-          totalPemasukan: resData.summary?.totalPemasukan ?? 0,
-          totalPengeluaran: resData.summary?.totalPengeluaran ?? 0,
-        });
+      setSummary({
+        saldo: resData.summary?.saldo ?? 0,
+        totalPemasukan: resData.summary?.totalPemasukan ?? 0,
+        totalPengeluaran: resData.summary?.totalPengeluaran ?? 0,
+      });
 
-        const mapped: TransactionItem[] = (resData.data || []).map((item: any) => ({
+      const mapped: TransactionItem[] = (resData.data || []).map(
+        (item: any) => ({
           id: item._id,
           title: item.Catatan_Transaksi,
           category: item.kategori,
@@ -111,19 +139,61 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
           amount: item.tipe === "pemasukan" ? item.nominal : -item.nominal,
           type: item.tipe,
           icon: getIconForCategory(item.kategori),
-          iconColor: "text-[#e7ae3c]",
-        }));
+          iconColor:
+            item.kategori?.toLowerCase() === "tabungan"
+              ? "text-[#2EC4B6]"
+              : "text-[#e7ae3c]",
+        }),
+      );
 
-        setTransactions(mapped);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      setTransactions(mapped);
+    } catch (err: unknown) {
+      const errorObj = err as Error;
+      setError(errorObj.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      await fetchTransaksi();
     };
-
-    fetchTransaksi();
+    loadData();
   }, []);
+
+  // 🗑️ Fungsi Hapus Transaksi (Terhubung ke ACID Rollback Backend)
+  const handleDeleteTransaksi = async () => {
+    if (!deleteId) return;
+    setIsDeleting(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/transaksi/${deleteId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error("Gagal menghapus transaksi.");
+      }
+
+      setDeleteId(null);
+      // Refresh Data Transaksi & Saldo setelah dihapus
+      await fetchTransaksi();
+    } catch (err: unknown) {
+      const errorObj = err as Error;
+      alert(errorObj.message || "Terjadi kesalahan saat menghapus.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const filteredTransactions = transactions.filter((item) => {
     if (filterType === "pemasukan") return item.type === "pemasukan";
@@ -131,19 +201,25 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
     return true;
   });
 
-  const groupedTransactions = filteredTransactions.reduce((acc, item) => {
-    if (!acc[item.date]) {
-      acc[item.date] = [];
-    }
-    acc[item.date].push(item);
-    return acc;
-  }, {} as Record<string, TransactionItem[]>);
+  const groupedTransactions = filteredTransactions.reduce(
+    (acc, item) => {
+      if (!acc[item.date]) {
+        acc[item.date] = [];
+      }
+      acc[item.date].push(item);
+      return acc;
+    },
+    {} as Record<string, TransactionItem[]>,
+  );
 
   const groupedDates = Object.keys(groupedTransactions);
 
   const totalPages = Math.ceil(groupedDates.length / datesPerPage) || 1;
   const startIndex = (currentPage - 1) * datesPerPage;
-  const paginatedDates = groupedDates.slice(startIndex, startIndex + datesPerPage);
+  const paginatedDates = groupedDates.slice(
+    startIndex,
+    startIndex + datesPerPage,
+  );
 
   const handleFilterChange = (type: "semua" | "pemasukan" | "pengeluaran") => {
     setFilterType(type);
@@ -152,15 +228,13 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
 
   return (
     <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
-      <Sidebar 
-        isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)} 
-      />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      {/* Header */}
+      {/* Header Utama */}
       <div className="w-full flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-2.5">
-          <button 
+          <button
+            type="button"
             className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
             onClick={() => setIsSidebarOpen(true)}
           >
@@ -170,11 +244,21 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
         </div>
 
         <div className="flex flex-row items-center gap-3">
-          <button className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-            <span className="material-icons text-xl select-none">notifications</span>
+          <button
+            type="button"
+            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
+          >
+            <span className="material-icons text-xl select-none">
+              notifications
+            </span>
           </button>
-          <button className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-            <span className="material-icons text-xl select-none">account_circle</span>
+          <button
+            type="button"
+            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
+          >
+            <span className="material-icons text-xl select-none">
+              account_circle
+            </span>
           </button>
         </div>
       </div>
@@ -187,7 +271,7 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
         </div>
       )}
 
-      {/* Saldo */}
+      {/* Ringkasan Saldo */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white/5 border border-gray-700/60 rounded-2xl p-4 py-5 w-full">
           <div className="flex flex-row items-start justify-between">
@@ -196,8 +280,12 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">{loading ? "..." : formatRupiah(summary.saldo)}</div>
-            <div className="text-sm text-white/50 font-medium">Saldo Sekarang</div>
+            <div className="text-xl font-extrabold">
+              {loading ? "..." : formatRupiah(summary.saldo)}
+            </div>
+            <div className="text-sm text-white/50 font-medium">
+              Saldo Sekarang
+            </div>
           </div>
         </div>
 
@@ -208,7 +296,9 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">{loading ? "..." : formatRupiah(summary.totalPemasukan)}</div>
+            <div className="text-xl font-extrabold">
+              {loading ? "..." : formatRupiah(summary.totalPemasukan)}
+            </div>
             <div className="text-sm text-white/50 font-medium">Pemasukan</div>
           </div>
         </div>
@@ -220,14 +310,18 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">{loading ? "..." : formatRupiah(summary.totalPengeluaran)}</div>
+            <div className="text-xl font-extrabold">
+              {loading ? "..." : formatRupiah(summary.totalPengeluaran)}
+            </div>
             <div className="text-sm text-white/50 font-medium">Pengeluaran</div>
           </div>
         </div>
       </div>
 
+      {/* Filter Tipe Transaksi */}
       <div className="flex flex-row items-center gap-1 p-1 rounded-xl w-fit">
         <button
+          type="button"
           onClick={() => handleFilterChange("semua")}
           className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer border border-gray-800 ${
             filterType === "semua"
@@ -238,6 +332,7 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
           Semua
         </button>
         <button
+          type="button"
           onClick={() => handleFilterChange("pemasukan")}
           className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer border border-gray-800 ${
             filterType === "pemasukan"
@@ -248,6 +343,7 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
           Pemasukan
         </button>
         <button
+          type="button"
           onClick={() => handleFilterChange("pengeluaran")}
           className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer border border-gray-800 ${
             filterType === "pengeluaran"
@@ -259,15 +355,16 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
         </button>
       </div>
 
+      {/* Action Buttons */}
       <div className="flex flex-row items-center gap-2 w-fit p-1 -mt-5">
         <button
           type="button"
           onClick={onSwitchToScan}
           className="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1.5 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white border border-gray-800 shrink-0"
         >
-          <span 
+          <span
             className="material-icons select-none leading-none text-[#2EC4B6]"
-            style={{ fontSize: '13px', width: '13px', height: '13px' }}
+            style={{ fontSize: "13px", width: "13px", height: "13px" }}
           >
             qr_code_scanner
           </span>
@@ -279,9 +376,9 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
           onClick={onSwitchToAdd}
           className="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1.5 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10 shrink-0"
         >
-          <span 
+          <span
             className="material-icons select-none leading-none text-[#0A2E2A]"
-            style={{ fontSize: '13px', width: '13px', height: '13px' }}
+            style={{ fontSize: "13px", width: "13px", height: "13px" }}
           >
             add
           </span>
@@ -289,6 +386,7 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
         </button>
       </div>
 
+      {/* List History Transaksi */}
       <div className="flex flex-col gap-5 w-full">
         {loading ? (
           <div className="py-8 text-center text-xs text-gray-500 bg-white/5 rounded-2xl border border-gray-800">
@@ -312,17 +410,19 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
                       : `-Rp${Math.abs(item.amount).toLocaleString("id-ID")}`;
 
                     return (
-                      <div 
-                        key={item.id} 
+                      <div
+                        key={item.id}
                         className="bg-white/5 border border-gray-800 rounded-2xl px-4 py-2 flex flex-row items-center justify-between gap-4"
                       >
                         <div className="flex items-center gap-3.5 min-w-0 flex-1">
                           <div className="flex items-center justify-center p-3 bg-white/5 rounded-full shrink-0">
-                            <span className={`material-icons text-xl ${item.iconColor}`}>
+                            <span
+                              className={`material-icons text-xl ${item.iconColor}`}
+                            >
                               {item.icon}
                             </span>
                           </div>
-                          
+
                           <div className="min-w-0 flex-1">
                             <div className="text-sm font-bold truncate text-white">
                               {item.title}
@@ -333,17 +433,31 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4 shrink-0">
-                          <div className={`text-sm font-bold text-right ${isIncome ? "text-[#05DF72]" : "text-[#E74C3C]"}`}>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div
+                            className={`text-sm font-bold text-right ${isIncome ? "text-[#05DF72]" : "text-[#E74C3C]"}`}
+                          >
                             {formattedAmount}
                           </div>
 
-                          <button 
+                          <button
                             type="button"
                             onClick={() => onSwitchToEdit?.(item.id)}
-                            className="text-white/40 hover:text-white transition-colors cursor-pointer p-1"
+                            className="text-white/40 hover:text-white transition-colors cursor-pointer p-1 rounded-full hover:bg-white/10"
+                            title="Edit Transaksi"
                           >
                             <span className="material-icons text-lg">edit</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setDeleteId(item.id)}
+                            className="text-red-400/60 hover:text-red-400 transition-colors cursor-pointer p-1 rounded-full hover:bg-white/10"
+                            title="Hapus Transaksi"
+                          >
+                            <span className="material-icons text-lg">
+                              delete
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -359,49 +473,98 @@ export default function Transaksi({ onSwitchToScan, onSwitchToAdd, onSwitchToEdi
           </div>
         )}
 
+        {/* Pagination Controls */}
         {!loading && totalPages > 1 && (
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-800/60 text-xs text-white/60">
             <div>
-              Halaman <span className="font-bold text-white">{currentPage}</span> dari{" "}
+              Halaman{" "}
+              <span className="font-bold text-white">{currentPage}</span> dari{" "}
               <span className="font-bold text-white">{totalPages}</span>
             </div>
 
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className="p-1.5 rounded-lg border border-gray-800 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
               >
-                <span className="material-icons text-sm block select-none">chevron_left</span>
+                <span className="material-icons text-sm block select-none">
+                  chevron_left
+                </span>
               </button>
 
               <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                      currentPage === page
-                        ? "bg-[#2EC4B6] text-[#101828]"
-                        : "hover:bg-white/10 text-white/60"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                        currentPage === page
+                          ? "bg-[#2EC4B6] text-[#101828]"
+                          : "hover:bg-white/10 text-white/60"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ),
+                )}
               </div>
 
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                type="button"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
                 className="p-1.5 rounded-lg border border-gray-800 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
               >
-                <span className="material-icons text-sm block select-none">chevron_right</span>
+                <span className="material-icons text-sm block select-none">
+                  chevron_right
+                </span>
               </button>
             </div>
           </div>
         )}
       </div>
+
+      {/* Modal Konfirmasi Hapus Transaksi */}
+      {deleteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#101828] border border-gray-700/80 rounded-3xl p-6 w-full max-w-sm flex flex-col gap-4 shadow-2xl">
+            <div className="flex flex-col gap-1">
+              <h3 className="text-base font-bold text-white">
+                Hapus Transaksi?
+              </h3>
+              <p className="text-xs text-white/60">
+                Apakah kamu yakin ingin menghapus catatan transaksi ini?
+                Tindakan ini tidak dapat dibatalkan.
+              </p>
+            </div>
+
+            <div className="flex flex-row items-center gap-3 mt-2">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setDeleteId(null)}
+                className="w-1/2 py-2.5 rounded-full border border-white/20 text-xs font-bold text-white hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleDeleteTransaksi}
+                className="w-1/2 py-2.5 rounded-full bg-[#E74C3C] text-xs font-bold text-white hover:bg-red-600 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                {isDeleting ? "Menghapus..." : "Hapus"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

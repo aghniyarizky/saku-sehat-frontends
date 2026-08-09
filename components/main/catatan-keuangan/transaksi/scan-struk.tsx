@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from '../../sidebar';
 
@@ -10,21 +10,36 @@ interface ScanStrukProps {
     onSwitchToAdd?: () => void;
 }
 
+interface HasilScan {
+    Catatan_Transaksi: string;
+    tipe: "pengeluaran" | "pemasukan";
+    kategori: string;
+    Sumber_Dana: string;
+    nominal: number;
+    tanggal: string;
+    createdAt?: string;
+}
+
 export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwitchToAdd }: ScanStrukProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    
+
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
-    const [streamResult, setStreamResult] = useState("");
+    const [hasilScan, setHasilScan] = useState<HasilScan | null>(null);
     const [errorMessage, setErrorMessage] = useState("");
 
-    // State tambahan untuk menampung hasil pecahan data (misal: format JSON)
-    const [parsedData, setParsedData] = useState<any | null>(null);
-
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const formatRupiah = (val: number) => {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            maximumFractionDigits: 0,
+        }).format(val);
+    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -58,35 +73,19 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
         }
         setImageFile(file);
         setSelectedImage(URL.createObjectURL(file));
-        setStreamResult("");
+        setHasilScan(null);
         setErrorMessage("");
-        setParsedData(null);
     };
 
     const handleRemoveImage = () => {
         setSelectedImage(null);
         setImageFile(null);
-        setStreamResult("");
+        setHasilScan(null);
         setErrorMessage("");
-        setParsedData(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
     };
-
-    // Efek untuk memecah data otomatis ketika stream selesai
-    useEffect(() => {
-        if (!isLoading && streamResult) {
-            try {
-                // Coba parse jika streamResult berformat JSON
-                const json = JSON.parse(streamResult);
-                setParsedData(json);
-            } catch (e) {
-                // Jika bukan JSON, biarkan null (nanti dipecah per baris)
-                setParsedData(null);
-            }
-        }
-    }, [isLoading, streamResult]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,17 +95,14 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
         }
 
         setIsLoading(true);
-        setStreamResult("");
+        setHasilScan(null);
         setErrorMessage("");
-        setParsedData(null);
 
         const formData = new FormData();
         formData.append("image", imageFile);
 
         try {
             const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-            console.log("Token yang dikirim:", token);
-            console.log("URL Endpoint:", `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/scan`);
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/scan`, {
                 method: "POST",
@@ -116,12 +112,9 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                 body: formData,
             });
 
-            console.log("Response Status dari Server:", response.status);
-
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error("Error Response Body:", errorText);
-                
+
                 let errorMessageParsed = "Gagal mengunggah gambar ke server.";
                 try {
                     const parsedJson = JSON.parse(errorText);
@@ -129,7 +122,7 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                 } catch {
                     errorMessageParsed = errorText || `Error HTTP: ${response.status}`;
                 }
-                
+
                 throw new Error(errorMessageParsed);
             }
 
@@ -147,27 +140,22 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
 
                 for (const line of lines) {
                     const trimmedLine = line.trim();
-                    if (trimmedLine.startsWith("data:")) {
-                        const jsonStr = trimmedLine.replace("data:", "").trim();
-                        try {
-                            const parsed = JSON.parse(jsonStr);
+                    if (!trimmedLine.startsWith("data:")) continue;
 
-                            if (parsed.type === "done") {
-                                setIsLoading(false);
-                            } else if (parsed.type === "error") {
-                                setErrorMessage(parsed.text || "Terjadi kesalahan saat memproses gambar.");
-                                setIsLoading(false);
-                            } else {
-                                setStreamResult((prev) => prev + (parsed.text || jsonStr));
-                            }
-                        } catch {
-                            setStreamResult((prev) => prev + jsonStr);
+                    const jsonStr = trimmedLine.replace("data:", "").trim();
+                    try {
+                        const parsed = JSON.parse(jsonStr);
+
+                        if (parsed.type === "done") {
+                            setHasilScan(parsed.result);
+                        } else if (parsed.type === "error") {
+                            setErrorMessage(parsed.text || "Terjadi kesalahan saat memproses gambar.");
                         }
+                    } catch {
                     }
                 }
             }
         } catch (error: any) {
-            console.error("Detail Error Frontend Catch:", error);
             setErrorMessage(error.message || "Gagal terhubung ke server.");
         } finally {
             setIsLoading(false);
@@ -176,14 +164,14 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
 
     return (
         <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
-            <Sidebar 
-                isOpen={isSidebarOpen} 
-                onClose={() => setIsSidebarOpen(false)} 
+            <Sidebar
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
             />
-        
+
             <div className="w-full flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2.5">
-                    <button 
+                    <button
                         type="button"
                         className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
                         onClick={() => setIsSidebarOpen(true)}
@@ -192,7 +180,7 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                     </button>
                     <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
                 </div>
-        
+
                 <div className="flex flex-row items-center gap-3">
                     <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
                         <span className="material-icons text-xl select-none">notifications</span>
@@ -204,7 +192,7 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
             </div>
 
             <div className="flex flex-row gap-5 items-center">
-                <button 
+                <button
                     type="button"
                     onClick={onSwitchToTransaction}
                     className="flex items-center justify-center w-8 h-8 bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer hover:bg-gray-700 transition-colors shrink-0"
@@ -220,7 +208,7 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                     onClick={onSwitchToScan}
                     className="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1.5 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10 shrink-0"
                 >
-                    <span 
+                    <span
                         className="material-icons select-none leading-none text-[#0A2E2A]"
                         style={{ fontSize: '13px', width: '13px', height: '13px' }}
                     >
@@ -234,7 +222,7 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                     onClick={onSwitchToAdd}
                     className="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1.5 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white border border-gray-800 shrink-0"
                 >
-                    <span 
+                    <span
                         className="material-icons select-none leading-none text-[#2EC4B6]"
                         style={{ fontSize: '13px', width: '13px', height: '13px' }}
                     >
@@ -244,12 +232,12 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                 </button>
             </div>
 
-            <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                accept="image/*" 
-                className="hidden" 
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
             />
 
             <form onSubmit={handleSubmit}>
@@ -261,8 +249,8 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
                             className={`w-full min-h-[220px] border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all duration-300 ${
-                            isDragging 
-                                ? 'border-[#2EC4B6] bg-[#2EC4B6]/10 scale-[1.01]' 
+                            isDragging
+                                ? 'border-[#2EC4B6] bg-[#2EC4B6]/10 scale-[1.01]'
                                 : 'border-white/20 bg-white/5 hover:border-[#2EC4B6]/50 hover:bg-white/[0.07]'
                             }`}
                         >
@@ -276,9 +264,9 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                     ) : (
                         <div className="relative w-full rounded-2xl overflow-hidden border border-white/15 bg-white/5 p-3 flex flex-col items-center">
                             <div className="relative w-full max-h-[300px] overflow-hidden rounded-xl bg-black/40 flex items-center justify-center">
-                                <img 
-                                    src={selectedImage} 
-                                    alt="Struk Preview" 
+                                <img
+                                    src={selectedImage}
+                                    alt="Struk Preview"
                                     className="w-full h-auto max-h-[300px] object-contain"
                                 />
                             </div>
@@ -287,7 +275,7 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                                 <span className="text-xs text-gray-300 truncate max-w-[200px]">
                                     {imageFile?.name}
                                 </span>
-                                
+
                                 <div className="flex flex-row gap-2">
                                     <button
                                         type="button"
@@ -314,7 +302,7 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                         className={`w-full py-3 rounded-full text-xs font-bold transition-all duration-200 flex items-center justify-center gap-2 ${
                             !selectedImage || isLoading
                                 ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                                : 'bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] cursor-pointer' 
+                                : 'bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] cursor-pointer'
                         }`}
                     >
                         <span className="material-icons text-base">auto_awesome</span>
@@ -327,43 +315,48 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                         </div>
                     )}
 
-                    {(streamResult || isLoading) && (
-    <div className="p-4 bg-white/5 border border-white/10 rounded-xl flex flex-col gap-3">
-        <span className="text-xs font-semibold text-[#2EC4B6]">Hasil Analisis AI:</span>
-        
-        {parsedData ? (
-            <div className="flex flex-col gap-2">
-                {/* Menampilkan Data Terstruktur */}
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-white/5 p-2 rounded-lg border border-white/10">
-                        <p className="text-gray-400">Tanggal</p>
-                        <p className="font-semibold text-white">{parsedData.date || parsedData.tanggal || "-"}</p>
-                    </div>
-                    <div className="bg-white/5 p-2 rounded-lg border border-white/10">
-                        <p className="text-gray-400">Sumber Dana</p>
-                        <p className="font-semibold text-white">{parsedData.sumber_dana || parsedData.paymentMethod || "Tunai"}</p>
-                    </div>
-                </div>
+                    {(hasilScan || isLoading) && (
+                        <div className="p-4 bg-white/5 border border-white/10 rounded-xl flex flex-col gap-3">
+                            <span className="text-xs font-semibold text-[#2EC4B6]">Hasil Analisis AI:</span>
 
-                <div className="bg-white/5 p-3 rounded-lg border border-[#2EC4B6]/30">
-                    <p className="text-gray-400 text-xs">Nominal Total</p>
-                    <p className="text-xl font-bold text-[#2EC4B6]">
-                        { parsedData.total}
-                    </p>
-                </div>
-            </div>
-        ) : (
-            /* Fallback jika data belum terstruktur (Masih Loading / Teks biasa) */
-            <div className="text-xs text-gray-200 overflow-y-auto max-h-40">
-                {isLoading ? (
-                    <p className="animate-pulse">Sedang memproses struk...</p>
-                ) : (
-                    <p className="whitespace-pre-wrap">{streamResult}</p>
-                )}
-            </div>
-        )}
-    </div>
-)}
+                            {isLoading ? (
+                                <div className="flex flex-col items-center justify-center gap-3 py-8">
+                                    <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-[#2EC4B6] animate-spin" />
+                                    <div className="text-xs text-white/60 text-center">AI sedang membaca dan menganalisis struk...</div>
+                                </div>
+                            ) : hasilScan ? (
+                                <div className="flex flex-col gap-2">
+                                    <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                                        <p className="text-gray-400 text-xs">Catatan Transaksi</p>
+                                        <p className="font-semibold text-white text-sm">{hasilScan.Catatan_Transaksi}</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-2 text-xs">
+                                        <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                                            <p className="text-gray-400">Kategori</p>
+                                            <p className="font-semibold text-white">{hasilScan.kategori}</p>
+                                        </div>
+                                        <div className="bg-white/5 p-2 rounded-lg border border-white/10">
+                                            <p className="text-gray-400">Sumber Dana</p>
+                                            <p className="font-semibold text-white">{hasilScan.Sumber_Dana}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white/5 p-2 rounded-lg border border-white/10 text-xs">
+                                        <p className="text-gray-400">Tanggal</p>
+                                        <p className="font-semibold text-white">{hasilScan.tanggal}</p>
+                                    </div>
+
+                                    <div className="bg-white/5 p-3 rounded-lg border border-[#2EC4B6]/30">
+                                        <p className="text-gray-400 text-xs">Nominal Total</p>
+                                        <p className="text-xl font-bold text-[#2EC4B6]">
+                                            {formatRupiah(hasilScan.nominal)}
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+                    )}
                 </div>
             </form>
         </div>

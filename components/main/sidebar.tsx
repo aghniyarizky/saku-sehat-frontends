@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import 'material-icons/iconfont/material-icons.css';
+import "material-icons/iconfont/material-icons.css";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -34,26 +34,39 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const menuItems: MenuItem[] = [
     { name: "Dashboard", icon: "dashboard", href: "?mode=dashboard" },
-    { 
-      name: "Catatan Keuangan", 
-      icon: "trending_up", 
+    {
+      name: "Catatan Keuangan",
+      icon: "trending_up",
       subItems: [
         { name: "Transaksi", icon: "trending_up", href: "?mode=transaksi" },
-        { name: "Kelola Pinjaman", icon: "payments", href: "?mode=kelolapinjaman" },
-        { name: "Budgeting", icon: "attach_money", href: "#" },
-        { name: "Target Nabung", icon: "adjust", href: "#" },
-      ]
+        {
+          name: "Kelola Pinjaman",
+          icon: "payments",
+          href: "?mode=kelolapinjaman",
+        },
+        { name: "Budgeting", icon: "attach_money", href: "?mode=budgeting" },
+        { name: "Target Nabung", icon: "adjust", href: "?mode=targetnabung" },
+      ],
+    },
+    {
+      name: "Financial Health",
+      icon: "health_and_safety",
+      href: "?mode=financialhealth",
     },
     { name: "Kalkulator Bunga", icon: "calculate", href: "?mode=kalkulator" },
-    { 
-      name: "Smart Assistant", 
-      icon: "chat_bubble", 
+    {
+      name: "Smart Assistant",
+      icon: "chat_bubble",
       subItems: [
-        { name: "AI Financial Coach", icon: "chat_bubble", href: "#" },
+        { name: "Teman Hemat", icon: "chat_bubble", href: "#" },
         { name: "Cari Aman", icon: "shield", href: "?mode=cariaman" },
-      ]
+      ],
     },
-    { name: "Before You Borrow", icon: "menu_book", href: "?mode=beforeyouborrow" },
+    {
+      name: "Before You Borrow",
+      icon: "menu_book",
+      href: "?mode=beforeyouborrow",
+    },
     { name: "Settings", icon: "settings", href: "#" },
   ];
 
@@ -82,7 +95,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   }, [currentMode]);
 
   const toggleSubmenu = (name: string) => {
-    setOpenSubmenu(prev => prev === name ? null : name);
+    setOpenSubmenu((prev) => (prev === name ? null : name));
   };
 
   const handleLogout = async () => {
@@ -102,7 +115,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         });
       }
     } catch (error) {
-      // Tetap lanjut hapus token walau request logout ke server gagal
       console.error("Logout request failed:", error);
     } finally {
       localStorage.removeItem("token");
@@ -116,22 +128,24 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <>
       <div className="fixed inset-0 z-50 mx-auto max-w-md pointer-events-none overflow-hidden">
-        <div 
+        <div
           onClick={onClose}
           className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
-            isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            isOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
           }`}
         />
 
-        <aside 
+        <aside
           className={`absolute top-0 left-0 h-full w-4/5 max-w-70 bg-[#020306] border-r border-gray-800 p-6 text-white flex flex-col justify-between transition-transform duration-300 ease-in-out pointer-events-auto ${
-            isOpen ? 'translate-x-0' : '-translate-x-full'
+            isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           <div className="flex flex-col h-full justify-between">
             <div>
               <div className="flex justify-end mb-4">
-                <button 
+                <button
                   onClick={onClose}
                   className="text-gray-400 hover:text-white cursor-pointer flex items-center justify-center p-1 rounded-lg hover:bg-white/5"
                 >
@@ -139,18 +153,21 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </button>
               </div>
 
-              {/* profile */}
               <div className="flex items-center gap-3 my-2">
-                <span 
+                <span
                   className="material-icons text-gray-500 select-none leading-none shrink-0"
-                  style={{ fontSize: '40px', width: '40px', height: '40px' }}
+                  style={{ fontSize: "40px", width: "40px", height: "40px" }}
                 >
                   account_circle
                 </span>
 
                 <div className="flex flex-col min-w-0">
-                  <div className="text-sm font-semibold text-white leading-tight truncate">Jane Doe</div>
-                  <div className="text-xs text-white/40 truncate">JaneDoe@gmail.com</div>
+                  <div className="text-sm font-semibold text-white leading-tight truncate">
+                    Jane Doe
+                  </div>
+                  <div className="text-xs text-white/40 truncate">
+                    JaneDoe@gmail.com
+                  </div>
                 </div>
               </div>
 
@@ -160,12 +177,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {menuItems.map((item) => {
                   const hasSubItems = item.subItems && item.subItems.length > 0;
                   const isSubmenuOpen = openSubmenu === item.name;
-                  const isAnySubActive = item.subItems?.some(sub => sub.name === activeMenu);
+                  const isAnySubActive = item.subItems?.some(
+                    (sub) => sub.name === activeMenu,
+                  );
                   const isActive = activeMenu === item.name || isAnySubActive;
 
                   const activeStyles = isActive
-                    ? 'bg-[#2EC4B6]/10 text-[#2EC4B6] font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-1 before:bg-[#2EC4B6] before:rounded-r-full'
-                    : 'text-gray-400 hover:bg-white/5 hover:text-white font-medium';
+                    ? "bg-[#2EC4B6]/10 text-[#2EC4B6] font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-1 before:bg-[#2EC4B6] before:rounded-r-full"
+                    : "text-gray-400 hover:bg-white/5 hover:text-white font-medium";
 
                   return (
                     <div key={item.name} className="flex flex-col">
@@ -180,9 +199,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             </span>
                             <span>{item.name}</span>
                           </div>
-                          <span className={`material-icons text-lg transition-transform duration-300 select-none ${
-                            isSubmenuOpen ? 'rotate-180 text-white' : 'text-gray-500'
-                          }`}>
+                          <span
+                            className={`material-icons text-lg transition-transform duration-300 select-none ${
+                              isSubmenuOpen
+                                ? "rotate-180 text-white"
+                                : "text-gray-500"
+                            }`}
+                          >
                             expand_more
                           </span>
                         </button>
@@ -207,9 +230,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                       {hasSubItems && (
                         <div
                           className={`grid transition-all duration-300 ease-in-out ${
-                            isSubmenuOpen 
-                              ? 'grid-rows-[1fr] opacity-100 mt-1 mb-1' 
-                              : 'grid-rows-[0fr] opacity-0'
+                            isSubmenuOpen
+                              ? "grid-rows-[1fr] opacity-100 mt-1 mb-1"
+                              : "grid-rows-[0fr] opacity-0"
                           }`}
                         >
                           <div className="overflow-hidden">
@@ -226,8 +249,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                                     }}
                                     className={`flex items-center gap-2.5 p-2 rounded-lg text-xs transition-colors ${
                                       isSubActive
-                                        ? 'text-[#2EC4B6] font-semibold bg-[#2EC4B6]/10'
-                                        : 'text-gray-400 hover:text-white hover:bg-white/5 font-medium'
+                                        ? "text-[#2EC4B6] font-semibold bg-[#2EC4B6]/10"
+                                        : "text-gray-400 hover:text-white hover:bg-white/5 font-medium"
                                     }`}
                                   >
                                     {sub.icon && (
@@ -248,14 +271,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 })}
               </nav>
 
-              {/* logout */}
               <div className="pt-4 border-t border-gray-800/80 mt-4">
                 <button
                   onClick={handleLogout}
                   disabled={isLoggingOut}
                   className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="material-icons text-xl select-none leading-none">logout</span>
+                  <span className="material-icons text-xl select-none leading-none">
+                    logout
+                  </span>
                   <span className="text-sm font-semibold">
                     {isLoggingOut ? "Logging out..." : "Log Out"}
                   </span>
