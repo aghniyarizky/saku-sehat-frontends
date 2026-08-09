@@ -45,7 +45,6 @@ export default function Pinjaman({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // 🟢 State untuk Modal Bayar Cicilan
   const [selectedPinjaman, setSelectedPinjaman] = useState<PinjamanItem | null>(
     null,
   );
@@ -131,7 +130,6 @@ export default function Pinjaman({
     fetchPinjamanData();
   }, []);
 
-  // 💳 Handler untuk Buka Modal Bayar (Default terisi nominal Cicilan Bulanan)
   const handleOpenBayarModal = (item: PinjamanItem) => {
     setSelectedPinjaman(item);
     setNominalBayar(String(item.cicilanBulanan));
@@ -139,7 +137,6 @@ export default function Pinjaman({
     setErrorBayar("");
   };
 
-  // 💳 Handler Submit Pembayaran Cicilan ke Backend
   const handleBayarSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPinjaman) return;
@@ -183,7 +180,6 @@ export default function Pinjaman({
         }
       }
 
-      // Reset Modal & Refresh Data Pinjaman
       setSelectedPinjaman(null);
       setNominalBayar("");
       setSumberDana("Tunai");
@@ -202,7 +198,6 @@ export default function Pinjaman({
     <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      {/* Header Utama */}
       <div className="w-full flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-2.5">
           <button
@@ -237,7 +232,6 @@ export default function Pinjaman({
 
       <NavCatatan />
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white/5 border border-gray-700/60 rounded-2xl p-4 py-5 w-full">
           <div className="flex flex-row items-start justify-between">
@@ -343,7 +337,6 @@ export default function Pinjaman({
           </div>
         </div>
 
-        {/* State Loading & Error */}
         {loading && (
           <div className="text-center py-8 text-white/50 text-sm">
             Memuat data pinjaman...
@@ -356,14 +349,12 @@ export default function Pinjaman({
           </div>
         )}
 
-        {/* State Kosong */}
         {!loading && !error && daftarPinjaman.length === 0 && (
           <div className="text-center py-12 text-white/40 text-sm bg-white/5 rounded-2xl border border-gray-800">
             Belum ada data pinjaman. Klik "Tambah" untuk mencatat pinjaman baru.
           </div>
         )}
 
-        {/* List Pinjaman */}
         {!loading && (
           <div className="flex flex-col gap-3 mt-1">
             {daftarPinjaman.map((item) => (
@@ -460,7 +451,6 @@ export default function Pinjaman({
                   </div>
                 </div>
 
-                {/* 🟢 TOMBOL + BAYAR CICILAN */}
                 {item.statusPinjaman !== "Lunas" && (
                   <div className="flex justify-end px-2 pt-2">
                     <button
@@ -481,7 +471,6 @@ export default function Pinjaman({
         )}
       </div>
 
-      {/* 🟢 MODAL POP-UP BAYAR CICILAN PINJAMAN */}
       {selectedPinjaman && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-[#101828] border border-gray-700/80 rounded-3xl p-6 w-full max-w-sm flex flex-col gap-4 shadow-2xl">

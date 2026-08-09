@@ -20,7 +20,6 @@ export default function TambahTransaksi({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [transactionType, setTransactionType] = useState<'pengeluaran' | 'pemasukan'>('pengeluaran');
 
-  // Callback saat pembuatan transaksi berhasil disimpan
   const handleSuccessSave = () => {
     if (onSwitchToTransaction) {
       onSwitchToTransaction();
@@ -34,7 +33,6 @@ export default function TambahTransaksi({
         onClose={() => setIsSidebarOpen(false)} 
       />
     
-      {/* Header Utama */}
       <div className="w-full flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-2.5">
           <button 
@@ -57,7 +55,6 @@ export default function TambahTransaksi({
         </div>
       </div>
 
-      {/* Title & Back Button */}
       <div className="flex flex-row gap-5 items-center">
         <button 
           type="button"
@@ -69,7 +66,6 @@ export default function TambahTransaksi({
         <div className="text-lg font-semibold leading-none">Tambah Transaksi</div>
       </div>
 
-      {/* Switch Input Mode: Scan Struk vs Manual */}
       <div className="flex flex-row gap-2 justify-center">
         <button
           type="button"
@@ -100,7 +96,6 @@ export default function TambahTransaksi({
         </button>
       </div>
 
-      {/* Tab Selector: Pengeluaran vs Pemasukan */}
       <div className="flex flex-row w-full gap-2 justify-center text-center px-2">
         <button
           type="button"
