@@ -28,7 +28,6 @@ interface Summary {
   totalPengeluaran: number;
 }
 
-// 🟢 Mapping Kategori ke Icon Material Design (Insenstive Lowercase)
 const CATEGORY_ICON: Record<string, string> = {
   makanan: "ramen_dining",
   transportasi: "directions_car",
@@ -40,7 +39,7 @@ const CATEGORY_ICON: Record<string, string> = {
   "part-time": "badge",
   investasi: "trending_up",
   kesehatan: "medical_services",
-  tabungan: "savings", // 👈 Ikon khusus untuk alokasi setor tabungan
+  tabungan: "savings",
   lainnya: "receipt_long",
 };
 
@@ -83,7 +82,6 @@ export default function Transaksi({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // State Modal Delete
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -162,7 +160,6 @@ export default function Transaksi({
     loadData();
   }, []);
 
-  // 🗑️ Fungsi Hapus Transaksi (Terhubung ke ACID Rollback Backend)
   const handleDeleteTransaksi = async () => {
     if (!deleteId) return;
     setIsDeleting(true);
@@ -170,7 +167,7 @@ export default function Transaksi({
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/transaksi/${deleteId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/${deleteId}`,
         {
           method: "DELETE",
           headers: {
@@ -185,7 +182,6 @@ export default function Transaksi({
       }
 
       setDeleteId(null);
-      // Refresh Data Transaksi & Saldo setelah dihapus
       await fetchTransaksi();
     } catch (err: unknown) {
       const errorObj = err as Error;

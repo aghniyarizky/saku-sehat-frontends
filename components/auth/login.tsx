@@ -65,12 +65,10 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
       const resData = JSON.parse(teksResponse);
       setSuccess(true);
       
-      //Simpan Token & User Identifier
       if (resData.data) {
         localStorage.setItem("token", resData.data);
       }
 
-      //Simpan Username/Identifier agar dibaca Dashboard
       const loggedInUser = resData.user?.username || resData.username || formData.identifier;
       localStorage.setItem("username", loggedInUser);
 
@@ -108,22 +106,22 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
             </div>
           </div>
 
-          <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-[32px] font-extrabold tracking-tight text-center leading-snug">
+          <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-[30px] font-extrabold tracking-tight text-center leading-snug">
             Yuk, Lanjut{" "}
-            <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent text-[32px] font-extrabold text-center">
+            <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent text-[30px] font-extrabold text-center">
               Kelola
             </span> 
           </h2>
-          <h2 className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent text-[32px] font-extrabold text-center">
+          <h2 className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent text-[30px] font-extrabold text-center">
             Keuanganmu!
           </h2>
 
-          <p className="text-sm mt-3 text-gray-300 font-semibold text-center leading-snug">
-            Masuk ke SAKU SEHAT dan lihat perkembangan finansialmu dengan mudah.
+          <p className="text-xs mt-3 text-gray-300 font-medium text-center leading-snug">
+            Masuk ke SAKU SEHAT dan lihat perkembangan finansialmu <br /> dengan mudah.
           </p>
           
           <div className="p-4">
-            <div className="w-full bg-linear-to-tr from-transparent via-gray-400 to-transparent rounded-full p-px mb-5 mt-2">
+            <div className="w-full bg-linear-to-tr from-transparent via-gray-400 to-transparent rounded-full p-px mb-4">
               <div className="relative w-full bg-linear-to-b from-[#090e16] to-[#182133] rounded-full p-1 text-white overflow-hidden">
                 
                 <div 
@@ -175,7 +173,7 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
               
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold tracking-wider text-white">Username / Email</label>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-[#2EC4B6] focus-within:border-transparent transition-all">
+                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-[#2EC4B6] focus-within:border-transparent transition-all">
                   <span className="material-icons text-gray-300 text-sm select-none">person</span>
                   <input 
                     type="text" 
@@ -191,7 +189,7 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
 
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-bold tracking-wider text-white">Password</label>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-[#2EC4B6] focus-within:border-transparent transition-all">
+                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-gray-400 backdrop-blur-md focus-within:ring-2 focus-within:ring-[#2EC4B6] focus-within:border-transparent transition-all">
                   <span className="material-icons text-gray-300 text-sm select-none">lock</span>
                   <input 
                     type={showPassword ? "text" : "password"} 

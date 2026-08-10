@@ -96,24 +96,29 @@ export default function RegisterComponent({ onSwitchToLogin, onRegisterSuccess }
   };
 
   return (
-    <div className="w-full min-h-screen px-8 py-8 flex flex-col justify-center bg-[#101828] relative overflow-y-auto">
-      <div className="w-full max-w-md mx-auto my-auto"> 
-        
-        <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-[28px] font-extrabold tracking-tight text-center leading-snug">
-          Mulai Kelola{" "}
-          <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent text-[28px] font-extrabold text-center">
-            Keuanganmu
-          </span> 
+    <div className="w-full min-h-screen px-8 py-12 flex flex-col justify-center bg-[#101828] relative overflow-hidden">
+      <div className="absolute top-6 left-0 right-0 w-full px-8">
+        <div className="w-full "> 
+          <div className="w-10 mb-5"> 
+            <div 
+              onClick={onSwitchToLogin}
+              className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer hover:bg-gray-700 transition-colors"
+            >
+              <span className="material-icons text-lg text-white">arrow_back</span>
+            </div>
+          </div>
+        <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-[30px] font-extrabold tracking-tight text-center leading-snug">
+          Selamat Datang di{" "}
         </h2>
-        <h2 className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent text-[28px] font-extrabold text-center">
-          Sekarang!
+        <h2 className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent text-[30px] font-extrabold text-center">
+          SAKU SEHAT
         </h2>
 
         <p className="text-xs mt-2 text-gray-300 font-medium text-center leading-snug">
           Buat akun SAKU SEHAT dan nikmati kemudahan mencatat serta memantau finansialmu.
         </p>
         
-        <div className="mt-4">
+        <div className="p-4">
           <div className="w-full bg-linear-to-tr from-transparent via-gray-400 to-transparent rounded-full p-px mb-4">
             <div className="relative w-full bg-linear-to-b from-[#090e16] to-[#182133] rounded-full p-1 text-white overflow-hidden">
               
@@ -123,7 +128,7 @@ export default function RegisterComponent({ onSwitchToLogin, onRegisterSuccess }
                 }`}
               />
 
-              <div className="relative flex flex-row items-center w-full z-10 text-xs">
+              <div className="relative flex flex-row items-center w-full z-10">
                 <div className="w-1/2">
                   <button
                     type="button"
@@ -275,6 +280,7 @@ export default function RegisterComponent({ onSwitchToLogin, onRegisterSuccess }
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }

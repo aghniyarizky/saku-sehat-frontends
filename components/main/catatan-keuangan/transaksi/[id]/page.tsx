@@ -9,118 +9,162 @@ interface EditTransaksiProps {
   onSwitchToTransaction?: () => void;
 }
 
-const INITIAL_TRANSACTIONS = [
-  {
-    id: 1,
-    title: "Beli ayam geprek",
-    category: "Makanan",
-    source: "Gopay",
-    date: "2026-07-13",
-    amount: 12500,
-    type: "pengeluaran",
-  },
-  {
-    id: 2,
-    title: "Isi Bensin",
-    category: "Transportasi",
-    source: "Cash",
-    date: "2026-07-13",
-    amount: 30000,
-    type: "pengeluaran",
-  },
-  {
-    id: 3,
-    title: "Gaji Freelance",
-    category: "Freelance",
-    source: "Bank BCA",
-    date: "2026-07-12",
-    amount: 150000,
-    type: "pemasukan",
-  },
-  {
-    id: 4,
-    title: "Uang bulanan",
-    category: "Uang Saku",
-    source: "Bank BCA",
-    date: "2026-07-12",
-    amount: 1500000,
-    type: "pemasukan",
-  },
-  {
-    id: 5,
-    title: "Nonton Obsession",
-    category: "Hiburan",
-    source: "Gopay",
-    date: "2026-07-12",
-    amount: -50000,
-    type: "pengeluaran",
-  },
-  {
-    id: 6,
-    title: "Makan Siang",
-    category: "Makanan",
-    source: "Gopay",
-    date: "2026-07-12",
-    amount: -40000,
-    type: "pengeluaran",
-  },
-  {
-    id: 7,
-    title: "Shopee Paylater",
-    category: "Cicilan",
-    source: "Gopay",
-    date: "2026-07-12",
-    amount: -50000,
-    type: "pengeluaran",
-  },
-];
-
 export default function EditTransaksi({ transactionId, onSwitchToTransaction }: EditTransaksiProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Makanan");
   const [source, setSource] = useState("Gopay");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
+  const [type, setType] = useState("pengeluaran"); 
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (transactionId) {
-      const foundItem = INITIAL_TRANSACTIONS.find(
-        (item) => String(item.id) === String(transactionId)
-      );
+    const fetchDetailTransaksi = async () => {
+      if (!transactionId) return;
+      setLoading(true);
+      setError("");
 
-      if (foundItem) {
-        setTitle(foundItem.title);
-        setCategory(foundItem.category);
-        setSource(foundItem.source || "Gopay");
-        setAmount(String(foundItem.amount));
-        setDate(foundItem.date);
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/${transactionId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+          }
+        );
+
+        const textRes = await res.text();
+        let resData;
+        try {
+          resData = JSON.parse(textRes);
+        } catch {
+          throw new Error("Respon server bukan format JSON yang valid.");
+        }
+
+        if (!res.ok) {
+          throw new Error(resData.message || "Gagal memuat detail transaksi.");
+        }
+
+        const item = resData.data;
+        if (item) {
+          setTitle(item.Catatan_Transaksi || "");
+          setCategory(item.kategori || "Makanan");
+          setSource(item.Sumber_Dana || "Gopay");
+          setAmount(String(item.nominal || ""));
+          if (item.tanggal) {
+            setDate(item.tanggal.split("T")[0]);
+          }
+          setType(item.tipe || "pengeluaran");
+        }
+      } catch (err: unknown) {
+        const errorObj = err as Error;
+        setError(errorObj.message || "Terjadi kesalahan.");
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchDetailTransaksi();
   }, [transactionId]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Memperbarui Transaksi ID:", transactionId, {
-      title,
-      category,
-      source,
-      amount,
-      date,
-    });
+    if (!transactionId) return;
+    setLoading(true);
+    setError("");
 
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/${transactionId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            Catatan_Transaksi: title,
+            tipe: type,
+            kategori: category,
+            Sumber_Dana: source,
+            nominal: Number(amount),
+            tanggal: date ? new Date(date) : new Date(),
+          }),
+        }
+      );
 
-    if (onSwitchToTransaction) {
-      onSwitchToTransaction();
-    }
-  };
+      const textRes = await res.text();
+      let resData;
+      try {
+        resData = JSON.parse(textRes);
+      } catch {
+        throw new Error("Respon server bukan format JSON yang valid.");
+      }
 
-  const handleDelete = () => {
-    if (confirm("Apakah Anda yakin ingin menghapus transaksi ini?")) {
-      console.log("Menghapus Transaksi ID:", transactionId);
+      if (!res.ok) {
+        throw new Error(resData.message || "Gagal memperbarui transaksi.");
+      }
 
       if (onSwitchToTransaction) {
         onSwitchToTransaction();
+      }
+    } catch (err: unknown) {
+      const errorObj = err as Error;
+      setError(errorObj.message || "Gagal menyimpan perubahan.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!transactionId) return;
+    if (confirm("Apakah Anda yakin ingin menghapus transaksi ini?")) {
+      setLoading(true);
+      setError("");
+
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan/${transactionId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+          }
+        );
+
+        const textRes = await res.text();
+        console.log("RAW RESPONSE DARI SERVER:", textRes); 
+
+        let resData;
+        try {
+          resData = JSON.parse(textRes);
+        } catch {
+          throw new Error(`Server merespons bukan JSON. Isi respons: "${textRes}"`);
+        }
+
+        if (!res.ok) {
+          throw new Error(resData.message || "Gagal memuat detail transaksi.");
+        }
+
+        if (onSwitchToTransaction) {
+          onSwitchToTransaction();
+        }
+      } catch (err: unknown) {
+        const errorObj = err as Error;
+        setError(errorObj.message || "Terjadi kesalahan saat menghapus.");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -167,6 +211,12 @@ export default function EditTransaksi({ transactionId, onSwitchToTransaction }: 
         </div>
       </div>
 
+      {error && (
+        <div className="p-3 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 mt-1 w-full">
         <div className="border border-slate-700/60 rounded-3xl bg-white/5 p-5 flex flex-col gap-4">
           
@@ -183,6 +233,23 @@ export default function EditTransaksi({ transactionId, onSwitchToTransaction }: 
           </div>
 
           <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-white/80 font-medium">Tipe Transaksi</label>
+            <div className="relative">
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="w-full bg-[#101828]/50 border border-slate-700 rounded-full px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#2EC4B6] appearance-none pr-10 cursor-pointer"
+              >
+                <option value="pengeluaran">Pengeluaran</option>
+                <option value="pemasukan">Pemasukan</option>
+              </select>
+              <span className="material-icons absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 pointer-events-none text-lg">
+                expand_more
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
             <label className="text-xs text-white/80 font-medium">Kategori</label>
             <div className="relative">
               <select
@@ -195,6 +262,8 @@ export default function EditTransaksi({ transactionId, onSwitchToTransaction }: 
                 <option value="Freelance">Freelance</option>
                 <option value="Uang Saku">Uang Saku</option>
                 <option value="Hiburan">Hiburan</option>
+                <option value="Tabungan">Tabungan</option>
+                <option value="Lainnya">Lainnya</option>
               </select>
               <span className="material-icons absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 pointer-events-none text-lg">
                 expand_more
@@ -253,17 +322,19 @@ export default function EditTransaksi({ transactionId, onSwitchToTransaction }: 
         <div className="flex flex-col gap-3 mt-1">
           <button
             type="submit"
-            className="w-full py-3.5 rounded-full bg-[#2EC4B6] text-[#0A2E2A] text-sm font-bold hover:bg-[#28b3a6] transition-colors cursor-pointer shadow-md"
+            disabled={loading}
+            className="w-full py-3.5 rounded-full bg-[#2EC4B6] text-[#0A2E2A] text-sm font-bold hover:bg-[#28b3a6] transition-colors cursor-pointer shadow-md disabled:opacity-50"
           >
-            Simpan
+            {loading ? "Menyimpan..." : "Simpan"}
           </button>
 
           <button
             type="button"
+            disabled={loading}
             onClick={handleDelete}
-            className="w-full py-3.5 rounded-full bg-[#E74C3C] text-white text-sm font-bold hover:bg-[#d63b2b] transition-colors cursor-pointer shadow-md"
+            className="w-full py-3.5 rounded-full bg-[#E74C3C] text-white text-sm font-bold hover:bg-[#d63b2b] transition-colors cursor-pointer shadow-md disabled:opacity-50"
           >
-            Hapus Transaksi
+            {loading ? "Memproses..." : "Hapus Transaksi"}
           </button>
         </div>
       </form>

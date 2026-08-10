@@ -32,6 +32,70 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const [userData, setUserData] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        try {
+          const parsed = JSON.parse(savedUser);
+          return {
+            username: parsed.username || parsed.name || "",
+            email: parsed.email || "",
+            fotoProfilUrl: parsed.fotoProfilUrl || "",
+          };
+        } catch (e) {
+          console.error("Gagal parsing data user dari localStorage", e);
+        }
+      }
+    }
+    return {
+      username: "",
+      email: "",
+      fotoProfilUrl: "",
+    };
+  });
+
+  useEffect(() => {
+    const fetchProfileSidebar = async () => {
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        if (token) {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            const newUserData = {
+              username: data.username || "",
+              email: data.email || "",
+              fotoProfilUrl: data.fotoProfilUrl || "",
+            };
+            setUserData(newUserData);
+            localStorage.setItem("user", JSON.stringify(data));
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Gagal memuat profil sidebar:", error);
+      }
+    };
+
+    if (isOpen) {
+      fetchProfileSidebar();
+    }
+  }, [isOpen]);
+
   const menuItems: MenuItem[] = [
     { name: "Dashboard", icon: "dashboard", href: "?mode=dashboard" },
     {
@@ -72,7 +136,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   useEffect(() => {
     const queryHref = `?mode=${currentMode}`;
-
     let foundMatch = false;
 
     menuItems.forEach((item) => {
@@ -118,6 +181,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       console.error("Logout request failed:", error);
     } finally {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       setIsLoggingOut(false);
       onClose();
       router.push("/?mode=login");
@@ -154,19 +218,23 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               </div>
 
               <div className="flex items-center gap-3 my-2">
-                <span
-                  className="material-icons text-gray-500 select-none leading-none shrink-0"
-                  style={{ fontSize: "40px", width: "40px", height: "40px" }}
-                >
-                  account_circle
-                </span>
+                <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-700 bg-gray-800 shrink-0">
+                  <img
+                    src={userData.fotoProfilUrl || "/default-avatar.png"}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/default-avatar.png";
+                    }}
+                  />
+                </div>
 
                 <div className="flex flex-col min-w-0">
-                  <div className="text-sm font-semibold text-white leading-tight truncate">
-                    Jane Doe
+                  <div className="text-sm font-semibold text-white leading-tight">
+                    {isMounted ? userData.username || "Memuat..." : "Memuat..."}
                   </div>
                   <div className="text-xs text-white/40 truncate">
-                    JaneDoe@gmail.com
+                    {isMounted ? userData.email : ""}
                   </div>
                 </div>
               </div>
