@@ -5,6 +5,9 @@ import Link from "next/link";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from '../../../sidebar';
 
+import { useRouter } from "next/navigation";
+import Header from "../../../header";
+
 interface EditTargetNabungProps {
   targetId?: string | null;
   onSwitchToTargetNabung: () => void;
@@ -17,6 +20,7 @@ export default function EditTargetNabung({ targetId, onSwitchToTargetNabung }: E
   const [namaTarget, setNamaTarget] = useState("Nabung Laptop Baru");
   const [nominal, setNominal] = useState("3000000");
   const [deadlineTarget, setDeadlineTarget] = useState("2026-10-15");
+  const router = useRouter();
 
   const iconsList = [
     { id: "target", label: "🎯" },
@@ -51,33 +55,11 @@ export default function EditTargetNabung({ targetId, onSwitchToTargetNabung }: E
         onClose={() => setIsSidebarOpen(false)} 
       />
 
-      <div className="w-full flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2.5">
-          <button 
-            type="button"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <span className="material-icons text-2xl select-none">menu</span>
-          </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
-        </div>
-
-        <div className="flex flex-row items-center gap-3">
-          <Link 
-            href="/?mode=notifikasi" 
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
-          >
-            <span className="material-icons text-xl select-none">notifications</span>
-          </Link>
-          <Link 
-            href="/?mode=profil" 
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
-          >
-            <span className="material-icons text-xl select-none">account_circle</span>
-          </Link>
-        </div>
-      </div>
+      <Header
+              title="Catatan Keuangan"
+              onOpenSidebar={() => setIsSidebarOpen(true)}
+               onProfileClick={() => router.push("/?mode=profile-edit")}
+            />
 
       <div className="flex flex-row gap-4 items-center">
         <button 

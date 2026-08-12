@@ -5,6 +5,9 @@ import Link from "next/link";
 import "material-icons/iconfont/material-icons.css";
 import Sidebar from "../../sidebar";
 import NavCatatan from "../nav-catatan";
+import { useRouter } from "next/navigation";
+
+import Header from "../../header";
 
 interface BudgetingProps {
   onSwitchToAddBudget?: () => void;
@@ -29,6 +32,8 @@ export default function Budgeting({
   onSwitchToEditBudget,
 }: BudgetingProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
+  
 
   const [ringkasan, setRingkasan] = useState({
     totalBudget: 0,
@@ -146,37 +151,11 @@ export default function Budgeting({
     <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <div className="w-full flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2.5">
-          <button
-            type="button"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <span className="material-icons text-2xl select-none">menu</span>
-          </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
-        </div>
-
-        <div className="flex flex-row items-center gap-3">
-          <Link
-            href="/?mode=notifikasi"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
-          >
-            <span className="material-icons text-xl select-none">
-              notifications
-            </span>
-          </Link>
-          <Link
-            href="/?mode=profil"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
-          >
-            <span className="material-icons text-xl select-none">
-              account_circle
-            </span>
-          </Link>
-        </div>
-      </div>
+      <Header
+              title="Catatan Keuangan"
+              onOpenSidebar={() => setIsSidebarOpen(true)}
+               onProfileClick={() => router.push("/?mode=profile-edit")}
+            />
 
       <NavCatatan />
 

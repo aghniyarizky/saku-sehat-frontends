@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 import 'material-icons/iconfont/material-icons.css';
+import { useRouter } from "next/navigation";
 import Sidebar from '../../../sidebar';
+
+import Header from "../../../header";
 
 interface EditBudgetingProps {
   budgetingId: string | number | null;
@@ -16,6 +19,8 @@ export default function EditBudgeting({ budgetingId, onSwitchToBudgeting }: Edit
   const [batasBulan, setBatasBulan] = useState("");
   const [tanggalMulai, setTanggalMulai] = useState("");
   const [tanggalSelesai, setTanggalSelesai] = useState("");
+  const router = useRouter();
+  
 
   const jenisOptions = [
     { id: "uangsaku", name: "Uang Saku" },
@@ -82,27 +87,11 @@ export default function EditBudgeting({ budgetingId, onSwitchToBudgeting }: Edit
         onClose={() => setIsSidebarOpen(false)} 
       />
       
-      <div className="w-full flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2.5">
-          <button 
-            type="button"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <span className="material-icons text-2xl select-none">menu</span>
-          </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
-        </div>
-      
-        <div className="flex flex-row items-center gap-3">
-          <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-            <span className="material-icons text-xl select-none">notifications</span>
-          </button>
-          <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-            <span className="material-icons text-xl select-none">account_circle</span>
-          </button>
-        </div>
-      </div>
+      <Header
+              title="Catatan Keuangan"
+              onOpenSidebar={() => setIsSidebarOpen(true)}
+              onProfileClick={() => router.push("/?mode=profile-edit")}
+            />
 
       <div className="flex flex-row gap-4 items-center">
         <button 

@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, Suspense } from "react";
+// import LandingPage from "@/components/page";
 import RegisterComponent from "@/components/auth/register";
 import VerifyOTPComponent from "@/components/auth/verify-otp";
 import ProfileAuthComponent from "@/components/auth/profile-auth";
@@ -25,6 +26,7 @@ import EditTargetNabung from "@/components/main/catatan-keuangan/target-nabung/[
 import BeforeYouBorrow from "@/components/main/before-you-borrow/before-you-borrow";
 import CariAman from "@/components/main/smart-assistant/cari-aman";
 import FinancialHealth from "@/components/main/financial-health/financial-health";
+import EditProfile from "@/components/main/profile-user";
 
 type StepType =
   | "register"
@@ -49,7 +51,8 @@ type StepType =
   | "edittargetnabung"
   | "beforeyouborrow"
   | "cariaman"
-  | "financialhealth";
+  | "financialhealth"
+  | "profileedit";
 
 function AuthContent() {
   const router = useRouter();
@@ -105,7 +108,12 @@ function AuthContent() {
       return rawStep as StepType;
     }
 
+    if (["profileedit", "profile-edit", "edit-profile"].includes(rawStep)) {
+      return "profileedit";
+    }
+
     return "register";
+
   };
 
   const step = getStep();
@@ -266,6 +274,23 @@ function AuthContent() {
         <EditTargetNabung
           targetId={targetNabungId}
           onSwitchToTargetNabung={() => setStep("targetnabung")}
+        />
+      )}
+
+      {step === "profileedit" && (
+        <EditProfile 
+          isOpen={true} 
+          onClose={() => setStep("dashboard")}
+          onBack={() => setStep("dashboard")}
+          userData={{
+            username: "User", 
+            email: "user@email.com",
+            fotoProfilUrl: "",
+          }}
+          onSave={(newData) => {
+            console.log("Simpan data:", newData);
+            setStep("dashboard");
+          }}
         />
       )}
     </div>

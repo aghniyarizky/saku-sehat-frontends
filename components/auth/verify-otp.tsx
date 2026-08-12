@@ -51,12 +51,6 @@ export default function VerifyOTPComponent({ email, onSuccess, onBackToRegister 
       const resData = await response.json();
       if (!response.ok) throw new Error(resData.message || "Verifikasi OTP gagal.");
 
-      // 🟢 PERBAIKAN: token dari verify-otp SEBELUMNYA gak pernah disimpan
-      // sama sekali. Backend mengembalikan token JWT di field "data"
-      // (string langsung, bukan object) — ini yang dipakai untuk semua
-      // request selanjutnya yang butuh auth (termasuk profile-onboarding).
-      // Tanpa baris ini, localStorage tetap kosong/pakai token basi dari
-      // sesi lama, sehingga request berikutnya ditolak "invalid user".
       if (resData.data) {
         localStorage.setItem("token", resData.data);
       }
@@ -184,8 +178,12 @@ export default function VerifyOTPComponent({ email, onSuccess, onBackToRegister 
               <button 
                 type="button" 
                 onClick={handleResend} 
-                disabled={loading || countdown > 240} 
-                className="text-[#2EC4B6] hover:underline text-xs font-semibold bg-transparent border-none cursor-pointer disabled:text-gray-500 disabled:no-underline"
+                disabled={loading || countdown > 0} 
+                className={`text-xs font-semibold bg-transparent border-none cursor-pointer transition-colors ${
+                  countdown === 0 
+                    ? "text-[#2EC4B6] hover:underline cursor-pointer" 
+                    : "text-gray-500 cursor-not-allowed"
+                }`}
               >
                 Kirim Ulang OTP
               </button>

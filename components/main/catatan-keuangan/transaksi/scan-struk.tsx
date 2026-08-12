@@ -3,6 +3,9 @@
 import { useState, useRef } from "react";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from '../../sidebar';
+import { useRouter } from "next/navigation";
+
+import Header from "../../header";
 
 interface ScanStrukProps {
     onSwitchToTransaction: () => void;
@@ -32,6 +35,8 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
     const [errorMessage, setErrorMessage] = useState("");
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const router = useRouter();
 
     const formatRupiah = (val: number) => {
         return new Intl.NumberFormat("id-ID", {
@@ -169,27 +174,11 @@ export default function ScanStruk({ onSwitchToTransaction, onSwitchToScan, onSwi
                 onClose={() => setIsSidebarOpen(false)}
             />
 
-            <div className="w-full flex flex-row items-center justify-between">
-                <div className="flex flex-row items-center gap-2.5">
-                    <button
-                        type="button"
-                        className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
-                        onClick={() => setIsSidebarOpen(true)}
-                    >
-                        <span className="material-icons text-2xl select-none">menu</span>
-                    </button>
-                    <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
-                </div>
-
-                <div className="flex flex-row items-center gap-3">
-                    <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-                        <span className="material-icons text-xl select-none">notifications</span>
-                    </button>
-                    <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-                        <span className="material-icons text-xl select-none">account_circle</span>
-                    </button>
-                </div>
-            </div>
+            <Header
+                    title="Catatan Keuangan"
+                    onOpenSidebar={() => setIsSidebarOpen(true)}
+                     onProfileClick={() => router.push("/?mode=profile-edit")}
+                  />
 
             <div className="flex flex-row gap-5 items-center">
                 <button

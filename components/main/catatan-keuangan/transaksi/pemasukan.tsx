@@ -19,16 +19,11 @@ export default function Pemasukan({ onSuccess }: PemasukanProps) {
     const [success, setSuccess] = useState(false);
 
     const categories = [
-        { id: "Hiburan", name: "Hiburan" },
-        { id: "Makanan", name: "Makanan" },
-        { id: "Transportasi", name: "Transportasi" },
-        { id: "Belanja", name: "Belanja" },
-        { id: "Tagihan", name: "Tagihan" },
-        { id: "Kesehatan", name: "Kesehatan" },
-        { id: "Gaji", name: "Gaji" },
-        { id: "Freelance", name: "Freelance" },
+        { id: "Uang-Saku", name: "Uang Saku" },
         { id: "Part-time", name: "Part-time" },
-        { id: "Investasi", name: "Investasi" },
+        { id: "Freelance", name: "Freelance" },
+        { id: "Beasiswa", name: "Beasiswa" },
+        { id: "Bisnis Kecil", name: "Bisnis Kecil" },
         { id: "Lainnya", name: "Lainnya" },
     ];
 

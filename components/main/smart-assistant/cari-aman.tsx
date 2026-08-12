@@ -21,6 +21,16 @@ const normalizeRiskLevel = (raw: string | undefined): HasilAnalisis["riskLevel"]
   return "waspada";
 };
 
+const getRiskCategoryInfo = (score: number) => {
+  if (score <= 19) {
+    return { label: "Skor Aman", text: "text-[#2EC4B6]", bar: "bg-[#2EC4B6]" };
+  } else if (score <= 59) {
+    return { label: "Skor Waspada", text: "text-[#F5A623]", bar: "bg-[#F5A623]" };
+  } else {
+    return { label: "Skor Bahaya", text: "text-red-400", bar: "bg-red-400" };
+  }
+};
+
 const mapApiDataToHasil = (data: any): HasilAnalisis => ({
   riskScore: data?.riskScore ?? data?.risk_score ?? 0,
   riskLevel: normalizeRiskLevel(data?.riskLevel || data?.risk_level),
@@ -147,8 +157,9 @@ export default function CariAman() {
     berbahaya: { text: "text-red-400", bar: "bg-red-400" },
   };
 
-  const activeColor = hasilAnalisis ? riskColor[hasilAnalisis.riskLevel] : riskColor.waspada;
   const displaySkor = hasilAnalisis ? hasilAnalisis.riskScore : 60;
+  const riskInfo = getRiskCategoryInfo(displaySkor);
+  
   const displaySummary = hasilAnalisis
     ? hasilAnalisis.aiSummary
     : "Tempel pesan mencurigakan lalu klik \"Analisis Pesan\" untuk melihat hasil dari AI.";
@@ -220,7 +231,7 @@ export default function CariAman() {
               value={pesan}
               onChange={(e) => setPesan(e.target.value)}
               rows={5}
-              className="border border-white/15 rounded-2xl w-full text-xs px-4 py-3 bg-[#0b0f19] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/40 text-white resize-none"
+              className="border border-white/15 rounded-2xl w-full text-xs px-4 py-3 focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/40 text-white resize-none"
               placeholder="Tempel pesan mencurigakan dari SMS, Email, atau Whatsapp kamu..."
               required
             />
@@ -243,7 +254,7 @@ export default function CariAman() {
       </form>
 
       <div className="border border-white/10 rounded-3xl bg-white/5 p-6 flex flex-col gap-3">
-        <div className="text-sm font-semibold">Skor Bahaya</div>
+        <div className="text-sm font-semibold">{riskInfo.label}</div>
 
         {analyzing ? (
           <div className="flex flex-col items-center justify-center gap-4 py-10">
@@ -253,12 +264,12 @@ export default function CariAman() {
         ) : (
           <>
             <div className="flex flex-row items-center justify-between">
-              <div className={`text-3xl font-extrabold ${activeColor.text}`}>{displaySkor}</div>
+              <div className={`text-3xl font-extrabold ${riskInfo.text}`}>{displaySkor}</div>
             </div>
 
-            <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-500 ${activeColor.bar}`}
+                className={`h-full rounded-full transition-all duration-500 ${riskInfo.bar}`}
                 style={{ width: `${displaySkor}%` }}
               />
             </div>
@@ -291,7 +302,7 @@ export default function CariAman() {
             )}
 
             {displayRecommendation && (
-              <div className="border border-red-500/20 bg-red-500/10 rounded-2xl p-4 mt-1">
+              <div className="border border-red-500/30 bg-red-500/10 rounded-2xl p-4 mt-1">
                 <div className="text-xs text-red-300 leading-relaxed">
                   <span className="font-bold">Rekomendasi: </span>
                   {displayRecommendation}

@@ -31,35 +31,32 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [activeMenu, setActiveMenu] = useState<string>("Dashboard");
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
   const [isMounted, setIsMounted] = useState(false);
+
+  const [userData, setUserData] = useState({
+    username: "",
+    email: "",
+    fotoProfilUrl: "",
+  });
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
-
-  const [userData, setUserData] = useState(() => {
     if (typeof window !== "undefined") {
       const savedUser = localStorage.getItem("user");
       if (savedUser) {
         try {
           const parsed = JSON.parse(savedUser);
-          return {
+          setUserData({
             username: parsed.username || parsed.name || "",
             email: parsed.email || "",
             fotoProfilUrl: parsed.fotoProfilUrl || "",
-          };
+          });
         } catch (e) {
           console.error("Gagal parsing data user dari localStorage", e);
         }
       }
     }
-    return {
-      username: "",
-      email: "",
-      fotoProfilUrl: "",
-    };
-  });
+  }, []);
 
   useEffect(() => {
     const fetchProfileSidebar = async () => {
@@ -220,7 +217,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               <div className="flex items-center gap-3 my-2">
                 <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-700 bg-gray-800 shrink-0">
                   <img
-                    src={userData.fotoProfilUrl || "/default-avatar.png"}
+                    src={
+                      isMounted && userData.fotoProfilUrl
+                        ? userData.fotoProfilUrl
+                        : "/default-avatar.png"
+                    }
                     alt="Profile"
                     className="w-full h-full object-cover"
                     onError={(e) => {

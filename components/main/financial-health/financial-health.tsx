@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import "material-icons/iconfont/material-icons.css";
+import { useRouter } from "next/navigation";
 import Sidebar from "../sidebar";
 
 interface SubScoreAPI {
@@ -96,6 +97,8 @@ export default function FinancialHealth() {
   const [isRecalculating, setIsRecalculating] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loadingStep, setLoadingStep] = useState<number>(1);
+  const router = useRouter();
+  
 
   const getToken = () => {
     return typeof window !== "undefined" ? localStorage.getItem("token") : null;

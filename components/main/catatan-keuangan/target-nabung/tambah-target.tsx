@@ -5,6 +5,9 @@ import Link from "next/link";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from '../../sidebar';
 
+import { useRouter } from "next/navigation";
+import Header from "../../header";
+
 interface TambahTargetNabungProps {
   onSwitchToTargetNabung: () => void;
 }
@@ -21,6 +24,8 @@ export default function TambahTargetNabung({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
+  
 
   const iconsList = [
     { id: "target", label: "🎯" },
@@ -101,16 +106,11 @@ export default function TambahTargetNabung({
       />
 
       <div className="w-full flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2.5">
-          <button 
-            type="button"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <span className="material-icons text-2xl select-none">menu</span>
-          </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
-        </div>
+        <Header
+                title="Catatan Keuangan"
+                onOpenSidebar={() => setIsSidebarOpen(true)}
+                 onProfileClick={() => router.push("/?mode=profile-edit")}
+              />
 
         <div className="flex flex-row items-center gap-3">
           <Link 

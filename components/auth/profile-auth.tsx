@@ -20,13 +20,41 @@ export default function ProfileAuthComponent({
 }: ProfileAuthProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_SIZE = 300;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          setImagePreview(compressedBase64);
+        };
       };
       reader.readAsDataURL(file);
     }
@@ -35,20 +63,53 @@ export default function ProfileAuthComponent({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
       const finalFoto = imagePreview || DEFAULT_AVATAR;
+      
+      console.log("1. Status imagePreview (apakah ada file yang dipilih):", imagePreview ? "Ada file (Base64)" : "Kosong (Pakai Default Avatar)");
+      console.log("2. URL/String foto akhir yang akan dikirim:", finalFoto);
 
-      setTimeout(() => {
-        setLoading(false);
-        onNext(finalFoto); 
-      }, 500);
-    } catch (err) {
+      const token = localStorage.getItem("token"); 
+
+      const payload = {
+        fotoProfilUrl: finalFoto,
+        onboardingCompleted: true,
+        saldoSekarang: 0, 
+        sumberPemasukan: "Lainnya"
+      };
+
+      console.log("3. Payload JSON lengkap yang di-fetch:", payload);
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/onboarding`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      
+      console.log("4. Respons yang diterima dari backend:", data);
+
+      if (!response.ok) {
+        throw new Error(data.message || "Gagal menyimpan foto profil.");
+      }
+
+      onNext(finalFoto); 
+    } catch (err: any) {
+      console.error("Error tertangkap di frontend:", err);
+      setError(err.message || "Terjadi kesalahan pada server.");
+    } finally {
       setLoading(false);
     }
   };
 
   const handleSkip = () => {
+    setImagePreview(DEFAULT_AVATAR);
     onNext(DEFAULT_AVATAR);
   };
 
@@ -96,7 +157,13 @@ export default function ProfileAuthComponent({
         </div>
       </div>
       
-      <form id="profile-form" onSubmit={handleSubmit} className="w-full flex justify-center items-center my-auto py-10 mt-56">
+      <form id="profile-form" onSubmit={handleSubmit} className="w-full flex flex-col justify-center items-center my-auto py-10 mt-56">
+        {error && (
+          <div className="mb-4 p-2 text-xs text-red-400 bg-red-950/40 border border-red-900 rounded-xl">
+            {error}
+          </div>
+        )}
+
         <div className="relative group">
           <div className="w-50 h-50 rounded-full border-2 border-dashed border-[#2EC4B6] flex items-center justify-center overflow-hidden bg-[#1B1B1B] shadow-xl">
             {imagePreview ? (

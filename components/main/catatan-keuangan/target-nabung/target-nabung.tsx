@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from '../../sidebar';
+import { useRouter } from "next/navigation";
 import NavCatatan from '../nav-catatan';
+
+import Header from "../../header";
 
 interface TargetNabungProps {
   onSwitchToAddTarget?: () => void;
@@ -38,12 +41,12 @@ export default function TargetNabung({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // 🟢 State Modal Setor Tabungan
   const [selectedTarget, setSelectedTarget] = useState<TargetTabungBE | null>(null);
   const [nominalSetor, setNominalSetor] = useState("");
   const [sumberDana, setSumberDana] = useState("Tunai");
   const [loadingSetor, setLoadingSetor] = useState(false);
   const [errorSetor, setErrorSetor] = useState("");
+  const router = useRouter();
 
   const sumberDanaOptions = [
     "Tunai", "Gopay", "DANA", "ShopeePay", "Bank Mandiri", "BSI", "BRI", "BTN", "BSA", "OVO", "Lainnya"
@@ -90,7 +93,6 @@ export default function TargetNabung({
     fetchTargetData();
   }, []);
 
-  // 💰 Handler untuk Memproses Setor Tabungan
   const handleSetorSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTarget) return;
@@ -124,7 +126,6 @@ export default function TargetNabung({
         throw new Error(resData.message || "Gagal menyetor tabungan.");
       }
 
-      // Reset Modal & Re-fetch Data
       setSelectedTarget(null);
       setNominalSetor("");
       setSumberDana("Tunai");
@@ -146,16 +147,11 @@ export default function TargetNabung({
 
       {/* Header Utama */}
       <div className="w-full flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2.5">
-          <button 
-            type="button"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <span className="material-icons text-2xl select-none">menu</span>
-          </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
-        </div>
+        <Header
+                title="Catatan Keuangan"
+                onOpenSidebar={() => setIsSidebarOpen(true)}
+                 onProfileClick={() => router.push("/?mode=profile-edit")}
+              />
 
         <div className="flex flex-row items-center gap-3">
           <Link 

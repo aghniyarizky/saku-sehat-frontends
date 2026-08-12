@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from '../../sidebar';
 import Pengeluaran from './pengeluaran';
 import Pemasukan from './pemasukan'; 
+
+import Header from "../../header";
 
 interface TambahTransaksiProps {
   onSwitchToTransaction: () => void;
@@ -19,6 +22,7 @@ export default function TambahTransaksi({
 }: TambahTransaksiProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [transactionType, setTransactionType] = useState<'pengeluaran' | 'pemasukan'>('pengeluaran');
+  const router = useRouter();
 
   const handleSuccessSave = () => {
     if (onSwitchToTransaction) {
@@ -33,27 +37,11 @@ export default function TambahTransaksi({
         onClose={() => setIsSidebarOpen(false)} 
       />
     
-      <div className="w-full flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2.5">
-          <button 
-            type="button"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <span className="material-icons text-2xl select-none">menu</span>
-          </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
-        </div>
-    
-        <div className="flex flex-row items-center gap-3">
-          <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-            <span className="material-icons text-xl select-none">notifications</span>
-          </button>
-          <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-            <span className="material-icons text-xl select-none">account_circle</span>
-          </button>
-        </div>
-      </div>
+      <Header
+        title="Catatan Keuangan"
+        onOpenSidebar={() => setIsSidebarOpen(true)}
+        onProfileClick={() => router.push("/?mode=profile-edit")}
+      />
 
       <div className="flex flex-row gap-5 items-center">
         <button 
@@ -138,7 +126,6 @@ export default function TambahTransaksi({
         </button>
       </div>
 
-      {/* Render Form Berdasarkan Tab Active & Forwarding onSuccess Callback */}
       {transactionType === 'pengeluaran' ? (
         <Pengeluaran onSuccess={handleSuccessSave} />
       ) : (

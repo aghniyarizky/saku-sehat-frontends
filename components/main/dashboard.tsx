@@ -7,6 +7,8 @@ import "material-icons/iconfont/material-icons.css";
 import Sidebar from "./sidebar";
 import NativeFinancialChart from "./grafik-keuangan";
 
+import Header from "./header";
+
 interface Summary {
   saldo: number;
   totalPemasukan: number;
@@ -259,35 +261,11 @@ export default function Dashboard() {
 
       <div>
         <div className="w-full flex flex-row items-center justify-between">
-          <div className="flex flex-row items-center gap-2.5">
-            <button
-              type="button"
-              className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer duration-500"
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              <span className="material-icons text-2xl select-none">menu</span>
-            </button>
-            <h1 className="text-xl font-bold tracking-tight">Dashboard</h1>
-          </div>
-
-          <div className="flex flex-row items-center gap-3">
-            <button
-              type="button"
-              className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
-            >
-              <span className="material-icons text-xl select-none">
-                notifications
-              </span>
-            </button>
-            <button
-              type="button"
-              className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
-            >
-              <span className="material-icons text-xl select-none">
-                account_circle
-              </span>
-            </button>
-          </div>
+          <Header
+            title="Dashboard"
+            onOpenSidebar={() => setIsSidebarOpen(true)}
+            onProfileClick={() => router.push("/?mode=profile-edit")}
+          />
         </div>
 
         <h2 className="mt-3 bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-3xl font-extrabold tracking-tight leading-snug">

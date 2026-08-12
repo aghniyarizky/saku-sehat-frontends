@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import 'material-icons/iconfont/material-icons.css';
 import Sidebar from '../../sidebar';
+import { useRouter } from "next/navigation";
+
+import Header from "../../header";
 
 interface HasilKalkulasi {
   jumlahPinjaman: number;
@@ -31,6 +34,9 @@ export default function KalkulatorBunga() {
   const [hasilKalkulasi, setHasilKalkulasi] = useState<HasilKalkulasi | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const router = useRouter();
+  
 
   const formatRupiah = (val: number) => {
     return new Intl.NumberFormat("id-ID", {
@@ -157,27 +163,11 @@ export default function KalkulatorBunga() {
         onClose={() => setIsSidebarOpen(false)}
       />
 
-      <div className="w-full flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center gap-2.5">
-          <button
-            type="button"
-            className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
-            onClick={() => setIsSidebarOpen(true)}
-          >
-            <span className="material-icons text-2xl select-none">menu</span>
-          </button>
-          <h1 className="text-xl font-bold tracking-tight">Kalkulator Bunga</h1>
-        </div>
-
-        <div className="flex flex-row items-center gap-3">
-          <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-            <span className="material-icons text-xl select-none">notifications</span>
-          </button>
-          <button type="button" className="flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer">
-            <span className="material-icons text-xl select-none">account_circle</span>
-          </button>
-        </div>
-      </div>
+      <Header
+              title="Catatan Keuangan"
+              onOpenSidebar={() => setIsSidebarOpen(true)}
+              onProfileClick={() => router.push("/?mode=profile-edit")}  
+            />
 
       {error && (
         <div className="p-3 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
