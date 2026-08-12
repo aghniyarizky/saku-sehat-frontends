@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, Suspense } from "react";
-// import LandingPage from "@/components/page";
+import Landing from "@/components/main/landing";
 import RegisterComponent from "@/components/auth/register";
 import VerifyOTPComponent from "@/components/auth/verify-otp";
 import ProfileAuthComponent from "@/components/auth/profile-auth";
@@ -29,6 +29,7 @@ import FinancialHealth from "@/components/main/financial-health/financial-health
 import EditProfile from "@/components/main/profile-user";
 
 type StepType =
+  | "landing"
   | "register"
   | "otp"
   | "profile"
@@ -67,7 +68,8 @@ function AuthContent() {
   const targetNabungId = id;
 
   const getStep = (): StepType => {
-    if (!rawStep) return "register";
+    if (!rawStep) return "landing";
+    if (rawStep === "landing") return "landing";
 
     if (rawStep === "dashboard") return "dashboard";
     if (["transaksi", "transaction"].includes(rawStep)) return "transaksi";
@@ -124,7 +126,14 @@ function AuthContent() {
   };
 
   return (
-    <div className="w-full max-w-md h-screen flex flex-col bg-[#101828] relative overflow-hidden">
+    <div className="w-full min-h-screen flex flex-col bg-[#101828] relative overflow-x-hidden">
+      {step === "landing" && (
+        <Landing
+          onNavigateToLogin={() => setStep("login")}
+          onNavigateToRegister={() => setStep("register")}
+        />
+      )}
+
       {step === "register" && (
         <RegisterComponent
           onRegisterSuccess={(data: any) => {

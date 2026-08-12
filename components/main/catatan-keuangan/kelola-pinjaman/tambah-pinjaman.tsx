@@ -151,11 +151,11 @@ export default function TambahPinjaman({ onSwitchToKelolaPinjaman }: TambahPinja
         >
           <span className="material-icons text-lg text-white leading-none">arrow_back</span>
         </button>
-        <div className="text-lg font-semibold leading-none">Tambah Pinjaman</div>
+        <div className="text-lg lg:text-xl font-semibold leading-none">Tambah Pinjaman</div>
       </div>
 
       {error && (
-        <div className="p-3 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl">
+        <div className="p-3 text-xs lg:text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl">
           {error}
         </div>
       )}
@@ -166,12 +166,12 @@ export default function TambahPinjaman({ onSwitchToKelolaPinjaman }: TambahPinja
             
             {/* Nama Platform */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Nama Platform</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Nama Platform</label>
               <div className="relative">
                 <select 
                   value={namaPlatformSelect}
                   onChange={(e) => setNamaPlatformSelect(e.target.value)}
-                  className={`appearance-none border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
+                  className={`appearance-none border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
                     namaPlatformSelect === "" ? "text-white/50" : "text-white"
                   }`}
                 >
@@ -192,7 +192,7 @@ export default function TambahPinjaman({ onSwitchToKelolaPinjaman }: TambahPinja
                   type="text"
                   value={namaPlatformCustom}
                   onChange={(e) => setNamaPlatformCustom(e.target.value)}
-                  className="mt-2 border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                  className="mt-2 border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                   placeholder="Ketikkan nama platform..."
                 />
               )}
@@ -200,12 +200,12 @@ export default function TambahPinjaman({ onSwitchToKelolaPinjaman }: TambahPinja
 
             {/* Jenis Pinjaman */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Jenis Pinjaman</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Jenis Pinjaman</label>
               <div className="relative">
                 <select 
                   value={jenisPinjaman}
                   onChange={(e) => setJenisPinjaman(e.target.value)}
-                  className={`appearance-none border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
+                  className={`appearance-none border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
                     jenisPinjaman === "" ? "text-white/50" : "text-white"
                   }`}
                 >
@@ -224,24 +224,24 @@ export default function TambahPinjaman({ onSwitchToKelolaPinjaman }: TambahPinja
 
             {/* Total Pinjaman */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Total Pinjaman</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Total Pinjaman</label>
               <input 
                 type="number"
                 value={totalPinjaman}
                 onChange={(e) => setTotalPinjaman(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                 placeholder="Masukkan jumlah total pinjaman (Rp)"
               />
             </div>
 
             {/* Tenor Cicilan */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Tenor Cicilan</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Tenor Cicilan</label>
               <div className="relative">
                 <select 
                   value={tenorCicilan}
                   onChange={(e) => setTenorCicilan(e.target.value)}
-                  className={`appearance-none border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
+                  className={`appearance-none border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
                     tenorCicilan === "" ? "text-white/50" : "text-white"
                   }`}
                 >
@@ -260,47 +260,47 @@ export default function TambahPinjaman({ onSwitchToKelolaPinjaman }: TambahPinja
 
             {/* Cicilan Perbulan */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Cicilan Perbulan</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Cicilan Perbulan</label>
               <input 
                 type="number"
                 value={cicilanPerBulan}
                 onChange={(e) => setCicilanPerBulan(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                 placeholder="Masukkan nominal cicilan per bulan"
               />
             </div>
 
             {/* Total yang Harus Dibayar / Sisa Tagihan */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Total yang Harus Dibayar (Sisa Tagihan)</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Total yang Harus Dibayar (Sisa Tagihan)</label>
               <input 
                 type="number"
                 value={totalBayar}
                 onChange={(e) => setTotalBayar(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                 placeholder="Biarkan kosong jika sama dengan Total Pinjaman"
               />
             </div>
 
             {/* Tanggal Jatuh Tempo */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Tanggal Jatuh Tempo</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Tanggal Jatuh Tempo</label>
               <input 
                 type="date"
                 value={tanggalJatuhTempo}
                 onChange={(e) => setTanggalJatuhTempo(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
               />
             </div>
 
             {/* Status Pinjaman */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Status Pinjaman</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Status Pinjaman</label>
               <div className="relative">
                 <select 
                   value={statusPinjaman}
                   onChange={(e) => setStatusPinjaman(e.target.value)}
-                  className="appearance-none border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 text-white"
+                  className="appearance-none border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 text-white"
                 >
                   {statusOptions.map((item) => (
                     <option key={item.id} value={item.id} className="bg-[#101828] text-white">
@@ -320,7 +320,7 @@ export default function TambahPinjaman({ onSwitchToKelolaPinjaman }: TambahPinja
         <button 
           type="submit"
           disabled={loading}
-          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] disabled:bg-[#2EC4B6]/50 p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
+          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] disabled:bg-[#2EC4B6]/50 p-3 rounded-full text-sm lg:text-base font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
         >
           {loading ? "Menyimpan..." : "Simpan"}
         </button>

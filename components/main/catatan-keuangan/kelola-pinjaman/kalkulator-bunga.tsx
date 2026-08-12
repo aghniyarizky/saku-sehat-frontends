@@ -170,7 +170,7 @@ export default function KalkulatorBunga() {
             />
 
       {error && (
-        <div className="p-3 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
+        <div className="p-3 text-sm lg:text-base text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
           {error}
         </div>
       )}
@@ -180,61 +180,61 @@ export default function KalkulatorBunga() {
           <div className="flex flex-col gap-4">
 
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Jumlah Pinjaman</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Jumlah Pinjaman</label>
               <input
                 type="number"
                 value={jumlahPinjaman}
                 onChange={(e) => setJumlahPinjaman(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                 placeholder="Rp Contoh: 5000000"
                 required
               />
             </div>
 
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Bunga per Bulan (%)</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Bunga per Bulan (%)</label>
               <input
                 type="number"
                 step="0.1"
                 value={bungaPerBulan}
                 onChange={(e) => setBungaPerBulan(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                 placeholder="% Contoh: 2"
                 required
               />
             </div>
 
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Tenor Cicilan (Bulan)</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Tenor Cicilan (Bulan)</label>
               <input
                 type="number"
                 min={1}
                 value={tenorCicilan}
                 onChange={(e) => setTenorCicilan(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                 placeholder="Contoh: 6"
                 required
               />
             </div>
 
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Denda Keterlambatan per Hari</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Denda Keterlambatan per Hari</label>
               <input
                 type="number"
                 value={dendaPerHari}
                 onChange={(e) => setDendaPerHari(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                 placeholder="Rp Contoh: 15000"
               />
             </div>
 
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Deadline Target</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Deadline Target</label>
               <input
                 type="date"
                 value={deadlineTarget}
                 onChange={(e) => setDeadlineTarget(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
               />
             </div>
 
@@ -244,7 +244,7 @@ export default function KalkulatorBunga() {
         <button
           type="submit"
           disabled={loading}
-          className="flex flex-row w-full bg-[#2EC4B6] hover:bg-[#28b0a3] p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer items-center gap-1 justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+          className="flex flex-row w-full bg-[#2EC4B6] hover:bg-[#28b0a3] p-3 rounded-full text-sm lg:text-base font-extrabold text-center text-[#101828] transition-colors cursor-pointer items-center gap-1 justify-center disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <span
             className="material-icons select-none leading-none text-[13px] shrink-0"
@@ -259,37 +259,37 @@ export default function KalkulatorBunga() {
       {loading ? (
         <div className="p-6 flex flex-col items-center justify-center gap-3 border border-white/10 rounded-3xl py-16">
           <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-[#2EC4B6] animate-spin" />
-          <div className="text-xs text-white/60 text-center">AI sedang menghitung dan menganalisis simulasi...</div>
+          <div className="text-xs lg:text-sm text-white/60 text-center">AI sedang menghitung dan menganalisis simulasi...</div>
         </div>
       ) : (
         <>
           <div className="p-6 flex flex-col border border-white/10 rounded-3xl">
-            <div className="text-sm font-semibold pb-2">Hasil Kalkulasi</div>
+            <div className="text-sm lg:text-base font-semibold pb-2">Hasil Kalkulasi</div>
 
             <div className="flex flex-row justify-between items-center border-b border-white/10 pb-2">
-              <div className="text-sm text-white/50">Total Bunga</div>
-              <div className="text-md font-bold">
+              <div className="text-sm lg:text-base text-white/50">Total Bunga</div>
+              <div className="text-md lg:text-lg font-bold">
                 {hasilKalkulasi ? formatRupiah(hasilKalkulasi.totalBunga) : "Rp600.000"}
               </div>
             </div>
 
             <div className="flex flex-row justify-between items-center py-2">
-              <div className="text-sm text-white/50">Total Pembayaran</div>
-              <div className="text-md font-bold">
+              <div className="text-sm lg:text-base text-white/50">Total Pembayaran</div>
+              <div className="text-md lg:text-lg font-bold">
                 {hasilKalkulasi ? formatRupiah(hasilKalkulasi.totalPembayaran) : "Rp3.600.000"}
               </div>
             </div>
 
             <div className="flex flex-row justify-between items-center py-2">
-              <div className="text-sm text-white/50">Total Bayar per Bulan</div>
-              <div className="text-md font-bold">
+              <div className="text-sm lg:text-base text-white/50">Total Bayar per Bulan</div>
+              <div className="text-md lg:text-lg font-bold">
                 {hasilKalkulasi ? formatRupiah(hasilKalkulasi.totalBayarPerBulan) : "Rp360.000"}
               </div>
             </div>
 
             <div className="flex flex-row justify-between items-center py-2">
               <div className="items-center flex flex-row">
-                <div className="text-sm text-white/50">Bunga Efektif</div>
+                <div className="text-sm lg:text-base text-white/50">Bunga Efektif</div>
                 <span
                   className="material-icons select-none leading-none text-[13px] shrink-0 pl-2 text-white/50"
                   style={{ fontSize: '13px', width: '13px', height: '13px' }}
@@ -297,7 +297,7 @@ export default function KalkulatorBunga() {
                   info
                 </span>
               </div>
-              <div className="text-md font-bold">
+              <div className="text-md lg:text-lg font-bold">
                 {hasilKalkulasi ? `${hasilKalkulasi.bungaEfektifTahunan.toFixed(1)}% per Tahun` : "21,8% per Tahun"}
               </div>
             </div>
@@ -309,16 +309,16 @@ export default function KalkulatorBunga() {
                 <span className="material-icons text-[#2EC4B6] select-none leading-none">insights</span>
               </div>
               <div className="flex flex-col gap-5">
-                <div className="text-lg text-white font-bold">
+                <div className="text-lg lg:text-xl text-white font-bold">
                   {hasilKalkulasi ? `Risiko ${hasilKalkulasi.levelRisiko}` : "Risiko Rendah"}
                 </div>
-                <div className="text-xs text-white/80 text-justify">
+                <div className="text-xs lg:text-sm text-white/80 text-justify">
                   {hasilKalkulasi
                     ? renderAnalisis(hasilKalkulasi.analisisAI)
                     : "Cicilan ini masih tergolong aman jika tidak melebihi 30% dari penghasilan bulanan. Jika terjadi keterlambatan, denda harian akan terus bertambah sehingga total utang bisa meningkat. Sebaiknya lakukan pembayaran tepat waktu untuk menghindari beban tambahan."}
                 </div>
                 <div className="flex flex-row gap-2 items-center cursor-pointer">
-                  <div className="text-xs text-[#2EC4B6] font-semibold">Detail</div>
+                  <div className="text-xs lg:text-sm text-[#2EC4B6] font-semibold">Detail</div>
                   <span
                     className="material-icons select-none leading-none text-[#2EC4B6]"
                     style={{ fontSize: '11px', width: '11px', height: '11px' }}

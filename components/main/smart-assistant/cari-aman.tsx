@@ -181,7 +181,7 @@ export default function CariAman() {
           >
             <span className="material-icons text-2xl select-none">menu</span>
           </button>
-          <h1 className="text-xl font-bold tracking-tight">Smart Assistant</h1>
+          <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Smart Assistant</h1>
         </div>
 
         <div className="flex flex-row items-center gap-3">
@@ -199,7 +199,7 @@ export default function CariAman() {
         <button
           type="button"
           onClick={() => router.push("/?mode=temanhemat")}
-          className="flex flex-row items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
+          className="flex flex-row items-center gap-1.5 px-4 py-2 rounded-full text-xs lg:text-sm font-semibold bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
         >
           <span className="material-icons select-none leading-none" style={{ fontSize: '14px', width: '14px', height: '14px' }}>
             chat_bubble
@@ -208,7 +208,7 @@ export default function CariAman() {
         </button>
         <button
           type="button"
-          className="flex flex-row items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-[#2EC4B6] text-[#101828] cursor-pointer"
+          className="flex flex-row items-center gap-1.5 px-4 py-2 rounded-full text-xs lg:text-sm font-semibold bg-[#2EC4B6] text-[#101828] cursor-pointer"
         >
           <span className="material-icons select-none leading-none" style={{ fontSize: '14px', width: '14px', height: '14px' }}>
             shield
@@ -218,7 +218,7 @@ export default function CariAman() {
       </div>
 
       {error && (
-        <div className="p-3 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
+        <div className="p-3 text-sm lg:text-base text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
           {error}
         </div>
       )}
@@ -226,7 +226,7 @@ export default function CariAman() {
       <form onSubmit={handleAnalisis} className="w-full space-y-4">
         <div className="border border-white/10 rounded-3xl bg-white/5 p-5">
           <div className="flex flex-col gap-3">
-            <label className="text-xs text-gray-300 font-semibold">Tempel pesan mencurigakan</label>
+            <label className="text-xs lg:text-sm text-gray-300 font-semibold">Tempel pesan mencurigakan</label>
             <textarea
               value={pesan}
               onChange={(e) => setPesan(e.target.value)}
@@ -241,7 +241,7 @@ export default function CariAman() {
         <button
           type="submit"
           disabled={analyzing}
-          className="flex flex-row w-full bg-[#2EC4B6] hover:bg-[#28b0a3] p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer items-center gap-1.5 justify-center disabled:bg-gray-600"
+          className="flex flex-row w-full bg-[#2EC4B6] hover:bg-[#28b0a3] p-3 rounded-full text-sm lg:text-base font-extrabold text-center text-[#101828] transition-colors cursor-pointer items-center gap-1.5 justify-center disabled:bg-gray-600"
         >
           <span
             className="material-icons select-none leading-none text-[15px] shrink-0"
@@ -259,7 +259,7 @@ export default function CariAman() {
         {analyzing ? (
           <div className="flex flex-col items-center justify-center gap-4 py-10">
             <div className="w-12 h-12 border-4 border-white/10 border-t-[#2EC4B6] rounded-full animate-spin" />
-            <div className="text-sm text-white/60 text-center">AI sedang membaca/menganalisis pesan...</div>
+            <div className="text-sm lg:text-base text-white/60 text-center">AI sedang membaca/menganalisis pesan...</div>
           </div>
         ) : (
           <>
@@ -274,7 +274,7 @@ export default function CariAman() {
               />
             </div>
 
-            <div className="text-xs text-white/70 leading-relaxed pt-1">
+            <div className="text-xs lg:text-sm text-white/70 leading-relaxed pt-1">
               {displaySummary}
             </div>
 
@@ -285,7 +285,7 @@ export default function CariAman() {
                   onClick={() => setShowDetail((prev) => !prev)}
                   className="flex flex-row gap-2 items-center cursor-pointer pt-1"
                 >
-                  <div className="text-xs text-[#2EC4B6] font-semibold">Detail</div>
+                  <div className="text-xs lg:text-sm text-[#2EC4B6] font-semibold">Detail</div>
                   <span
                     className={`material-icons select-none leading-none text-[#2EC4B6] transition-transform duration-300 ${showDetail ? 'rotate-90' : ''}`}
                     style={{ fontSize: '11px', width: '11px', height: '11px' }}
@@ -294,7 +294,7 @@ export default function CariAman() {
                   </span>
                 </button>
                 {showDetail && (
-                  <div className="text-xs text-white/60 leading-relaxed border-t border-white/10 pt-2">
+                  <div className="text-xs lg:text-sm text-white/60 leading-relaxed border-t border-white/10 pt-2">
                     {hasilAnalisis.aiDetail}
                   </div>
                 )}

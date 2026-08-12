@@ -188,10 +188,24 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 mx-auto max-w-md pointer-events-none overflow-hidden">
+      {/* CSS untuk menyembunyikan scrollbar tapi tetap bisa discroll */}
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none; /* Firefox */
+        }
+      `}</style>
+
+      {/* Wrapper: mobile tetap mx-auto max-w-md (overlay device-width), desktop lepas dari batasan itu */}
+      <div className="fixed inset-0 z-50 mx-auto max-w-md lg:max-w-none lg:mx-0 pointer-events-none overflow-hidden lg:overflow-visible">
+        
+        {/* Backdrop: hanya tampil di mobile. Di desktop dihilangkan total supaya konten tetap bisa diklik/discroll saat sidebar terbuka */}
         <div
           onClick={onClose}
-          className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/60 transition-opacity duration-300 lg:hidden ${
             isOpen
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
@@ -199,12 +213,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         />
 
         <aside
-          className={`absolute top-0 left-0 h-full w-4/5 max-w-70 bg-[#020306] border-r border-gray-800 p-6 text-white flex flex-col justify-between transition-transform duration-300 ease-in-out pointer-events-auto ${
+          className={`absolute lg:fixed top-0 left-0 h-full lg:h-screen w-4/5 max-w-70 lg:w-64 bg-[#020306] border-r border-gray-800 p-6 text-white flex flex-col justify-between transition-transform duration-300 ease-in-out pointer-events-auto ${
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="flex flex-col h-full justify-between">
-            <div>
+          <div className="flex flex-col h-full min-h-0">
+            {/* Bagian atas: close button + profile - fixed, tidak ikut scroll */}
+            <div className="shrink-0">
               <div className="flex justify-end mb-4">
                 <button
                   onClick={onClose}
@@ -225,7 +240,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     alt="Profile"
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/default-avatar.png";
+                      (e.target as HTMLImageElement).src = "/default-avatar.jpg";
                     }}
                   />
                 </div>
@@ -241,119 +256,121 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               </div>
 
               <hr className="border-gray-800/80 my-4" />
+            </div>
 
-              <nav className="flex flex-col gap-1">
-                {menuItems.map((item) => {
-                  const hasSubItems = item.subItems && item.subItems.length > 0;
-                  const isSubmenuOpen = openSubmenu === item.name;
-                  const isAnySubActive = item.subItems?.some(
-                    (sub) => sub.name === activeMenu,
-                  );
-                  const isActive = activeMenu === item.name || isAnySubActive;
+            {/* Bagian tengah: menu nav - scrollable, scrollbar disembunyikan */}
+            <nav className="flex flex-col gap-1 flex-1 min-h-0 overflow-y-auto no-scrollbar">
+              {menuItems.map((item) => {
+                const hasSubItems = item.subItems && item.subItems.length > 0;
+                const isSubmenuOpen = openSubmenu === item.name;
+                const isAnySubActive = item.subItems?.some(
+                  (sub) => sub.name === activeMenu,
+                );
+                const isActive = activeMenu === item.name || isAnySubActive;
 
-                  const activeStyles = isActive
-                    ? "bg-[#2EC4B6]/10 text-[#2EC4B6] font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-1 before:bg-[#2EC4B6] before:rounded-r-full"
-                    : "text-gray-400 hover:bg-white/5 hover:text-white font-medium";
+                const activeStyles = isActive
+                  ? "bg-[#2EC4B6]/10 text-[#2EC4B6] font-semibold before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-5 before:w-1 before:bg-[#2EC4B6] before:rounded-r-full"
+                  : "text-gray-400 hover:bg-white/5 hover:text-white font-medium";
 
-                  return (
-                    <div key={item.name} className="flex flex-col">
-                      {hasSubItems ? (
-                        <button
-                          onClick={() => toggleSubmenu(item.name)}
-                          className={`relative flex items-center justify-between p-3 rounded-xl text-sm w-full transition-all duration-300 cursor-pointer ${activeStyles}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="material-icons text-xl select-none leading-none">
-                              {item.icon}
-                            </span>
-                            <span>{item.name}</span>
-                          </div>
-                          <span
-                            className={`material-icons text-lg transition-transform duration-300 select-none ${
-                              isSubmenuOpen
-                                ? "rotate-180 text-white"
-                                : "text-gray-500"
-                            }`}
-                          >
-                            expand_more
+                return (
+                  <div key={item.name} className="flex flex-col">
+                    {hasSubItems ? (
+                      <button
+                        onClick={() => toggleSubmenu(item.name)}
+                        className={`relative flex items-center justify-between p-3 rounded-xl text-sm w-full transition-all duration-300 cursor-pointer ${activeStyles}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="material-icons text-xl select-none leading-none">
+                            {item.icon}
                           </span>
-                        </button>
-                      ) : (
-                        <Link
-                          href={item.href || "#"}
-                          onClick={() => {
-                            setActiveMenu(item.name);
-                            onClose();
-                          }}
-                          className={`relative flex items-center justify-between p-3 rounded-xl text-sm w-full transition-all duration-300 cursor-pointer ${activeStyles}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="material-icons text-xl select-none leading-none">
-                              {item.icon}
-                            </span>
-                            <span>{item.name}</span>
-                          </div>
-                        </Link>
-                      )}
-
-                      {hasSubItems && (
-                        <div
-                          className={`grid transition-all duration-300 ease-in-out ${
+                          <span>{item.name}</span>
+                        </div>
+                        <span
+                          className={`material-icons text-lg transition-transform duration-300 select-none ${
                             isSubmenuOpen
-                              ? "grid-rows-[1fr] opacity-100 mt-1 mb-1"
-                              : "grid-rows-[0fr] opacity-0"
+                              ? "rotate-180 text-white"
+                              : "text-gray-500"
                           }`}
                         >
-                          <div className="overflow-hidden">
-                            <div className="flex flex-col pl-7 pr-2 py-1 gap-1 border-l border-gray-800 ml-5">
-                              {item.subItems?.map((sub) => {
-                                const isSubActive = activeMenu === sub.name;
-                                return (
-                                  <Link
-                                    key={sub.name}
-                                    href={sub.href}
-                                    onClick={() => {
-                                      setActiveMenu(sub.name);
-                                      onClose();
-                                    }}
-                                    className={`flex items-center gap-2.5 p-2 rounded-lg text-xs transition-colors ${
-                                      isSubActive
-                                        ? "text-[#2EC4B6] font-semibold bg-[#2EC4B6]/10"
-                                        : "text-gray-400 hover:text-white hover:bg-white/5 font-medium"
-                                    }`}
-                                  >
-                                    {sub.icon && (
-                                      <span className="material-icons text-base select-none leading-none opacity-80">
-                                        {sub.icon}
-                                      </span>
-                                    )}
-                                    <span>{sub.name}</span>
-                                  </Link>
-                                );
-                              })}
-                            </div>
+                          expand_more
+                        </span>
+                      </button>
+                    ) : (
+                      <Link
+                        href={item.href || "#"}
+                        onClick={() => {
+                          setActiveMenu(item.name);
+                          onClose();
+                        }}
+                        className={`relative flex items-center justify-between p-3 rounded-xl text-sm w-full transition-all duration-300 cursor-pointer ${activeStyles}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="material-icons text-xl select-none leading-none">
+                            {item.icon}
+                          </span>
+                          <span>{item.name}</span>
+                        </div>
+                      </Link>
+                    )}
+
+                    {hasSubItems && (
+                      <div
+                        className={`grid transition-all duration-300 ease-in-out ${
+                          isSubmenuOpen
+                            ? "grid-rows-[1fr] opacity-100 mt-1 mb-1"
+                            : "grid-rows-[0fr] opacity-0"
+                        }`}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="flex flex-col pl-7 pr-2 py-1 gap-1 border-l border-gray-800 ml-5">
+                            {item.subItems?.map((sub) => {
+                              const isSubActive = activeMenu === sub.name;
+                              return (
+                                <Link
+                                  key={sub.name}
+                                  href={sub.href}
+                                  onClick={() => {
+                                    setActiveMenu(sub.name);
+                                    onClose();
+                                  }}
+                                  className={`flex items-center gap-2.5 p-2 rounded-lg text-xs transition-colors ${
+                                    isSubActive
+                                      ? "text-[#2EC4B6] font-semibold bg-[#2EC4B6]/10"
+                                      : "text-gray-400 hover:text-white hover:bg-white/5 font-medium"
+                                  }`}
+                                >
+                                  {sub.icon && (
+                                    <span className="material-icons text-base select-none leading-none opacity-80">
+                                      {sub.icon}
+                                    </span>
+                                  )}
+                                  <span>{sub.name}</span>
+                                </Link>
+                              );
+                            })}
                           </div>
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </nav>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </nav>
 
-              <div className="pt-4 border-t border-gray-800/80 mt-4">
-                <button
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                  className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span className="material-icons text-xl select-none leading-none">
-                    logout
-                  </span>
-                  <span className="text-sm font-semibold">
-                    {isLoggingOut ? "Logging out..." : "Log Out"}
-                  </span>
-                </button>
-              </div>
+            {/* Bagian bawah: logout - fixed, tidak ikut scroll */}
+            <div className="pt-4 border-t border-gray-800/80 mt-4 shrink-0">
+              <button
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="material-icons text-xl select-none leading-none">
+                  logout
+                </span>
+                <span className="text-sm font-semibold">
+                  {isLoggingOut ? "Logging out..." : "Log Out"}
+                </span>
+              </button>
             </div>
           </div>
         </aside>

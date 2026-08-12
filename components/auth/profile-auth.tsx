@@ -113,10 +113,53 @@ export default function ProfileAuthComponent({
     onNext(DEFAULT_AVATAR);
   };
 
-  return (
-    <div className="w-full h-screen px-8 py-8 flex flex-col justify-between bg-[#101828] relative overflow-hidden">
-      <div className="absolute top-6 left-0 right-0 w-full px-8">
-        <div className="w-full">
+return (
+  <div className="w-full h-screen flex bg-[#101828]">
+
+    <div className="hidden lg:flex lg:w-1/2 h-screen relative overflow-hidden bg-linear-to-br from-[#0c1320] via-[#101828] to-[#0a2e2a] items-center justify-center px-14">
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#2EC4B6]/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#2EC4B6]/10 rounded-full blur-3xl" />
+      <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
+
+      <div className="relative z-10 max-w-md">
+        <div className="flex items-center gap-2 mb-10">
+          <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-[#2EC4B6] to-[#1a8f84] flex items-center justify-center shadow-lg shadow-[#2EC4B6]/20">
+            <span className="material-icons text-[#101828] text-xl">savings</span>
+          </div>
+          <span className="text-white font-extrabold text-lg tracking-tight">SAKU SEHAT</span>
+        </div>
+
+        <h1 className="text-4xl font-extrabold leading-tight bg-linear-to-r from-white to-[#B4B4B5] bg-clip-text text-transparent mb-4">
+          Tambah{" "}
+          <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent">
+            Foto Profil
+          </span>
+        </h1>
+
+        <p className="text-gray-400 text-sm leading-relaxed mb-10">
+          Tambahin foto profil biar akunmu lebih personal. Bisa dilewati dan diubah kapan aja.
+        </p>
+
+        <div className="space-y-4">
+          {[
+            { icon: "photo_camera", text: "Foto profil opsional" },
+            { icon: "edit", text: "Bisa diubah kapan saja" },
+            { icon: "check_circle", text: "Langkah terakhir sebelum masuk" },
+          ].map((item) => (
+            <div key={item.text} className="flex items-center gap-3">
+              <div className="w-9 h-9 shrink-0 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                <span className="material-icons text-[#2EC4B6] text-base">{item.icon}</span>
+              </div>
+              <span className="text-gray-300 text-sm font-medium">{item.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div className="w-full lg:w-1/2 h-screen px-8 py-8 flex flex-col justify-between lg:justify-center lg:gap-10 bg-[#101828] relative lg:static overflow-hidden">
+      <div className="absolute lg:relative top-6 lg:top-0 left-0 right-0 w-full px-8 lg:px-0">
+        <div className="w-full lg:max-w-md lg:mx-auto">
             <div className="w-10 h-10 mb-4"> 
               <div 
                   onClick={onSwitchToLogin}
@@ -141,7 +184,7 @@ export default function ProfileAuthComponent({
                 </div>
             </div>
 
-            <div className="w-full text-start mt-8">
+            <div className="w-full text-start mt-8 lg:hidden">
               <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-3xl font-extrabold tracking-tight leading-snug">
                   Tambah{" "}
                   <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent">
@@ -198,7 +241,7 @@ export default function ProfileAuthComponent({
         </div>
       </form>
 
-      <div className="w-full flex flex-col gap-3 pb-4">
+      <div className="w-full flex flex-col gap-3 pb-4 lg:pb-0 lg:max-w-md lg:mx-auto">
         <button
           type="submit"
           form="profile-form" 
@@ -218,5 +261,7 @@ export default function ProfileAuthComponent({
       </div>
 
     </div>
-  );
+
+  </div>
+);
 }

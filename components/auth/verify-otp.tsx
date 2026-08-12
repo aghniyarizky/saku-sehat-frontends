@@ -91,107 +91,155 @@ export default function VerifyOTPComponent({ email, onSuccess, onBackToRegister 
     }
   };
   return (
-    <div className="w-full min-h-screen px-8 py-12 flex flex-col justify-center bg-[#101828] relative overflow-hidden">
-      
-      <div className="absolute top-6 left-0 right-0 w-full px-8">
-        <div className="w-full"> 
-          
-          <div className="w-10 mb-5"> 
-            <div 
-              onClick={onBackToRegister}
-              className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer hover:bg-gray-700 transition-colors"
-            >
-              <span className="material-icons text-lg text-white">arrow_back</span>
+    <div className="w-full min-h-screen flex bg-[#101828]">
+
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-linear-to-br from-[#0c1320] via-[#101828] to-[#0a2e2a] items-center justify-center px-14">
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#2EC4B6]/20 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-80 h-80 bg-[#2EC4B6]/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
+
+        <div className="relative z-10 max-w-md">
+          <div className="flex items-center gap-2 mb-10">
+            <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-[#2EC4B6] to-[#1a8f84] flex items-center justify-center shadow-lg shadow-[#2EC4B6]/20">
+              <span className="material-icons text-[#101828] text-xl">savings</span>
             </div>
+            <span className="text-white font-extrabold text-lg tracking-tight">SAKU SEHAT</span>
           </div>
 
-          <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-[32px] font-extrabold tracking-tight text-center">
-            Masukkan Kode
-            <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent pl-2 text-center">
+          <h1 className="text-4xl font-extrabold leading-tight bg-linear-to-r from-white to-[#B4B4B5] bg-clip-text text-transparent mb-4">
+            Masukkan Kode{" "}
+            <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent">
               OTP
             </span>
-          </h2>
+          </h1>
 
-          <p className="text-sm mt-3 text-gray-300 font-semibold mb-7 text-center tracking-normal">
+          <p className="text-gray-400 text-sm leading-relaxed mb-10">
             Kami telah mengirimkan kode OTP ke{" "}
-            <span className="text-[#2EC4B6] font-sm">{maskEmail(email)}</span>. Masukkan kode tersebut untuk memverifikasi akun Anda.
+            <span className="text-[#2EC4B6] font-semibold">{maskEmail(email)}</span>. Masukkan kode tersebut untuk memverifikasi akun Anda.
           </p>
 
-          <div className="w-full bg-linear-to-tr from-transparent via-gray-400 to-transparent rounded-xl p-px mb-5 mt-2">
-            <div className="w-full bg-linear-to-b from-[#090e16] to-[#182133] rounded-xl p-3 text-white">
-              <div className="flex flex-row gap-3 w-full items-center">
-                <div className="w-auto flex items-center justify-center font-bold text-gray-400 rounded-lg px-2.5 py-0.5 text-sm">
-                  <span className="material-icons text-lg text-amber-300">lightbulb</span>
+          <div className="space-y-4">
+            {[
+              { icon: "mark_email_read", text: "Cek inbox atau folder spam" },
+              { icon: "timer", text: "Kode berlaku sementara" },
+              { icon: "verified_user", text: "Akunmu jadi lebih aman" },
+            ].map((item) => (
+              <div key={item.text} className="flex items-center gap-3">
+                <div className="w-9 h-9 shrink-0 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                  <span className="material-icons text-[#2EC4B6] text-base">{item.icon}</span>
                 </div>
-                <div className="flex-1 text-xs text-gray-200 leading-relaxed">
-                  Tidak menemukan email kode? Coba cek folder **Spam** atau **Promosi**.
+                <span className="text-gray-300 text-sm font-medium">{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full lg:w-1/2 min-h-screen px-8 py-12 flex flex-col justify-center bg-[#101828] relative overflow-hidden">
+        
+        <div className="absolute top-6 left-0 right-0 w-full px-8">
+          <div className="w-full lg:max-w-md lg:mx-auto"> 
+            
+            <div className="w-10 mb-5"> 
+              <div 
+                onClick={onBackToRegister}
+                className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer hover:bg-gray-700 transition-colors"
+              >
+                <span className="material-icons text-lg text-white">arrow_back</span>
+              </div>
+            </div>
+
+            <div className="lg:hidden">
+              <h2 className="bg-linear-to-r from-[#B4B4B5] to-white bg-clip-text text-transparent text-[32px] font-extrabold tracking-tight text-center">
+                Masukkan Kode
+                <span className="bg-linear-to-r from-[#2EC4B6] to-[#BEEDE8] bg-clip-text text-transparent pl-2 text-center">
+                  OTP
+                </span>
+              </h2>
+
+              <p className="text-sm mt-3 text-gray-300 font-semibold mb-7 text-center tracking-normal">
+                Kami telah mengirimkan kode OTP ke{" "}
+                <span className="text-[#2EC4B6] font-sm">{maskEmail(email)}</span>. Masukkan kode tersebut untuk memverifikasi akun Anda.
+              </p>
+            </div>
+
+            <div className="w-full bg-linear-to-tr from-transparent via-gray-400 to-transparent rounded-xl p-px mb-5 mt-2 lg:mt-8">
+              <div className="w-full bg-linear-to-b from-[#090e16] to-[#182133] rounded-xl p-3 text-white">
+                <div className="flex flex-row gap-3 w-full items-center">
+                  <div className="w-auto flex items-center justify-center font-bold text-gray-400 rounded-lg px-2.5 py-0.5 text-sm">
+                    <span className="material-icons text-lg text-amber-300">lightbulb</span>
+                  </div>
+                  <div className="flex-1 text-xs text-gray-200 leading-relaxed">
+                    Tidak menemukan email kode? Coba cek folder **Spam** atau **Promosi**.
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="rounded-xl shadow-md w-full">
-            {error && (
-              <div className="p-3 mb-4 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
-                {error}
-              </div>
-            )}
-            {success && (
-              <div className="p-3 mb-4 text-sm text-emerald-400 bg-emerald-950/40 border border-emerald-900 rounded-xl backdrop-blur-sm">
-                {success}
-              </div>
-            )}
+            <div className="rounded-xl shadow-md w-full">
+              {error && (
+                <div className="p-3 mb-4 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div className="p-3 mb-4 text-sm text-emerald-400 bg-emerald-950/40 border border-emerald-900 rounded-xl backdrop-blur-sm">
+                  {success}
+                </div>
+              )}
 
-            <form onSubmit={handleVerify} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold tracking-wider text-gray-300">Kode OTP</label>
-                <input
-                  type="text"
-                  maxLength={6}
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                  placeholder="XXXXXX"
-                  className="w-full px-4 py-3 rounded-full border border-gray-400  text-center tracking-[0.5em] text-lg font-bold text-white backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-[#2EC4B6] focus:border-transparent transition-all placeholder:tracking-normal placeholder:text-sm placeholder:font-normal"
-                  required
-                  disabled={loading}
-                />
-              </div>
+              <form onSubmit={handleVerify} className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold tracking-wider text-gray-300">Kode OTP</label>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                    placeholder="XXXXXX"
+                    className="w-full px-4 py-3 rounded-full border border-gray-400  text-center tracking-[0.5em] text-lg font-bold text-white backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-[#2EC4B6] focus:border-transparent transition-all placeholder:tracking-normal placeholder:text-sm placeholder:font-normal"
+                    required
+                    disabled={loading}
+                  />
+                </div>
 
-              <div className="text-center text-xs text-gray-300 my-1">
-                {countdown > 0 ? (
-                  <p>Kode kedaluwarsa dalam <span className="text-[#2EC4B6] font-semibold">{formatTime(countdown)}</span></p>
-                ) : (
-                  <p className="text-red-400 font-semibold">Kode OTP telah kedaluwarsa.</p>
-                )}
-              </div>
+                <div className="text-center text-xs text-gray-300 my-1">
+                  {countdown > 0 ? (
+                    <p>Kode kedaluwarsa dalam <span className="text-[#2EC4B6] font-semibold">{formatTime(countdown)}</span></p>
+                  ) : (
+                    <p className="text-red-400 font-semibold">Kode OTP telah kedaluwarsa.</p>
+                  )}
+                </div>
 
-              <button 
-                type="submit" 
-                disabled={loading || countdown === 0} 
-                className="w-full py-2.5 mt-2 bg-[#2EC4B6] hover:bg-[#23a89b] text-[#101828] font-bold rounded-full shadow-lg shadow-blue-950/50 transition-all active:scale-[0.98] cursor-pointer disabled:bg-gray-600"
-              >
-                {loading ? "Memverifikasi..." : "Verifikasi Akun"}
-              </button>
-            </form>
+                <button 
+                  type="submit" 
+                  disabled={loading || countdown === 0} 
+                  className="w-full py-2.5 mt-2 bg-[#2EC4B6] hover:bg-[#23a89b] text-[#101828] font-bold rounded-full shadow-lg shadow-blue-950/50 transition-all active:scale-[0.98] cursor-pointer disabled:bg-gray-600"
+                >
+                  {loading ? "Memverifikasi..." : "Verifikasi Akun"}
+                </button>
+              </form>
 
-            <div className="text-sm text-center mt-6">
-              <button 
-                type="button" 
-                onClick={handleResend} 
-                disabled={loading || countdown > 0} 
-                className={`text-xs font-semibold bg-transparent border-none cursor-pointer transition-colors ${
+              <div className="text-sm text-center mt-6">
+                <button 
+                  type="button" 
+                  onClick={handleResend} 
+                  disabled={loading || countdown > 0} 
+                  className={`text-xs font-semibold bg-transparent border-none cursor-pointer transition-colors ${
                   countdown === 0 
                     ? "text-[#2EC4B6] hover:underline cursor-pointer" 
                     : "text-gray-500 cursor-not-allowed"
                 }`}
-              >
-                Kirim Ulang OTP
-              </button>
+                >
+                  Kirim Ulang OTP
+                </button>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
+
     </div>
   );
 }
