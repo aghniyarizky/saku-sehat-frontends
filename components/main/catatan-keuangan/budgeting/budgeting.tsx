@@ -155,7 +155,7 @@ export default function Budgeting({
           >
             <span className="material-icons text-2xl select-none">menu</span>
           </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
+          <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Catatan Keuangan</h1>
         </div>
 
         <div className="flex flex-row items-center gap-3">
@@ -191,10 +191,10 @@ export default function Budgeting({
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">
+            <div className="text-xl lg:text-2xl font-extrabold">
               {formatRupiah(ringkasan.totalBudget)}
             </div>
-            <div className="text-sm text-white/40 font-semibold pt-2">
+            <div className="text-sm lg:text-base text-white/40 font-semibold pt-2">
               Total budget
             </div>
           </div>
@@ -209,10 +209,10 @@ export default function Budgeting({
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">
+            <div className="text-xl lg:text-2xl font-extrabold">
               {formatRupiah(ringkasan.totalPengeluaran)}
             </div>
-            <div className="text-sm text-white/40 font-semibold pt-2">
+            <div className="text-sm lg:text-base text-white/40 font-semibold pt-2">
               Pengeluaran
             </div>
           </div>
@@ -225,10 +225,10 @@ export default function Budgeting({
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">
+            <div className="text-xl lg:text-2xl font-extrabold">
               {formatRupiah(ringkasan.sisaBudget)}
             </div>
-            <div className="text-sm text-white/40 font-semibold pt-2">
+            <div className="text-sm lg:text-base text-white/40 font-semibold pt-2">
               Sisa budget
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function Budgeting({
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-row items-center justify-between">
-          <div className="text-lg font-bold">
+          <div className="text-lg lg:text-xl font-bold">
             Budget Saya ({budgetList.length})
           </div>
 
@@ -245,7 +245,7 @@ export default function Budgeting({
             <button
               type="button"
               onClick={onSwitchToAddBudget}
-              className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10"
+              className="px-4 py-1.5 rounded-full text-xs lg:text-sm font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10"
             >
               <span className="material-icons select-none leading-none text-[#0A2E2A] text-[15px]">
                 add
@@ -255,7 +255,7 @@ export default function Budgeting({
           ) : (
             <Link
               href="/?mode=tambahbudget"
-              className="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10"
+              className="px-4 py-1.5 rounded-full text-xs lg:text-sm font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10"
             >
               <span className="material-icons select-none leading-none text-[#0A2E2A] text-[15px]">
                 add
@@ -267,20 +267,20 @@ export default function Budgeting({
 
         {/* State Loading & Error */}
         {loading && (
-          <div className="text-center py-8 text-white/50 text-sm">
+          <div className="text-center py-8 text-white/50 text-sm lg:text-base">
             Memuat data budget...
           </div>
         )}
 
         {error && (
-          <div className="text-center py-4 text-red-400 text-sm bg-red-500/10 rounded-xl border border-red-500/20">
+          <div className="text-center py-4 text-red-400 text-sm lg:text-base bg-red-500/10 rounded-xl border border-red-500/20">
             {error}
           </div>
         )}
 
         {/* State Kosong */}
         {!loading && !error && budgetList.length === 0 && (
-          <div className="text-center py-12 text-white/40 text-sm bg-white/5 rounded-2xl border border-gray-800">
+          <div className="text-center py-12 text-white/40 text-sm lg:text-base bg-white/5 rounded-2xl border border-gray-800">
             Belum ada data budget. Klik &quot;Tambah&quot; untuk membuat batasan budget
             baru.
           </div>
@@ -315,10 +315,10 @@ export default function Budgeting({
                         {getKategoriIcon(item.Kategori_Budget)}
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-base text-white">
+                        <span className="font-bold text-base lg:text-lg text-white">
                           {item.Kategori_Budget}
                         </span>
-                        <span className="text-xs text-white/40 flex items-center gap-1">
+                        <span className="text-xs lg:text-sm text-white/40 flex items-center gap-1">
                           <span className="material-icons text-xs select-none">
                             calendar_today
                           </span>
@@ -329,7 +329,7 @@ export default function Budgeting({
 
                     <div className="flex flex-row items-center gap-2">
                       <span
-                        className={`text-xs px-3 py-1 rounded-full border font-medium ${statusColor}`}
+                        className={`text-xs lg:text-sm px-3 py-1 rounded-full border font-medium ${statusColor}`}
                       >
                         {item.statusLabel}
                       </span>
@@ -345,44 +345,44 @@ export default function Budgeting({
 
                   <div className="grid grid-cols-2 gap-3 text-center">
                     <div className="p-3 bg-[#1A2638]/60 rounded-2xl flex flex-col justify-center border border-gray-800/60">
-                      <span className="text-xs text-white/40 font-medium mb-1">
+                      <span className="text-xs lg:text-sm text-white/40 font-medium mb-1">
                         Budget
                       </span>
-                      <span className="font-bold text-white text-base">
+                      <span className="font-bold text-white text-base lg:text-lg">
                         {formatRupiah(item.Batas_PerBulan)}
                       </span>
-                      <span className="text-[11px] text-white/30 font-medium">
+                      <span className="text-[11px] lg:text-xs text-white/30 font-medium">
                         / periode
                       </span>
                     </div>
 
                     <div className="p-3 bg-[#1A2638]/60 rounded-2xl flex flex-col justify-center border border-gray-800/60">
-                      <span className="text-xs text-white/40 font-medium mb-1">
+                      <span className="text-xs lg:text-sm text-white/40 font-medium mb-1">
                         Terpakai
                       </span>
-                      <span className="font-bold text-[#2EC4B6] text-base">
+                      <span className="font-bold text-[#2EC4B6] text-base lg:text-lg">
                         {formatRupiah(item.terpakai)}
                       </span>
-                      <span className="text-[11px] text-[#2EC4B6]/80 font-medium">
+                      <span className="text-[11px] lg:text-xs text-[#2EC4B6]/80 font-medium">
                         {item.persentase}%
                       </span>
                     </div>
 
                     <div className="p-3 bg-[#1A2638]/60 rounded-2xl flex flex-col justify-center border border-gray-800/60 col-span-2">
-                      <span className="text-xs text-white/40 font-medium mb-1">
+                      <span className="text-xs lg:text-sm text-white/40 font-medium mb-1">
                         Tersisa
                       </span>
-                      <span className="font-bold text-[#20E070] text-lg">
+                      <span className="font-bold text-[#20E070] text-lg lg:text-xl">
                         {formatRupiah(item.tersisa)}
                       </span>
-                      <span className="text-[11px] text-[#20E070] font-medium">
+                      <span className="text-[11px] lg:text-xs text-[#20E070] font-medium">
                         {item.sisaHari} hari lagi
                       </span>
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-2 pt-1">
-                    <span className="text-xs text-white/40 font-medium">
+                    <span className="text-xs lg:text-sm text-white/40 font-medium">
                       {item.persentase}% budget terpakai
                     </span>
                     <div className="w-full bg-[#1A2638] h-2.5 rounded-full overflow-hidden">
@@ -391,7 +391,7 @@ export default function Budgeting({
                         style={{ width: `${Math.min(100, item.persentase)}%` }}
                       />
                     </div>
-                    <div className="flex flex-row justify-between text-[11px] text-white/30 font-medium">
+                    <div className="flex flex-row justify-between text-[11px] lg:text-xs text-white/30 font-medium">
                       <span>Rp0</span>
                       <span>{formatRupiah(item.Batas_PerBulan)}</span>
                     </div>

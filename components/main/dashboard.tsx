@@ -257,7 +257,7 @@ export default function Dashboard() {
     <div className="w-full h-full p-6 py-10 flex flex-col bg-[#101828] text-white overflow-y-auto overflow-x-hidden relative">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <div>
+      <div className="lg:max-w-6xl lg:mx-auto lg:w-full">
         <div className="w-full flex flex-row items-center justify-between">
           <div className="flex flex-row items-center gap-2.5">
             <button
@@ -306,7 +306,7 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="p-4 mt-4 gap-3 grid grid-cols-2">
+        <div className="p-4 mt-4 gap-3 grid grid-cols-2 lg:grid-cols-4 lg:gap-4">
           <div className="bg-white/7 border border-gray-700 rounded-2xl p-4 py-6 w-full">
             <div className="flex flex-row items-start justify-between">
               <div className="p-2 flex items-center justify-center bg-[#2EC4B6]/15 rounded-full">
@@ -376,204 +376,252 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="p-4 mt-[-18]">
-          <div className="w-full bg-white/7 border border-gray-700 rounded-2xl p-4">
-            <div className="flex flex-row gap-4">
-              <div className="flex items-center justify-center p-2.5 aspect-square bg-[#2EC4B6]/15 rounded-full shrink-0 h-fit">
-                <span className="material-icons text-[#2EC4B6] select-none leading-none">
-                  insights
-                </span>
-              </div>
-              <div>
-                <div className="text-lg text-white font-extrabold">
-                  Financial Health
-                </div>
-                <div className="text-xs text-white/30">
-                  {loading
-                    ? "Memuat..."
-                    : financialHealth
-                      ? `Terakhir diupdate ${formatTanggalWaktu(financialHealth.updatedAt)}`
-                      : "Belum ada data"}
-                </div>
-                <div className="flex flex-row gap-0.5 items-end">
-                  <div className="text-3xl font-extrabold text-white py-3">
-                    {loading
-                      ? "..."
-                      : financialHealth
-                        ? financialHealth.skorTotal
-                        : "-"}
-                  </div>
-                  <div className="text-medium font-semibold text-white/70 py-3">
-                    {" "}
-                    /100
-                  </div>
-                </div>
+        <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-4">
 
+          <div className="p-4 mt-[-18] lg:mt-0 lg:p-4 order-2 lg:order-1 lg:col-span-2">
+            <div className="w-full h-full bg-white/1 border border-gray-800 rounded-2xl p-4">
+              <div className="flex flex-row gap-4 items-center justify-between">
+                <div>
+                  <div className="text-lg text-white font-extrabold">
+                    Grafik Keuangan Anda
+                  </div>
+                  <div className="text-xs text-white/40">7 Bulan Terakhir</div>
+                </div>
+                <div className="items-center justify-center p-1 px-2 text-xs aspect-video bg-[#2EC4B6]/15 rounded-2xl shrink-0 h-fit border border-[#2EC4B6]/30">
+                  <span className="text-[#2EC4B6] select-none leading-none">
+                    2026
+                  </span>
+                </div>
+              </div>
+              <NativeFinancialChart />
+            </div>
+          </div>
+
+          <div className="p-4 mt-[-18] lg:mt-0 lg:p-4 order-1 lg:order-2 lg:col-span-1">
+            <div className="w-full h-full bg-white/7 border border-gray-700 rounded-2xl p-4 flex flex-col">
+              <div className="flex flex-row items-center gap-3">
+                <div className="flex items-center justify-center p-2.5 aspect-square bg-[#2EC4B6]/15 rounded-full shrink-0 h-fit">
+                  <span className="material-icons text-[#2EC4B6] select-none leading-none">
+                    insights
+                  </span>
+                </div>
+                <div className="min-w-0">
+                  <div className="text-lg text-white font-extrabold leading-tight">
+                    Financial Health
+                  </div>
+                  <div className="text-xs text-white/30 truncate">
+                    {loading
+                      ? "Memuat..."
+                      : financialHealth
+                        ? `Update ${formatTanggalWaktu(financialHealth.updatedAt)}`
+                        : "Belum ada data"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-row items-end gap-1 mt-4">
+                <div className="text-3xl font-extrabold text-white leading-none">
+                  {loading ? "..." : financialHealth ? financialHealth.skorTotal : "-"}
+                </div>
+                <div className="text-sm font-semibold text-white/40 pb-0.5">/100</div>
+
+                {!loading && financialHealth && (
+                  <span
+                    className={`ml-auto mb-0.5 px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                      financialHealth.skorTotal >= 70
+                        ? "bg-[#05DF72]/15 text-[#05DF72]"
+                        : financialHealth.skorTotal >= 40
+                          ? "bg-[#FFB700]/15 text-[#FFB700]"
+                          : "bg-[#E74C3C]/15 text-[#E74C3C]"
+                    }`}
+                  >
+                    {financialHealth.skorTotal >= 70
+                      ? "Sehat"
+                      : financialHealth.skorTotal >= 40
+                        ? "Perhatian"
+                        : "Berisiko"}
+                  </span>
+                )}
+              </div>
+
+              <div className="w-full h-2.5 bg-white/10 rounded-full overflow-hidden mt-3">
+                <div
+                  className={`h-full rounded-full transition-all duration-700 ease-out ${
+                    !financialHealth
+                      ? "bg-white/20"
+                      : financialHealth.skorTotal >= 70
+                        ? "bg-[#05DF72]"
+                        : financialHealth.skorTotal >= 40
+                          ? "bg-[#FFB700]"
+                          : "bg-[#E74C3C]"
+                  }`}
+                  style={{
+                    width: loading || !financialHealth
+                      ? "0%"
+                      : `${Math.min(100, Math.max(0, financialHealth.skorTotal))}%`,
+                  }}
+                />
+              </div>
+
+              <p className="text-xs text-white/40 leading-relaxed mt-3 flex-1">
+                {loading
+                  ? "Menghitung skor kesehatan finansialmu..."
+                  : financialHealth
+                    ? "Dihitung dari pemasukan, pengeluaran, dan pinjaman aktifmu."
+                    : "Lengkapi data keuanganmu untuk melihat skor."}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => router.push("/?mode=financialhealth")}
+                className="mt-3 w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#2EC4B6] hover:bg-[#25a89d] text-[#101828] text-xs font-bold rounded-full transition-all duration-200 active:scale-95 cursor-pointer shadow-md"
+              >
+                <span>Lihat Detail</span>
+                <span className="material-icons text-sm select-none leading-none font-bold">
+                  arrow_forward
+                </span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div className="lg:grid lg:grid-cols-2 lg:gap-4">
+
+          <div className="p-4 mt-[-18] lg:mt-0 lg:p-4">
+            <div className="w-full h-full bg-white/1 border border-gray-800 rounded-2xl p-4">
+              <div className="flex flex-row gap-4 items-center justify-between mb-2">
+                <div className="text-lg text-white font-extrabold">
+                  Pinjaman Aktif ({totalPinjamanAktif})
+                </div>
                 <button
                   type="button"
-                  onClick={() => router.push("/?mode=financialhealth")}
-                  className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-[#2EC4B6] hover:bg-[#25a89d] text-[#101828] text-xs font-bold rounded-full transition-all duration-200 active:scale-95 cursor-pointer shadow-md"
+                  onClick={() => router.push("/?mode=kelolapinjaman")}
+                  className="text-[#2EC4B6] text-sm hover:underline cursor-pointer"
                 >
-                  <span>Lihat Detail</span>
-                  <span className="material-icons text-sm select-none leading-none font-bold">
-                    arrow_forward
-                  </span>
+                  View all
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
 
-        <div className="p-4 mt-[-18]">
-          <div className="w-full bg-white/1 border border-gray-800 rounded-2xl p-4">
-            <div className="flex flex-row gap-4 items-center justify-between">
-              <div>
-                <div className="text-lg text-white font-extrabold">
-                  Grafik Keuangan Anda
+              {loading ? (
+                <div className="py-4 text-center text-xs text-gray-500">
+                  Memuat data pinjaman...
                 </div>
-                <div className="text-xs text-white/40">7 Bulan Terakhir</div>
-              </div>
-              <div className="items-center justify-center p-1 px-2 text-xs aspect-video bg-[#2EC4B6]/15 rounded-2xl shrink-0 h-fit border border-[#2EC4B6]/30">
-                <span className="text-[#2EC4B6] select-none leading-none">
-                  2026
-                </span>
-              </div>
+              ) : listPinjaman.length > 0 ? (
+                <div className="py-2 gap-3 flex flex-col">
+                  {listPinjaman.map((pj) => {
+                    const terbayar = Math.max(
+                      0,
+                      pj.totalPinjaman - pj.totalYangHarusDibayar
+                    );
+                    return (
+                      <div
+                        key={pj._id}
+                        className="flex flex-col gap-1 py-1 border-b border-gray-800/40 last:border-none"
+                      >
+                        <div className="flex flex-row items-center justify-between font-semibold">
+                          <div className="text-md font-bold">
+                            {pj.namaPlatform}
+                          </div>
+                          <div className="text-xs text-[#2EC4B6] font-bold">
+                            {pj.progress}% paid
+                          </div>
+                        </div>
+
+                        <div className="w-full h-2 bg-gray-700/50 rounded-full overflow-hidden my-1">
+                          <div
+                            className="h-full bg-[#2EC4B6] rounded-full transition-all duration-300"
+                            style={{
+                              width: `${Math.min(100, Math.max(0, pj.progress))}%`,
+                            }}
+                          />
+                        </div>
+
+                        <div className="flex flex-row items-center justify-between font-semibold">
+                          <div className="text-xs text-white/50">
+                            {formatRupiah(terbayar)}
+                          </div>
+                          <div className="text-xs text-white/50">
+                            {formatRupiah(pj.totalPinjaman)}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="py-6 text-center text-xs text-gray-500">
+                  Tidak ada pinjaman aktif saat ini.
+                </div>
+              )}
             </div>
-            <NativeFinancialChart />
           </div>
-        </div>
 
-        <div className="p-4 mt-[-18]">
-          <div className="w-full bg-white/1 border border-gray-800 rounded-2xl p-4">
-            <div className="flex flex-row gap-4 items-center justify-between mb-2">
-              <div className="text-lg text-white font-extrabold">
-                Pinjaman Aktif ({totalPinjamanAktif})
+          <div className="p-4 mt-[-18] lg:mt-0 lg:p-4">
+            <div className="w-full h-full bg-white/1 border border-gray-800 rounded-2xl p-4">
+              <div className="flex flex-row gap-4 items-center justify-between mb-2">
+                <div className="text-lg text-white font-extrabold">
+                  Transaksi Terakhir
+                </div>
+                <button
+                  type="button"
+                  onClick={() => router.push("/?mode=transaksi")}
+                  className="text-[#2EC4B6] text-sm hover:underline cursor-pointer"
+                >
+                  View all
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => router.push("/?mode=kelolapinjaman")}
-                className="text-[#2EC4B6] text-sm hover:underline cursor-pointer"
-              >
-                View all
-              </button>
-            </div>
 
-            {loading ? (
-              <div className="py-4 text-center text-xs text-gray-500">
-                Memuat data pinjaman...
-              </div>
-            ) : listPinjaman.length > 0 ? (
-              <div className="py-2 gap-3 flex flex-col">
-                {listPinjaman.map((pj) => {
-                  const terbayar = Math.max(
-                    0,
-                    pj.totalPinjaman - pj.totalYangHarusDibayar
-                  );
+              {loading ? (
+                <div className="py-6 text-center text-xs text-gray-400">
+                  Memuat transaksi...
+                </div>
+              ) : recentTransactions.length > 0 ? (
+                recentTransactions.map((tx) => {
+                  const isIncome = tx.type === "pemasukan";
+                  const formattedAmount = isIncome
+                    ? `+${formatRupiah(tx.amount)}`
+                    : `-${formatRupiah(tx.amount)}`;
+
                   return (
                     <div
-                      key={pj._id}
-                      className="flex flex-col gap-1 py-1 border-b border-gray-800/40 last:border-none"
+                      key={tx.id}
+                      className="py-2.5 gap-3 flex flex-row items-center border-b border-gray-800/40 last:border-none"
                     >
-                      <div className="flex flex-row items-center justify-between font-semibold">
-                        <div className="text-md font-bold">
-                          {pj.namaPlatform}
-                        </div>
-                        <div className="text-xs text-[#2EC4B6] font-bold">
-                          {pj.progress}% paid
-                        </div>
+                      <div className="flex items-center justify-center p-2.5 aspect-square bg-[#2EC4B6]/15 rounded-full shrink-0 h-fit">
+                        <span className={`material-icons ${tx.iconColor}`}>
+                          {tx.icon}
+                        </span>
                       </div>
-
-                      <div className="w-full h-2 bg-gray-700/50 rounded-full overflow-hidden my-1">
+                      <div className="flex flex-row gap-1 py-1 justify-between items-center w-full min-w-0">
+                        <div className="min-w-0 flex-1">
+                          <div className="text-md font-semibold truncate">
+                            {tx.title}
+                          </div>
+                          <div className="text-xs text-white/30 truncate">
+                            {tx.category} - {tx.date}
+                          </div>
+                        </div>
                         <div
-                          className="h-full bg-[#2EC4B6] rounded-full transition-all duration-300"
-                          style={{
-                            width: `${Math.min(100, Math.max(0, pj.progress))}%`,
-                          }}
-                        />
-                      </div>
-
-                      <div className="flex flex-row items-center justify-between font-semibold">
-                        <div className="text-xs text-white/50">
-                          {formatRupiah(terbayar)}
-                        </div>
-                        <div className="text-xs text-white/50">
-                          {formatRupiah(pj.totalPinjaman)}
+                          className={`text-md font-bold shrink-0 ml-2 ${isIncome ? "text-[#05DF72]" : "text-[#E74C3C]"}`}
+                        >
+                          {formattedAmount}
                         </div>
                       </div>
                     </div>
                   );
-                })}
-              </div>
-            ) : (
-              <div className="py-6 text-center text-xs text-gray-500">
-                Tidak ada pinjaman aktif saat ini.
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="p-4 mt-[-18]">
-          <div className="w-full bg-white/1 border border-gray-800 rounded-2xl p-4">
-            <div className="flex flex-row gap-4 items-center justify-between mb-2">
-              <div className="text-lg text-white font-extrabold">
-                Transaksi Terakhir
-              </div>
-              <button
-                type="button"
-                onClick={() => router.push("/?mode=transaksi")}
-                className="text-[#2EC4B6] text-sm hover:underline cursor-pointer"
-              >
-                View all
-              </button>
+                })
+              ) : (
+                <div className="py-6 text-center text-xs text-gray-500">
+                  Belum ada transaksi terrekam.
+                </div>
+              )}
             </div>
-
-            {loading ? (
-              <div className="py-6 text-center text-xs text-gray-400">
-                Memuat transaksi...
-              </div>
-            ) : recentTransactions.length > 0 ? (
-              recentTransactions.map((tx) => {
-                const isIncome = tx.type === "pemasukan";
-                const formattedAmount = isIncome
-                  ? `+${formatRupiah(tx.amount)}`
-                  : `-${formatRupiah(tx.amount)}`;
-
-                return (
-                  <div
-                    key={tx.id}
-                    className="py-2.5 gap-3 flex flex-row items-center border-b border-gray-800/40 last:border-none"
-                  >
-                    <div className="flex items-center justify-center p-2.5 aspect-square bg-[#2EC4B6]/15 rounded-full shrink-0 h-fit">
-                      <span className={`material-icons ${tx.iconColor}`}>
-                        {tx.icon}
-                      </span>
-                    </div>
-                    <div className="flex flex-row gap-1 py-1 justify-between items-center w-full min-w-0">
-                      <div className="min-w-0 flex-1">
-                        <div className="text-md font-semibold truncate">
-                          {tx.title}
-                        </div>
-                        <div className="text-xs text-white/30 truncate">
-                          {tx.category} - {tx.date}
-                        </div>
-                      </div>
-                      <div
-                        className={`text-md font-bold shrink-0 ml-2 ${isIncome ? "text-[#05DF72]" : "text-[#E74C3C]"}`}
-                      >
-                        {formattedAmount}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="py-6 text-center text-xs text-gray-500">
-                Belum ada transaksi terrekam.
-              </div>
-            )}
           </div>
+
         </div>
       </div>
     </div>
   );
+
 }

@@ -154,7 +154,7 @@ export default function TargetNabung({
           >
             <span className="material-icons text-2xl select-none">menu</span>
           </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
+          <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Catatan Keuangan</h1>
         </div>
 
         <div className="flex flex-row items-center gap-3">
@@ -184,8 +184,8 @@ export default function TargetNabung({
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">{formatRupiah(ringkasan.totalMenabung)}</div>
-            <div className="text-sm text-white/40 font-semibold pt-2">Total menabung</div>
+            <div className="text-xl lg:text-2xl font-extrabold">{formatRupiah(ringkasan.totalMenabung)}</div>
+            <div className="text-sm lg:text-base text-white/40 font-semibold pt-2">Total menabung</div>
           </div>
         </div>
 
@@ -196,8 +196,8 @@ export default function TargetNabung({
             </div>
           </div>
           <div className="flex flex-col mt-3">
-            <div className="text-xl font-extrabold">{formatRupiah(ringkasan.totalTarget)}</div>
-            <div className="text-sm text-white/40 font-semibold pt-2">Total target</div>
+            <div className="text-xl lg:text-2xl font-extrabold">{formatRupiah(ringkasan.totalTarget)}</div>
+            <div className="text-sm lg:text-base text-white/40 font-semibold pt-2">Total target</div>
           </div>
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function TargetNabung({
       <div className="flex flex-row items-center gap-2 w-full pt-1">
         <button
           type="button"
-          className="px-3.5 py-2 rounded-full duration-200 flex flex-row items-center gap-1.5 hover:text-white border shrink-0 border-teal-500/30 text-teal-300 text-xs font-semibold hover:bg-teal-500/20 transition-colors cursor-pointer"
+          className="px-3.5 py-2 rounded-full duration-200 flex flex-row items-center gap-1.5 hover:text-white border shrink-0 border-teal-500/30 text-teal-300 text-xs lg:text-sm font-semibold hover:bg-teal-500/20 transition-colors cursor-pointer"
         >
           <span 
             className="material-icons select-none leading-none"
@@ -221,7 +221,7 @@ export default function TargetNabung({
           <button
             type="button"
             onClick={onSwitchToAddTarget}
-            className="px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1.5 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10 shrink-0"
+            className="px-3.5 py-2 rounded-full text-xs lg:text-sm font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1.5 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10 shrink-0"
           >
             <span 
               className="material-icons select-none leading-none text-[#0A2E2A]"
@@ -234,7 +234,7 @@ export default function TargetNabung({
         ) : (
           <Link
             href="/?mode=tambahtarget"
-            className="px-3.5 py-2 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1.5 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10 shrink-0"
+            className="px-3.5 py-2 rounded-full text-xs lg:text-sm font-bold transition-all duration-200 cursor-pointer flex flex-row items-center gap-1.5 bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b3a6] shadow-md shadow-[#2EC4B6]/10 shrink-0"
           >
             <span 
               className="material-icons select-none leading-none text-[#0A2E2A]"
@@ -249,20 +249,20 @@ export default function TargetNabung({
 
       {/* State Loading & Error */}
       {loading && (
-        <div className="text-center py-8 text-white/50 text-sm">
+        <div className="text-center py-8 text-white/50 text-sm lg:text-base">
           Memuat data target tabung...
         </div>
       )}
 
       {error && (
-        <div className="text-center py-4 text-red-400 text-sm bg-red-500/10 rounded-xl border border-red-500/20">
+        <div className="text-center py-4 text-red-400 text-sm lg:text-base bg-red-500/10 rounded-xl border border-red-500/20">
           {error}
         </div>
       )}
 
       {/* State Kosong */}
       {!loading && !error && listTarget.length === 0 && (
-        <div className="text-center py-12 text-white/40 text-sm bg-white/5 rounded-2xl border border-gray-800">
+        <div className="text-center py-12 text-white/40 text-sm lg:text-base bg-white/5 rounded-2xl border border-gray-800">
           Belum ada target tabung. Klik "Tambah" untuk membuat impian tabungan barumu!
         </div>
       )}
@@ -278,7 +278,7 @@ export default function TargetNabung({
               <div className="flex flex-row items-center justify-between">
                 <div className="text-2xl select-none">{item.icon}</div>
                 <div className="flex flex-row items-center gap-2 z-10">
-                  <span className="px-3 py-1 rounded-full bg-teal-500/20 text-[#2EC4B6] text-xs font-bold select-none">
+                  <span className="px-3 py-1 rounded-full bg-teal-500/20 text-[#2EC4B6] text-xs lg:text-sm font-bold select-none">
                     {item.persentase}%
                   </span>
                   
@@ -299,8 +299,8 @@ export default function TargetNabung({
               </div>
 
               <div className="flex flex-col gap-0.5">
-                <h3 className="text-base font-bold tracking-tight">{item.namaTarget}</h3>
-                <span className="text-xs text-white/40 font-medium">
+                <h3 className="text-base lg:text-lg font-bold tracking-tight">{item.namaTarget}</h3>
+                <span className="text-xs lg:text-sm text-white/40 font-medium">
                   {item.sisaHari > 0 ? `${item.sisaHari} Hari Tersisa` : "Batas waktu telah berakhir"}
                 </span>
               </div>
@@ -312,7 +312,7 @@ export default function TargetNabung({
                 />
               </div>
 
-              <div className="flex flex-row items-center justify-between text-xs font-semibold pt-1">
+              <div className="flex flex-row items-center justify-between text-xs lg:text-sm font-semibold pt-1">
                 <div className="flex flex-row items-center gap-1">
                   <span className="text-[#2EC4B6]">{formatRupiah(item.terkumpulNominal)}</span>
                   <span className="text-white/40">/ {formatRupiah(item.targetNominal)}</span>
@@ -322,7 +322,7 @@ export default function TargetNabung({
                 <button
                   type="button"
                   onClick={() => setSelectedTarget(item)}
-                  className="px-3 py-1.5 rounded-full bg-[#2EC4B6]/20 text-[#2EC4B6] hover:bg-[#2EC4B6] hover:text-[#0A2E2A] text-xs font-bold transition-all duration-200 cursor-pointer flex items-center gap-1"
+                  className="px-3 py-1.5 rounded-full bg-[#2EC4B6]/20 text-[#2EC4B6] hover:bg-[#2EC4B6] hover:text-[#0A2E2A] text-xs lg:text-sm font-bold transition-all duration-200 cursor-pointer flex items-center gap-1"
                 >
                   <span className="material-icons text-xs leading-none">add</span>
                   <span>Setor</span>
@@ -341,7 +341,7 @@ export default function TargetNabung({
             <div className="flex flex-row items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{selectedTarget.icon}</span>
-                <h3 className="text-base font-bold text-white truncate max-w-[200px]">
+                <h3 className="text-base lg:text-lg font-bold text-white truncate max-w-[200px]">
                   Setor: {selectedTarget.namaTarget}
                 </h3>
               </div>
@@ -355,14 +355,14 @@ export default function TargetNabung({
             </div>
 
             {errorSetor && (
-              <div className="p-2.5 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl">
+              <div className="p-2.5 text-xs lg:text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl">
                 {errorSetor}
               </div>
             )}
 
             <form onSubmit={handleSetorSubmit} className="flex flex-col gap-4">
               <div>
-                <label className="text-xs text-gray-300 font-semibold block mb-1.5">
+                <label className="text-xs lg:text-sm text-gray-300 font-semibold block mb-1.5">
                   Nominal Setor (Rp)
                 </label>
                 <input
@@ -371,7 +371,7 @@ export default function TargetNabung({
                   value={nominalSetor}
                   onChange={(e) => setNominalSetor(e.target.value.replace(/[^0-9]/g, ""))}
                   placeholder="Contoh: 20000"
-                  className="border border-white/15 rounded-full w-full text-xs px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] text-white"
+                  className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] text-white"
                   required
                 />
 
@@ -382,7 +382,7 @@ export default function TargetNabung({
                       key={amount}
                       type="button"
                       onClick={() => setNominalSetor(String(amount))}
-                      className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[10px] text-gray-300 font-medium transition-colors"
+                      className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-[10px] lg:text-xs text-gray-300 font-medium transition-colors"
                     >
                       +{amount / 1000}rb
                     </button>
@@ -391,14 +391,14 @@ export default function TargetNabung({
               </div>
 
               <div>
-                <label className="text-xs text-gray-300 font-semibold block mb-1.5">
+                <label className="text-xs lg:text-sm text-gray-300 font-semibold block mb-1.5">
                   Sumber Dana
                 </label>
                 <div className="relative">
                   <select
                     value={sumberDana}
                     onChange={(e) => setSumberDana(e.target.value)}
-                    className="appearance-none border border-white/15 rounded-full w-full text-xs px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] text-white cursor-pointer pr-8"
+                    className="appearance-none border border-white/15 rounded-full w-full text-xs lg:text-sm px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] text-white cursor-pointer pr-8"
                   >
                     {sumberDanaOptions.map((opt) => (
                       <option key={opt} value={opt} className="bg-[#101828] text-white">
@@ -417,14 +417,14 @@ export default function TargetNabung({
                   type="button"
                   onClick={() => setSelectedTarget(null)}
                   disabled={loadingSetor}
-                  className="w-1/2 py-2.5 rounded-full border border-white/15 text-xs font-bold hover:bg-white/10 transition-colors"
+                  className="w-1/2 py-2.5 rounded-full border border-white/15 text-xs lg:text-sm font-bold hover:bg-white/10 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={loadingSetor}
-                  className="w-1/2 py-2.5 rounded-full bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b0a3] text-xs font-extrabold transition-colors disabled:opacity-50"
+                  className="w-1/2 py-2.5 rounded-full bg-[#2EC4B6] text-[#0A2E2A] hover:bg-[#28b0a3] text-xs lg:text-sm font-extrabold transition-colors disabled:opacity-50"
                 >
                   {loadingSetor ? "Menyimpan..." : "Simpan Setoran"}
                 </button>

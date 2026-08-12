@@ -218,7 +218,7 @@ export default function BeforeYouBorrow() {
           >
             <span className="material-icons text-2xl select-none">menu</span>
           </button>
-          <h1 className="text-xl font-bold tracking-tight">
+          <h1 className="text-xl lg:text-2xl font-bold tracking-tight">
             Before You Borrow
           </h1>
         </div>
@@ -245,232 +245,237 @@ export default function BeforeYouBorrow() {
       </div>
 
       {error && (
-        <div className="p-3 text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
+        <div className="p-3 text-sm lg:text-base text-red-400 bg-red-950/40 border border-red-900 rounded-xl backdrop-blur-sm">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="w-full space-y-4">
-        <div className="border border-white/10 rounded-3xl bg-white/5 p-5">
-          <div className="flex flex-col gap-4">
-            <div>
-              <div className="text-sm font-semibold pb-1">Asesmen Pinjaman</div>
-            </div>
+      {/* NEW: wrapper grid - mobile tetap stack biasa, desktop jadi 2 kolom sejajar */}
+      <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
 
-            <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">
-                Nama Platform
-              </label>
-              <input
-                type="text"
-                value={namaPlatform}
-                onChange={(e) => setNamaPlatform(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
-                placeholder="Contoh: Shopee PayLater, EasyCash"
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="w-full space-y-4">
+          <div className="border border-white/10 rounded-3xl bg-white/5 p-5">
+            <div className="flex flex-col gap-4">
+              <div>
+                <div className="text-sm lg:text-base font-semibold pb-1">Asesmen Pinjaman</div>
+              </div>
 
-            <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">
-                Tujuan Meminjam
-              </label>
-              <input
-                type="text"
-                value={tujuanMeminjam}
-                onChange={(e) => setTujuanMeminjam(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
-                placeholder="Contoh: Modal usaha, kebutuhan mendesak"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">
-                Jumlah Pinjaman
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-white/50 pointer-events-none">
-                  Rp
-                </span>
+              <div>
+                <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">
+                  Nama Platform
+                </label>
                 <input
-                  type="number"
-                  value={jumlahPinjaman}
-                  onChange={(e) => setJumlahPinjaman(e.target.value)}
-                  className="border border-white/15 rounded-full w-full text-xs pl-8 pr-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
-                  placeholder="Contoh: 300.000"
+                  type="text"
+                  value={namaPlatform}
+                  onChange={(e) => setNamaPlatform(e.target.value)}
+                  className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                  placeholder="Contoh: Shopee PayLater, EasyCash"
                   required
                 />
               </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-gray-300 mb-1 block font-semibold">
-                  Pemasukan Perbulan
+                <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">
+                  Tujuan Meminjam
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-white/50 pointer-events-none">
-                    Rp
-                  </span>
-                  <input
-                    type="number"
-                    value={pemasukanPerbulan}
-                    onChange={(e) => setPemasukanPerbulan(e.target.value)}
-                    className="border border-white/15 rounded-full w-full text-xs pl-8 pr-3 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
-                    placeholder="Rp"
-                    required
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs text-gray-300 mb-1 block font-semibold">
-                  Pengeluaran Perbulan
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-white/50 pointer-events-none">
-                    Rp
-                  </span>
-                  <input
-                    type="number"
-                    value={pengeluaranPerbulan}
-                    onChange={(e) => setPengeluaranPerbulan(e.target.value)}
-                    className="border border-white/15 rounded-full w-full text-xs pl-8 pr-3 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
-                    placeholder="Rp"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">
-                Nominal Pinjaman yang Harus Dibayar Saat Ini
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-white/50 pointer-events-none">
-                  Rp
-                </span>
                 <input
-                  type="number"
-                  value={nominalDibayarSaatIni}
-                  onChange={(e) => setNominalDibayarSaatIni(e.target.value)}
-                  className="border border-white/15 rounded-full w-full text-xs pl-8 pr-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
-                  placeholder="Contoh: 300.000"
+                  type="text"
+                  value={tujuanMeminjam}
+                  onChange={(e) => setTujuanMeminjam(e.target.value)}
+                  className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                  placeholder="Contoh: Modal usaha, kebutuhan mendesak"
+                  required
                 />
               </div>
-            </div>
-          </div>
-        </div>
 
-        <button
-          type="submit"
-          disabled={analyzing}
-          className="flex flex-row w-full bg-[#2EC4B6] hover:bg-[#28b0a3] p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer items-center gap-1.5 justify-center disabled:bg-gray-600"
-        >
-          <span
-            className="material-icons select-none leading-none text-[15px] shrink-0"
-            style={{ fontSize: "15px", width: "15px", height: "15px" }}
-          >
-            bar_chart
-          </span>
-          {analyzing ? "Menganalisis..." : "Dapatkan Asesmen"}
-        </button>
-      </form>
-
-      <div className="border border-white/10 rounded-3xl bg-white/5 p-6 flex flex-col gap-5">
-        <div className="text-base font-bold">Your Borrowing Score</div>
-
-        {analyzing ? (
-          <div className="flex flex-col items-center justify-center gap-4 py-10">
-            <div className="w-12 h-12 border-4 border-white/10 border-t-[#2EC4B6] rounded-full animate-spin" />
-            <div className="text-sm text-white/60 text-center">
-              AI sedang membaca/menganalisis data...
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="flex justify-center py-2">
-              <div className="relative w-40 h-40">
-                <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-                  {[0, 1, 2, 3].map((i) => {
-                    const dashOffset = -(i * (segmentLength + segmentGap));
-                    const isFilled = i < (hasilAsesmen ? filledSegments : 3);
-                    return (
-                      <circle
-                        key={i}
-                        cx="60"
-                        cy="60"
-                        r={radius}
-                        fill="none"
-                        stroke={
-                          isFilled ? activeRisk.ring : "rgba(255,255,255,0.1)"
-                        }
-                        strokeWidth="9"
-                        strokeLinecap="round"
-                        strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
-                        strokeDashoffset={dashOffset}
-                      />
-                    );
-                  })}
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-extrabold">
-                    {displayScore}
+              <div>
+                <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">
+                  Jumlah Pinjaman
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs lg:text-sm text-white/50 pointer-events-none">
+                    Rp
                   </span>
-                  <span className="text-[10px] text-white/50">/ 100</span>
+                  <input
+                    type="number"
+                    value={jumlahPinjaman}
+                    onChange={(e) => setJumlahPinjaman(e.target.value)}
+                    className="border border-white/15 rounded-full w-full text-xs lg:text-sm pl-8 pr-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                    placeholder="Contoh: 300.000"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">
+                    Pemasukan Perbulan
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs lg:text-sm text-white/50 pointer-events-none">
+                      Rp
+                    </span>
+                    <input
+                      type="number"
+                      value={pemasukanPerbulan}
+                      onChange={(e) => setPemasukanPerbulan(e.target.value)}
+                      className="border border-white/15 rounded-full w-full text-xs lg:text-sm pl-8 pr-3 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                      placeholder="Rp"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">
+                    Pengeluaran Perbulan
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs lg:text-sm text-white/50 pointer-events-none">
+                      Rp
+                    </span>
+                    <input
+                      type="number"
+                      value={pengeluaranPerbulan}
+                      onChange={(e) => setPengeluaranPerbulan(e.target.value)}
+                      className="border border-white/15 rounded-full w-full text-xs lg:text-sm pl-8 pr-3 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                      placeholder="Rp"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">
+                  Nominal Pinjaman yang Harus Dibayar Saat Ini
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs lg:text-sm text-white/50 pointer-events-none">
+                    Rp
+                  </span>
+                  <input
+                    type="number"
+                    value={nominalDibayarSaatIni}
+                    onChange={(e) => setNominalDibayarSaatIni(e.target.value)}
+                    className="border border-white/15 rounded-full w-full text-xs lg:text-sm pl-8 pr-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                    placeholder="Contoh: 300.000"
+                  />
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="flex justify-center">
-              <div
-                className={`px-5 py-1.5 rounded-full text-xs font-bold ${activeRisk.bg} ${activeRisk.text}`}
-              >
-                Risiko {hasilAsesmen ? hasilAsesmen.riskLevel : "Sedang"}
+          <button
+            type="submit"
+            disabled={analyzing}
+            className="flex flex-row w-full bg-[#2EC4B6] hover:bg-[#28b0a3] p-3 rounded-full text-sm lg:text-base font-extrabold text-center text-[#101828] transition-colors cursor-pointer items-center gap-1.5 justify-center disabled:bg-gray-600"
+          >
+            <span
+              className="material-icons select-none leading-none text-[15px] shrink-0"
+              style={{ fontSize: "15px", width: "15px", height: "15px" }}
+            >
+              bar_chart
+            </span>
+            {analyzing ? "Menganalisis..." : "Dapatkan Asesmen"}
+          </button>
+        </form>
+
+        <div className="border border-white/10 rounded-3xl bg-white/5 p-6 flex flex-col gap-5">
+          <div className="text-base lg:text-lg font-bold">Your Borrowing Score</div>
+
+          {analyzing ? (
+            <div className="flex flex-col items-center justify-center gap-4 py-10">
+              <div className="w-12 h-12 border-4 border-white/10 border-t-[#2EC4B6] rounded-full animate-spin" />
+              <div className="text-sm lg:text-base text-white/60 text-center">
+                AI sedang membaca/menganalisis data...
               </div>
             </div>
+          ) : (
+            <>
+              <div className="flex justify-center py-2">
+                <div className="relative w-40 h-40">
+                  <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
+                    {[0, 1, 2, 3].map((i) => {
+                      const dashOffset = -(i * (segmentLength + segmentGap));
+                      const isFilled = i < (hasilAsesmen ? filledSegments : 3);
+                      return (
+                        <circle
+                          key={i}
+                          cx="60"
+                          cy="60"
+                          r={radius}
+                          fill="none"
+                          stroke={
+                            isFilled ? activeRisk.ring : "rgba(255,255,255,0.1)"
+                          }
+                          strokeWidth="9"
+                          strokeLinecap="round"
+                          strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
+                          strokeDashoffset={dashOffset}
+                        />
+                      );
+                    })}
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-3xl lg:text-4xl font-extrabold">
+                      {displayScore}
+                    </span>
+                    <span className="text-[10px] lg:text-xs text-white/50">/ 100</span>
+                  </div>
+                </div>
+              </div>
 
-            <div className="flex flex-col gap-2">
-              {detailSections.map((section) => {
-                const isOpen = openSection === section.key;
-                return (
-                  <div
-                    key={section.key}
-                    className="border border-white/10 rounded-2xl overflow-hidden"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => toggleSection(section.key)}
-                      className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-white hover:bg-white/5 transition-colors cursor-pointer"
-                    >
-                      <span>{section.label}</span>
-                      <span
-                        className={`material-icons text-base transition-transform duration-300 select-none ${isOpen ? "rotate-180 text-[#2EC4B6]" : "text-gray-500"}`}
-                      >
-                        expand_more
-                      </span>
-                    </button>
+              <div className="flex justify-center">
+                <div
+                  className={`px-5 py-1.5 rounded-full text-xs lg:text-sm font-bold ${activeRisk.bg} ${activeRisk.text}`}
+                >
+                  Risiko {hasilAsesmen ? hasilAsesmen.riskLevel : "Sedang"}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {detailSections.map((section) => {
+                  const isOpen = openSection === section.key;
+                  return (
                     <div
-                      className={`grid transition-all duration-300 ease-in-out ${
-                        isOpen
-                          ? "grid-rows-[1fr] opacity-100"
-                          : "grid-rows-[0fr] opacity-0"
-                      }`}
+                      key={section.key}
+                      className="border border-white/10 rounded-2xl overflow-hidden"
                     >
-                      <div className="overflow-hidden">
-                        <div className="px-4 pb-4 text-xs text-white/70 text-justify leading-relaxed">
-                          {section.content ||
-                            'Isi form dan klik "Dapatkan Asesmen" untuk melihat detail ini.'}
+                      <button
+                        type="button"
+                        onClick={() => toggleSection(section.key)}
+                        className="w-full flex items-center justify-between px-4 py-3 text-xs lg:text-sm font-semibold text-white hover:bg-white/5 transition-colors cursor-pointer"
+                      >
+                        <span>{section.label}</span>
+                        <span
+                          className={`material-icons text-base transition-transform duration-300 select-none ${isOpen ? "rotate-180 text-[#2EC4B6]" : "text-gray-500"}`}
+                        >
+                          expand_more
+                        </span>
+                      </button>
+                      <div
+                        className={`grid transition-all duration-300 ease-in-out ${
+                          isOpen
+                            ? "grid-rows-[1fr] opacity-100"
+                            : "grid-rows-[0fr] opacity-0"
+                        }`}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="px-4 pb-4 text-xs lg:text-sm text-white/70 text-justify leading-relaxed">
+                            {section.content ||
+                              'Isi form dan klik "Dapatkan Asesmen" untuk melihat detail ini.'}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </div>
+
       </div>
     </div>
   );

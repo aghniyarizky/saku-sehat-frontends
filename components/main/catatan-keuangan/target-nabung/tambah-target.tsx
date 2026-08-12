@@ -109,7 +109,7 @@ export default function TambahTargetNabung({
           >
             <span className="material-icons text-2xl select-none">menu</span>
           </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
+          <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Catatan Keuangan</h1>
         </div>
 
         <div className="flex flex-row items-center gap-3">
@@ -136,11 +136,11 @@ export default function TambahTargetNabung({
         >
           <span className="material-icons text-lg text-white leading-none">arrow_back</span>
         </button>
-        <div className="text-lg font-semibold leading-none">Tambah Target Nabung</div>
+        <div className="text-lg lg:text-xl font-semibold leading-none">Tambah Target Nabung</div>
       </div>
 
       {error && (
-        <div className="p-3 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl">
+        <div className="p-3 text-xs lg:text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl">
           {error}
         </div>
       )}
@@ -150,7 +150,7 @@ export default function TambahTargetNabung({
           
           {/* Icon Selector */}
           <div className="flex flex-col gap-2.5">
-            <label className="text-xs text-gray-300 font-semibold">Icon</label>
+            <label className="text-xs lg:text-sm text-gray-300 font-semibold">Icon</label>
             <div className="grid grid-cols-6 gap-3">
               {iconsList.map((item) => {
                 const isSelected = selectedIcon === item.label;
@@ -174,42 +174,42 @@ export default function TambahTargetNabung({
 
           {/* Nama Target */}
           <div>
-            <label className="text-xs text-gray-300 mb-1.5 block font-semibold">
+            <label className="text-xs lg:text-sm text-gray-300 mb-1.5 block font-semibold">
               Nama Target
             </label>
             <input 
               type="text"
               value={namaTarget}
               onChange={(e) => setNamaTarget(e.target.value)}
-              className="border border-white/15 rounded-full w-full text-xs px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/40 text-white"
+              className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/40 text-white"
               placeholder="Contoh: Laptop Baru"
             />
           </div>
 
           {/* Nominal */}
           <div>
-            <label className="text-xs text-gray-300 mb-1.5 block font-semibold">
+            <label className="text-xs lg:text-sm text-gray-300 mb-1.5 block font-semibold">
               Target Nominal (Rp)
             </label>
             <input 
               type="number"
               value={nominal}
               onChange={(e) => setNominal(e.target.value)}
-              className="border border-white/15 rounded-full w-full text-xs px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/40 text-white"
+              className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/40 text-white"
               placeholder="Contoh: 5000000"
             />
           </div>
 
           {/* Deadline Target */}
           <div>
-            <label className="text-xs text-gray-300 mb-1.5 block font-semibold">
+            <label className="text-xs lg:text-sm text-gray-300 mb-1.5 block font-semibold">
               Deadline Target
             </label>
             <input 
               type="date"
               value={deadlineTarget}
               onChange={(e) => setDeadlineTarget(e.target.value)}
-              className="border border-white/15 rounded-full w-full text-xs px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
+              className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-4 py-2.5 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
             />
           </div>
 
@@ -218,7 +218,7 @@ export default function TambahTargetNabung({
         <button 
           type="submit"
           disabled={loading}
-          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] disabled:bg-[#2EC4B6]/50 p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
+          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] disabled:bg-[#2EC4B6]/50 p-3 rounded-full text-sm lg:text-base font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
         >
           {loading ? "Menyimpan..." : "Simpan"}
         </button>

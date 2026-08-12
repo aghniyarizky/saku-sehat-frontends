@@ -206,7 +206,7 @@ export default function FinancialHealth() {
       {isRecalculating && <AILoadingModal step={loadingStep} />}
 
       {errorMsg && (
-        <div className="rounded-2xl bg-red-500/10 border border-red-500/30 p-3 text-xs text-red-300">
+        <div className="rounded-2xl bg-red-500/10 border border-red-500/30 p-3 text-xs lg:text-sm text-red-300">
           {errorMsg}
         </div>
       )}
@@ -218,14 +218,14 @@ export default function FinancialHealth() {
           <span className="material-icons text-5xl text-white/30">
             insights
           </span>
-          <p className="text-white/60 text-sm max-w-xs">
+          <p className="text-white/60 text-sm lg:text-base max-w-xs">
             Belum ada data Financial Health. Yuk hitung kondisi keuanganmu
             sekarang.
           </p>
           <button
             onClick={handleRecalculate}
             disabled={isRecalculating}
-            className="px-5 py-2.5 rounded-full bg-[#2EC4B6] text-sm font-bold cursor-pointer disabled:opacity-50"
+            className="px-5 py-2.5 rounded-full bg-[#2EC4B6] text-sm lg:text-base font-bold cursor-pointer disabled:opacity-50"
           >
             Hitung Sekarang
           </button>
@@ -257,27 +257,27 @@ export default function FinancialHealth() {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-extrabold">
+                <span className="text-4xl lg:text-5xl font-extrabold">
                   {data.skorTotal}
                 </span>
-                <span className="text-xs text-white/50">/ {totalMaxScore}</span>
+                <span className="text-xs lg:text-sm text-white/50">/ {totalMaxScore}</span>
               </div>
             </div>
 
-            <div className={`text-2xl font-extrabold ${gradeStyle.text}`}>
+            <div className={`text-2xl lg:text-3xl font-extrabold ${gradeStyle.text}`}>
               Grade {data.grade}
             </div>
-            <div className="text-sm font-semibold text-white text-center">
+            <div className="text-sm lg:text-base font-semibold text-white text-center">
               {STATUS_TEXT_BY_GRADE[data.grade]}
             </div>
-            <div className="text-xs text-white/40">
+            <div className="text-xs lg:text-sm text-white/40">
               Terakhir di update {formatTanggalWaktu(data.updatedAt)}
             </div>
 
             <button
               onClick={handleRecalculate}
               disabled={isRecalculating}
-              className="mt-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center gap-1.5 cursor-pointer disabled:opacity-50 transition-colors"
+              className="mt-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-xs lg:text-sm font-semibold flex items-center gap-1.5 cursor-pointer disabled:opacity-50 transition-colors"
             >
               <span className="material-icons text-sm">refresh</span>
               Hitung Ulang
@@ -310,15 +310,15 @@ export default function FinancialHealth() {
                         {config.icon}
                       </span>
                     </div>
-                    <div className="text-sm font-bold">{config.title}</div>
+                    <div className="text-sm lg:text-base font-bold">{config.title}</div>
                   </div>
                   <div className="flex flex-col items-end">
                     <span
-                      className={`text-lg font-extrabold ${config.scoreColor}`}
+                      className={`text-lg lg:text-xl font-extrabold ${config.scoreColor}`}
                     >
                       {subScore.skor}
                     </span>
-                    <span className="text-[10px] text-white/40">
+                    <span className="text-[10px] lg:text-xs text-white/40">
                       / {subScore.maksimal} pts
                     </span>
                   </div>
@@ -332,18 +332,18 @@ export default function FinancialHealth() {
                 </div>
 
                 <div className="flex flex-row items-center justify-between">
-                  <span className="text-[11px] text-white/40">
+                  <span className="text-[11px] lg:text-xs text-white/40">
                     Nilai kamu: {subScore.persentase}%
                   </span>
                   <span
-                    className={`px-3 py-1 rounded-full text-[10px] font-bold ${STATUS_BADGE_COLOR[subScore.status]}`}
+                    className={`px-3 py-1 rounded-full text-[10px] lg:text-xs font-bold ${STATUS_BADGE_COLOR[subScore.status]}`}
                   >
                     {subScore.status}
                   </span>
                 </div>
 
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                  <div className="text-xs text-white/70 leading-relaxed">
+                  <div className="text-xs lg:text-sm text-white/70 leading-relaxed">
                     {subScore.ringkasan}
                   </div>
                 </div>
@@ -351,7 +351,7 @@ export default function FinancialHealth() {
                 {subScore.saranPerkembangan &&
                   subScore.saranPerkembangan.length > 0 && (
                     <div className="flex flex-col gap-2 pt-1">
-                      <div className="text-[10px] font-bold text-white/40 tracking-wide">
+                      <div className="text-[10px] lg:text-xs font-bold text-white/40 tracking-wide">
                         SARAN PERKEMBANGAN
                       </div>
                       <div className="flex flex-col gap-1.5">
@@ -370,7 +370,7 @@ export default function FinancialHealth() {
                             >
                               check
                             </span>
-                            <span className="text-xs text-white/70 leading-relaxed">
+                            <span className="text-xs lg:text-sm text-white/70 leading-relaxed">
                               {item}
                             </span>
                           </div>
@@ -410,14 +410,14 @@ function AILoadingModal({ step }: { step: number }) {
           <div className="p-3 bg-[#2EC4B6]/15 rounded-full text-[#2EC4B6] animate-pulse">
             <span className="material-icons text-3xl">auto_awesome</span>
           </div>
-          <h3 className="text-lg font-bold">AI Sedang Menganalisis</h3>
-          <p className="text-xs text-gray-300">
+          <h3 className="text-lg lg:text-xl font-bold">AI Sedang Menganalisis</h3>
+          <p className="text-xs lg:text-sm text-gray-300">
             Mohon tunggu, sistem sedang memproses kondisi keuanganmu.
           </p>
         </div>
 
         <div className="flex flex-col gap-1">
-          <div className="flex justify-between text-[11px] font-semibold text-gray-300 mb-1">
+          <div className="flex justify-between text-[11px] lg:text-xs font-semibold text-gray-300 mb-1">
             <span>Progress Analisis</span>
             <span className="text-[#2EC4B6]">{progressPercent}%</span>
           </div>
@@ -464,7 +464,7 @@ function AILoadingModal({ step }: { step: number }) {
 
                 <div className="flex flex-col text-left">
                   <span
-                    className={`text-xs font-bold ${
+                    className={`text-xs lg:text-sm font-bold ${
                       isCurrent
                         ? "text-[#2EC4B6]"
                         : isDone
@@ -474,7 +474,7 @@ function AILoadingModal({ step }: { step: number }) {
                   >
                     Tahap {stepNum}: {st.title}
                   </span>
-                  <span className="text-[11px] text-gray-300">{st.desc}</span>
+                  <span className="text-[11px] lg:text-xs text-gray-300">{st.desc}</span>
                 </div>
               </div>
             );
@@ -496,7 +496,7 @@ function HeaderBar({ onOpenSidebar }: { onOpenSidebar: () => void }) {
         >
           <span className="material-icons text-2xl select-none">menu</span>
         </button>
-        <h1 className="text-xl font-bold tracking-tight">Financial Health</h1>
+        <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Financial Health</h1>
       </div>
 
       <div className="flex flex-row items-center gap-3">

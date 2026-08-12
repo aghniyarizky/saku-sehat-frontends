@@ -105,7 +105,7 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
           >
             <span className="material-icons text-2xl select-none">menu</span>
           </button>
-          <h1 className="text-xl font-bold tracking-tight">Catatan Keuangan</h1>
+          <h1 className="text-xl lg:text-2xl font-bold tracking-tight">Catatan Keuangan</h1>
         </div>
       
         <div className="flex flex-row items-center gap-3">
@@ -126,11 +126,11 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
         >
           <span className="material-icons text-lg text-white leading-none">arrow_back</span>
         </button>
-        <div className="text-lg font-semibold leading-none">Tambah Budget</div>
+        <div className="text-lg lg:text-xl font-semibold leading-none">Tambah Budget</div>
       </div>
 
       {error && (
-        <div className="p-3 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl">
+        <div className="p-3 text-xs lg:text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-2xl">
           {error}
         </div>
       )}
@@ -141,12 +141,12 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
             
             {/* Kategori Budget */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Kategori Budget</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Kategori Budget</label>
               <div className="relative">
                 <select 
                   value={kategoriSelect}
                   onChange={(e) => setKategoriSelect(e.target.value)}
-                  className={`appearance-none border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
+                  className={`appearance-none border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors cursor-pointer pr-8 ${
                     kategoriSelect === "" ? "text-white/50" : "text-white"
                   }`}
                 >
@@ -167,7 +167,7 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
                   type="text"
                   value={kategoriCustom}
                   onChange={(e) => setKategoriCustom(e.target.value)}
-                  className="mt-2 border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                  className="mt-2 border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                   placeholder="Ketikkan nama kategori..."
                 />
               )}
@@ -175,35 +175,35 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
 
             {/* Batas per Bulan */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Batas per Bulan (Rp)</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Batas per Bulan (Rp)</label>
               <input 
                 type="number"
                 value={batasBulan}
                 onChange={(e) => setBatasBulan(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors placeholder:text-white/50 text-white"
                 placeholder="Contoh: 500000"
               />
             </div>
 
             {/* Tanggal Mulai */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Tanggal Mulai</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Tanggal Mulai</label>
               <input 
                 type="date"
                 value={tanggalMulai}
                 onChange={(e) => setTanggalMulai(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
               />
             </div>
 
             {/* Tanggal Selesai */}
             <div>
-              <label className="text-xs text-gray-300 mb-1 block font-semibold">Tanggal Selesai</label>
+              <label className="text-xs lg:text-sm text-gray-300 mb-1 block font-semibold">Tanggal Selesai</label>
               <input 
                 type="date"
                 value={tanggalSelesai}
                 onChange={(e) => setTanggalSelesai(e.target.value)}
-                className="border border-white/15 rounded-full w-full text-xs px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
+                className="border border-white/15 rounded-full w-full text-xs lg:text-sm px-3.5 py-2 bg-[#101828] focus:outline-none focus:border-[#2EC4B6] transition-colors text-white cursor-pointer"
               />
             </div>
 
@@ -213,7 +213,7 @@ export default function TambahBudgeting({ onSwitchToBudgeting }: TambahBudgeting
         <button 
           type="submit"
           disabled={loading}
-          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] disabled:bg-[#2EC4B6]/50 p-3 rounded-full text-sm font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
+          className="w-full bg-[#2EC4B6] hover:bg-[#28b0a3] disabled:bg-[#2EC4B6]/50 p-3 rounded-full text-sm lg:text-base font-extrabold text-center text-[#101828] transition-colors cursor-pointer"
         >
           {loading ? "Menyimpan..." : "Simpan"}
         </button>
