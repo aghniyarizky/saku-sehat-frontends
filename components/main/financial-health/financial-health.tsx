@@ -202,7 +202,7 @@ export default function FinancialHealth() {
   const gradeStyle = data ? GRADE_COLOR[data.grade] : GRADE_COLOR.E;
 
   return (
-    <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
+    <div className="relative w-full h-full p-6 py-10 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <HeaderBar onOpenSidebar={() => setIsSidebarOpen(true)} />
 

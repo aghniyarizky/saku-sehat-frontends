@@ -229,13 +229,15 @@ export default function Transaksi({
   };
 
   return (
-    <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
+    <div className="relative w-full h-full p-6 py-10 flex flex-col gap-4 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      <div className="lg:max-w-6xl lg:mx-auto lg:w-full flex flex-col gap-4">
 
       <Header
         title="Catatan Keuangan"
         onOpenSidebar={() => setIsSidebarOpen(true)}
-         onProfileClick={() => router.push("/?mode=profile-edit")}
+        onProfileClick={() => router.push("/?mode=profile-edit")}
       />
 
       <NavCatatan />
@@ -540,6 +542,7 @@ export default function Transaksi({
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

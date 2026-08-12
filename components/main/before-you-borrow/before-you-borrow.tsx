@@ -206,7 +206,7 @@ export default function BeforeYouBorrow() {
   ];
 
   return (
-    <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
+    <div className="relative w-full h-full p-6 py-10 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <div className="w-full flex flex-row items-center justify-between">
@@ -250,7 +250,6 @@ export default function BeforeYouBorrow() {
         </div>
       )}
 
-      {/* NEW: wrapper grid - mobile tetap stack biasa, desktop jadi 2 kolom sejajar */}
       <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
 
         <form onSubmit={handleSubmit} className="w-full space-y-4">

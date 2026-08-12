@@ -139,13 +139,14 @@ export default function TargetNabung({
   };
 
   return (
-    <div className="relative w-full h-full p-6 py-8 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
+    <div className="relative w-full h-full p-6 py-10 flex flex-col gap-6 bg-[#101828] text-white overflow-y-auto overflow-x-hidden">
       <Sidebar 
         isOpen={isSidebarOpen} 
         onClose={() => setIsSidebarOpen(false)} 
       />
 
-      {/* Header Utama */}
+      <div className="lg:max-w-6xl lg:mx-auto lg:w-full flex flex-col gap-4">
+
       <div className="w-full flex flex-row items-center justify-between">
         <Header
                 title="Catatan Keuangan"
@@ -171,7 +172,6 @@ export default function TargetNabung({
 
       <NavCatatan />
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white/5 border border-gray-700/60 rounded-2xl p-4 py-5 w-full">
           <div className="flex flex-row items-start justify-between">
@@ -198,7 +198,6 @@ export default function TargetNabung({
         </div>
       </div>
 
-      {/* Action Buttons */}
       <div className="flex flex-row items-center gap-2 w-full pt-1">
         <button
           type="button"
@@ -243,7 +242,6 @@ export default function TargetNabung({
         )}
       </div>
 
-      {/* State Loading & Error */}
       {loading && (
         <div className="text-center py-8 text-white/50 text-sm lg:text-base">
           Memuat data target tabung...
@@ -256,14 +254,12 @@ export default function TargetNabung({
         </div>
       )}
 
-      {/* State Kosong */}
       {!loading && !error && listTarget.length === 0 && (
         <div className="text-center py-12 text-white/40 text-sm lg:text-base bg-white/5 rounded-2xl border border-gray-800">
           Belum ada target tabung. Klik "Tambah" untuk membuat impian tabungan barumu!
         </div>
       )}
 
-      {/* List Target Tabung */}
       {!loading && (
         <div className="flex flex-col gap-3">
           {listTarget.map((item) => (
@@ -329,7 +325,6 @@ export default function TargetNabung({
         </div>
       )}
 
-      {/* 🟢 MODAL POP-UP SETOR TABUNGAN */}
       {selectedTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-[#101828] border border-gray-700/80 rounded-3xl p-6 w-full max-w-sm flex flex-col gap-4 shadow-2xl">
@@ -371,7 +366,6 @@ export default function TargetNabung({
                   required
                 />
 
-                {/* Quick Chips Nominal */}
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {[10000, 20000, 50000, 100000].map((amount) => (
                     <button
@@ -430,6 +424,7 @@ export default function TargetNabung({
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

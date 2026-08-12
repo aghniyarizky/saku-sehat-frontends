@@ -125,6 +125,10 @@ function AuthContent() {
     router.push(`/?mode=${newStep}`);
   };
 
+  const handleSave = (updatedData: any) => {
+  console.log("Data profil berhasil diupdate:", updatedData);
+  setStep("dashboard");
+};
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#101828] relative overflow-x-hidden">
       {step === "landing" && (
@@ -291,20 +295,13 @@ function AuthContent() {
           isOpen={true} 
           onClose={() => setStep("dashboard")}
           onBack={() => setStep("dashboard")}
-          userData={{
-            username: "User", 
-            email: "user@email.com",
-            fotoProfilUrl: "",
-          }}
-          onSave={(newData) => {
-            console.log("Simpan data:", newData);
-            setStep("dashboard");
-          }}
+          userData={{ username: "", email: "", fullName: "", fotoProfilUrl: "", sumberPemasukan: "" }} 
+          onSave={handleSave}
         />
-      )}
-    </div>
-  );
-}
+              )}
+            </div>
+          );
+        }
 
 export default function AuthPage() {
   return (

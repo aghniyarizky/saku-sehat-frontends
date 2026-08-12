@@ -62,19 +62,19 @@ export default function Notifikasi({ isOpen, onClose }: NotifikasiProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 mx-auto max-w-md pointer-events-none overflow-hidden">
-      <div
-        onClick={onClose}
-        className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      />
+    <div className="fixed inset-0 z-50 pointer-events-none overflow-hidden">
+        <div
+            onClick={onClose}
+            className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
+            isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+        />
 
-      <aside
-        className={`absolute top-0 right-0 h-full w-3/4 max-w-md bg-[#020306] border-l border-gray-900 p-6 text-white flex flex-col justify-between transition-transform duration-300 ease-in-out pointer-events-auto ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
+        <aside
+            className={`absolute top-0 right-0 h-full w-full max-w-sm bg-[#020306] border-l border-gray-900 p-6 text-white flex flex-col justify-between transition-transform duration-300 ease-in-out pointer-events-auto ${
+            isOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+        >
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-white">Notifikasi</h2>
