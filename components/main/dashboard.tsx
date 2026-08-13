@@ -106,60 +106,18 @@ export default function Dashboard() {
     totalPemasukan: 0,
     totalPengeluaran: 0,
   });
-  const [recentTransactions, setRecentTransactions] = useState<TransactionItem[]>([]);
+  const [recentTransactions, setRecentTransactions] = useState<
+    TransactionItem[]
+  >([]);
   const [listPinjaman, setListPinjaman] = useState<PinjamanDashboard[]>([]);
   const [totalPinjamanAktif, setTotalPinjamanAktif] = useState(0);
-  const [financialHealth, setFinancialHealth] = useState<FinancialHealthSummary | null>(null);
+  const [financialHealth, setFinancialHealth] =
+    useState<FinancialHealthSummary | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const getDynamicUsername = () => {
-      try {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          const parsed = JSON.parse(savedUser);
-          const nameFromUserObj = cleanUsername(
-            parsed.username || parsed.nama || parsed.name
-          );
-          if (nameFromUserObj) return nameFromUserObj;
-        }
-
-        const directUsername = cleanUsername(localStorage.getItem("username"));
-        if (directUsername) return directUsername;
-
-        const token = localStorage.getItem("token");
-        if (token) {
-          const base64Url = token.split(".")[1];
-          if (base64Url) {
-            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-            const jsonPayload = decodeURIComponent(
-              atob(base64)
-                .split("")
-                .map(
-                  (c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
-                )
-                .join("")
-            );
-            const parsedToken = JSON.parse(jsonPayload);
-            const tokenName = cleanUsername(
-              parsedToken.username ||
-                parsedToken.nama ||
-                parsedToken.name ||
-                parsedToken.email
-            );
-            if (tokenName) return tokenName;
-          }
-        }
-      } catch (err) {
-        console.error(err);
-      }
-      return "Pengguna";
-    };
-
-    setUserName(getDynamicUsername());
-
     const fetchDashboardData = async () => {
       setLoading(true);
       setError("");
@@ -172,12 +130,28 @@ export default function Dashboard() {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         };
 
+        const resProfile = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/profile`,
+          {
+            method: "GET",
+            headers,
+          },
+        );
+
+        if (resProfile.ok) {
+          const dataProfile = await resProfile.json();
+          localStorage.setItem("user", JSON.stringify(dataProfile));
+          setUserName(
+            dataProfile.username || dataProfile.nama || dataProfile.name || "",
+          );
+        }
+
         const resKeuangan = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/catatan-keuangan`,
           {
             method: "GET",
             headers,
-          }
+          },
         );
 
         if (resKeuangan.ok) {
@@ -215,7 +189,7 @@ export default function Dashboard() {
           {
             method: "GET",
             headers,
-          }
+          },
         );
 
         if (resPinjaman.ok) {
@@ -225,13 +199,13 @@ export default function Dashboard() {
           setListPinjaman(aktif);
           setTotalPinjamanAktif(aktif.length);
         }
-
+        
         const resFinancialHealth = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/financial-health`,
           {
             method: "GET",
             headers,
-          }
+          },
         );
 
         if (resFinancialHealth.ok) {
@@ -254,7 +228,6 @@ export default function Dashboard() {
 
     fetchDashboardData();
   }, []);
-
   return (
     <div className="w-full h-full p-6 py-10 flex flex-col bg-[#101828] text-white overflow-y-auto overflow-x-hidden relative">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
@@ -355,7 +328,6 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-4">
-
           <div className="p-4 mt-[-18] lg:mt-0 lg:p-4 order-2 lg:order-1 lg:col-span-2">
             <div className="w-full h-full bg-white/1 border border-gray-800 rounded-2xl p-4">
               <div className="flex flex-row gap-4 items-center justify-between">
@@ -399,9 +371,15 @@ export default function Dashboard() {
 
               <div className="flex flex-row items-end gap-1 mt-4">
                 <div className="text-3xl font-extrabold text-white leading-none">
-                  {loading ? "..." : financialHealth ? financialHealth.skorTotal : "-"}
+                  {loading
+                    ? "..."
+                    : financialHealth
+                      ? financialHealth.skorTotal
+                      : "-"}
                 </div>
-                <div className="text-sm font-semibold text-white/40 pb-0.5">/100</div>
+                <div className="text-sm font-semibold text-white/40 pb-0.5">
+                  /100
+                </div>
 
                 {!loading && financialHealth && (
                   <span
@@ -434,9 +412,10 @@ export default function Dashboard() {
                           : "bg-[#E74C3C]"
                   }`}
                   style={{
-                    width: loading || !financialHealth
-                      ? "0%"
-                      : `${Math.min(100, Math.max(0, financialHealth.skorTotal))}%`,
+                    width:
+                      loading || !financialHealth
+                        ? "0%"
+                        : `${Math.min(100, Math.max(0, financialHealth.skorTotal))}%`,
                   }}
                 />
               </div>
@@ -461,11 +440,9 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
-
         </div>
 
         <div className="lg:grid lg:grid-cols-2 lg:gap-4">
-
           <div className="p-4 mt-[-18] lg:mt-0 lg:p-4">
             <div className="w-full h-full bg-white/1 border border-gray-800 rounded-2xl p-4">
               <div className="flex flex-row gap-4 items-center justify-between mb-2">
@@ -490,7 +467,7 @@ export default function Dashboard() {
                   {listPinjaman.map((pj) => {
                     const terbayar = Math.max(
                       0,
-                      pj.totalPinjaman - pj.totalYangHarusDibayar
+                      pj.totalPinjaman - pj.totalYangHarusDibayar,
                     );
                     return (
                       <div
@@ -596,10 +573,8 @@ export default function Dashboard() {
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>
   );
-
 }

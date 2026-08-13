@@ -90,7 +90,8 @@ function AuthContent() {
     if (["beforeyouborrow", "before-you-borrow", "borrow"].includes(rawStep))
       return "beforeyouborrow";
     if (["cariaman", "cari-aman"].includes(rawStep)) return "cariaman";
-    if (["financialhealth", "financial-health"].includes(rawStep)) return "financialhealth";
+    if (["financialhealth", "financial-health"].includes(rawStep))
+      return "financialhealth";
 
     if (["budgeting", "budget"].includes(rawStep)) return "budgeting";
     if (["tambahbudgeting", "tambahbudget"].includes(rawStep))
@@ -115,7 +116,6 @@ function AuthContent() {
     }
 
     return "register";
-
   };
 
   const step = getStep();
@@ -126,9 +126,9 @@ function AuthContent() {
   };
 
   const handleSave = (updatedData: any) => {
-  console.log("Data profil berhasil diupdate:", updatedData);
-  setStep("dashboard");
-};
+    console.log("Data profil berhasil diupdate:", updatedData);
+    setStep("dashboard");
+  };
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#101828] relative overflow-x-hidden">
       {step === "landing" && (
@@ -140,6 +140,7 @@ function AuthContent() {
 
       {step === "register" && (
         <RegisterComponent
+          onSwitchLanding={() => setStep("landing")}
           onRegisterSuccess={(data: any) => {
             const emailStr = typeof data === "string" ? data : data.email;
             setRegisteredEmail(emailStr);
@@ -151,6 +152,7 @@ function AuthContent() {
 
       {step === "login" && (
         <LoginPage
+          onSwitchLanding={() => setStep("landing")}
           onSwitchToRegister={() => setStep("register")}
           onLoginSuccess={(data: any) => {
             const emailStr = typeof data === "string" ? data : data.email;
@@ -291,17 +293,23 @@ function AuthContent() {
       )}
 
       {step === "profileedit" && (
-        <EditProfile 
-          isOpen={true} 
+        <EditProfile
+          isOpen={true}
           onClose={() => setStep("dashboard")}
           onBack={() => setStep("dashboard")}
-          userData={{ username: "", email: "", fullName: "", fotoProfilUrl: "", sumberPemasukan: "" }} 
+          userData={{
+            username: "",
+            email: "",
+            fullName: "",
+            fotoProfilUrl: "",
+            sumberPemasukan: "",
+          }}
           onSave={handleSave}
         />
-              )}
-            </div>
-          );
-        }
+      )}
+    </div>
+  );
+}
 
 export default function AuthPage() {
   return (

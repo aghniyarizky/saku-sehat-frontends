@@ -5,10 +5,11 @@ import 'material-icons/iconfont/material-icons.css';
 
 interface LoginProps {
   onSwitchToRegister: () => void;
+  onSwitchLanding: () => void;
   onLoginSuccess?: (data: any) => void;
 }
 
-export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginProps) {
+export default function LoginPage({ onSwitchToRegister, onSwitchLanding, onLoginSuccess }: LoginProps) {
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
@@ -143,7 +144,7 @@ export default function LoginPage({ onSwitchToRegister, onLoginSuccess }: LoginP
           <div className="w-full lg:max-w-md lg:mx-auto">
             <div className="w-10 mb-5">
               <div
-                onClick={onSwitchToRegister}
+                onClick={onSwitchLanding}
                 className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer hover:bg-gray-700 transition-colors"
               >
                 <span className="material-icons text-lg text-white">arrow_back</span>

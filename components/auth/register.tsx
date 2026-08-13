@@ -5,10 +5,11 @@ import 'material-icons/iconfont/material-icons.css';
 
 interface RegisterProps {
   onSwitchToLogin: () => void;
+  onSwitchLanding: () => void;
   onRegisterSuccess?: (email: string) => void;
 }
 
-export default function RegisterComponent({ onSwitchToLogin, onRegisterSuccess }: RegisterProps) {
+export default function RegisterComponent({ onSwitchToLogin, onSwitchLanding, onRegisterSuccess }: RegisterProps) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -145,7 +146,7 @@ export default function RegisterComponent({ onSwitchToLogin, onRegisterSuccess }
           <div className="w-full lg:max-w-md lg:mx-auto">
             <div className="w-10 mb-5">
               <div
-                onClick={onSwitchToLogin}
+                onClick={onSwitchLanding}
                 className="flex items-center justify-center w-full aspect-square bg-[#3E3E3E] rounded-full border-2 border-white cursor-pointer hover:bg-gray-700 transition-colors"
               >
                 <span className="material-icons text-lg text-white">arrow_back</span>

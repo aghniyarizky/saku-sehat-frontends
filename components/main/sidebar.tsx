@@ -61,15 +61,19 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   useEffect(() => {
     const fetchProfileSidebar = async () => {
       try {
-        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        const token =
+          typeof window !== "undefined" ? localStorage.getItem("token") : null;
         if (token) {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/profile`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
             },
-          });
+          );
 
           if (res.ok) {
             const data = await res.json();
@@ -201,7 +205,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       {/* Wrapper: mobile tetap mx-auto max-w-md (overlay device-width), desktop lepas dari batasan itu */}
       <div className="fixed inset-0 z-50 mx-auto max-w-md lg:max-w-none lg:mx-0 pointer-events-none overflow-hidden lg:overflow-visible">
-        
         {/* Backdrop: hanya tampil di mobile. Di desktop dihilangkan total supaya konten tetap bisa diklik/discroll saat sidebar terbuka */}
         <div
           onClick={onClose}
@@ -229,7 +232,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </button>
               </div>
 
-              <div className="flex items-center gap-3 my-2">
+              {/* <div className="flex items-center gap-3 my-2">
                 <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-700 bg-gray-800 shrink-0">
                   <img
                     src={
@@ -253,7 +256,37 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     {isMounted ? userData.email : ""}
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <Link
+                href="?mode=profile-edit"
+                onClick={onClose}
+                className="flex items-center gap-3 my-2 p-1.5 rounded-xl hover:bg-white/5 cursor-pointer transition-colors group"
+              >
+                <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-700 bg-gray-800 shrink-0 group-hover:border-[#2EC4B6] transition-colors">
+                  <img
+                    src={
+                      isMounted && userData.fotoProfilUrl
+                        ? userData.fotoProfilUrl
+                        : "/default-avatar.png"
+                    }
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "/default-avatar.jpg";
+                    }}
+                  />
+                </div>
+
+                <div className="flex flex-col min-w-0">
+                  <div className="text-sm font-semibold text-white leading-tight group-hover:text-[#2EC4B6] transition-colors truncate">
+                    {isMounted ? userData.username || "Memuat..." : "Memuat..."}
+                  </div>
+                  <div className="text-xs text-white/40 truncate">
+                    {isMounted ? userData.email : ""}
+                  </div>
+                </div>
+              </Link>
 
               <hr className="border-gray-800/80 my-4" />
             </div>
